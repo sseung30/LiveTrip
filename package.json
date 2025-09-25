@@ -27,8 +27,11 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "eslint": "^9",
+    "eslint": "^9.36.0",
     "eslint-config-next": "15.5.4",
+    "eslint-config-sheriff": "^28.1.0",
+    "jiti": "^2.6.0",
+    "prettier": "^3.6.2",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
