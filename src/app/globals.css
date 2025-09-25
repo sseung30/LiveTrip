@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 :root {
   --background: #ffffff;
@@ -53,6 +53,8 @@
   --text-18-body--line-height: 140%;
   --text-20-body: 1.25rem; /* 20px */
   --text-20-body--line-height: 160%;
+
+  --font-pretendard: var(--font-pretendard);
 }
 
 @utility flex-center {

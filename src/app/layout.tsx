@@ -1,10 +1,17 @@
-import "@/app/globals.css";
-import type { Metadata } from "next";
+import '@/app/globals.css';
+import type { Metadata } from 'next';
+import localFont from 'next/font/local';
 
 export const metadata: Metadata = {
-  title: "Live Trip",
-  description: "Live Trip",
+  title: 'LiveTrip',
+  description: 'LiveTrip',
 };
+const pretendardVariable = localFont({
+  src: '../../public/font/PretendardVariable.woff2',
+  display: 'swap',
+  variable: '--font-pretendard',
+  weight: '45 920',
+});
 
 export default function RootLayout({
   children,
@@ -12,8 +19,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko">
-      <body>{children}</body>
+    <html lang='ko'>
+      <body className={pretendardVariable.variable}>
+        <div className='font-pretendard'>{children}</div>
+      </body>
     </html>
   );
 }
