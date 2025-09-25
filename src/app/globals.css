@@ -2,25 +2,73 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: hsl(0, 0%, 9%);
 }
-
+/* @media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+} */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  --color-white: rgb(255, 255, 255);
+  --color-black: rgb(0, 0, 0);
+  --color-red: rgb(255, 39, 39);
+
+  --color-primary-100: rgb(229, 243, 255);
+  --color-primary-500: rgb(61, 158, 242);
+  --color-gray-25: rgb(248, 248, 248);
+  --color-gray-50: rgb(237, 238, 242);
+  --color-gray-100: rgb(224, 224, 229);
+  --color-gray-200: rgb(198, 200, 207);
+  --color-gray-300: rgb(179, 180, 188);
+  --color-gray-400: rgb(159, 160, 167);
+  --color-gray-500: rgb(132, 133, 140);
+  --color-gray-600: rgb(112, 113, 119);
+  --color-gray-700: rgb(93, 93, 97);
+  --color-gray-800: rgb(73, 73, 76);
+  --color-gray-900: rgb(50, 50, 54);
+  --color-gray-950: rgb(31, 31, 34);
+
+  --text-10: 0.625rem; /* 10px */
+  --text-12: 0.75rem; /* 12px */
+  --text-13: 0.8125rem; /* 13px */
+  --text-14: 0.875rem; /* 14px */
+  --text-16: 1rem; /* 16px */
+  --text-18: 1.125rem; /* 18px */
+  --text-20: 1.25rem; /* 20px */
+  --text-24: 1.5rem; /* 24px */
+  --text-32: 2rem; /* 32px */
+
+  --text-14-body: 0.875rem; /* 14px */
+  --text-14-body--line-height: 180%;
+  --text-16-body: 1rem; /* 16px */
+  --text-16-body--line-height: 180%;
+  --text-18-body: 1.125rem; /* 18px */
+  --text-18-body--line-height: 140%;
+  --text-20-body: 1.25rem; /* 20px */
+  --text-20-body--line-height: 160%;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@utility flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+button {
+  cursor: pointer;
+}
+button:disabled {
+  cursor: not-allowed;
 }
