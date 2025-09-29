@@ -12,5 +12,6 @@
   "arrowParens": "always",
   "endOfLine": "lf",
   "proseWrap": "always",
-  "htmlWhitespaceSensitivity": "strict"
+  "htmlWhitespaceSensitivity": "strict",
+  "plugins": ["prettier-plugin-tailwindcss"]
 }
