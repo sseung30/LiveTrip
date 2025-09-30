@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import type { SyntheticEvent } from 'react';
-import type { ModalProps } from '@/components/dialog/type';
+import type { ModalProps } from '@/components/dialog/Modal/type';
 import { cx } from '@/utils/cx';
 
 /**

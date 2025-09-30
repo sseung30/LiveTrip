@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import WarningImage from '@/components/dialog/assets/warning.svg';
-import type { AlertModalContentsProps } from '@/components/dialog/type';
+import type { AlertModalContentsProps } from '@/components/dialog/Modal/type';
 import ButtonSpinner from '@/components/ui/ButtonSpinner';
 
 /**
