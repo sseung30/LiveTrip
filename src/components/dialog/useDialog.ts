@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 /**
  * HTML dialog 엘리먼트를 관리하기 위한 커스텀 훅
  * 모달 창을 열고 닫는 기능을 제공하며, dialog 엘리먼트에 대한 ref를 관리합니다.
@@ -11,19 +11,22 @@ import { useRef } from 'react';
 
 export default function useDialog() {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const [isOpen, setIsOpen] = useState(false);
 
   const openDialog = () => {
     if (!dialogRef.current) {
       return;
     }
     dialogRef.current.showModal();
+    setIsOpen(true);
   };
   const hideDialog = () => {
     if (!dialogRef.current) {
       return;
     }
     dialogRef.current.close();
+    setIsOpen(false);
   };
 
-  return { dialogRef, openDialog, hideDialog };
+  return { dialogRef, openDialog, hideDialog, isOpen };
 }
