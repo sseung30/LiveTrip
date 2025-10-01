@@ -1,9 +1,13 @@
-import type { ReactNode, RefObject, SyntheticEvent } from 'react';
+import type { ReactNode, RefObject } from 'react';
 
 export interface BottomSheetProps {
   isOpen: boolean;
-  children: ReactNode;
+  children: (actions: { closeDialog: () => void }) => ReactNode;
   dialogRef: RefObject<HTMLDialogElement | null>;
   onClose?: (...args: unknown[]) => void;
   hideDialog: () => void;
+}
+export interface CloseDialogParameter {
+  onRest?: () => void;
+  immediate?: boolean;
 }

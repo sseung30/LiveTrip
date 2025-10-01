@@ -20,7 +20,7 @@ export default function ModalContainer({
   classNames,
   children,
 }: ModalProps) {
-  const handleClick = (e: SyntheticEvent) => {
+  const closeDialog = (e: SyntheticEvent) => {
     if (dialogRef.current === e.target) {
       dialogRef.current.close();
       onClose?.();
@@ -36,7 +36,7 @@ export default function ModalContainer({
         positionCenter,
         classNames
       )}
-      onClick={handleClick}
+      onClick={closeDialog}
     >
       {children}
     </dialog>
