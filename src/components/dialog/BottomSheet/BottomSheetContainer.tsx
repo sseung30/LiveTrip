@@ -6,6 +6,26 @@ import type {
   CloseDialogParameter,
 } from '@/components/dialog/BottomSheet/type';
 
+/**
+ * 하단에서 올라오는 애니메이션과 드래그 제스처를 지원하는 바텀 시트 컴포넌트
+ * dialog 엘리먼트를 사용하며, react-spring과 use-gesture를 활용하여
+ * 부드러운 애니메이션과 직관적인 드래그 인터랙션을 제공합니다.
+ *
+ * Props:
+ * - isOpen: 바텀 시트의 표시 여부를 제어하는 boolean 값
+ * - children: render props 패턴으로 closeDialog 함수를 전달받는 함수형 children
+ * - hideDialog: 시트를 DOM에서 숨기는 함수 (애니메이션 완료 후 호출)
+ * - dialogRef: dialog 엘리먼트에 대한 ref 객체
+ * - onClose: 시트가 닫힐 때 호출되는 콜백 함수 (선택사항)
+ *
+ * 상수 설정:
+ * - OPEN_HEIGHT: 완전히 열린 상태의 y 위치 (0)
+ * - CLOSE_HEIGHT: 완전히 닫힌 상태의 y 위치 (400)
+ * - CLOSE_THRESHOLD: 자동으로 닫히는 드래그 임계값 (100px)
+ * - SPRING_DURATION: 애니메이션 지속 시간 (140ms)
+ *
+ */
+
 const OPEN_HEIGHT = 0;
 const CLOSE_THRESHOLD = 100;
 const CLOSE_HEIGHT = 400;
@@ -15,8 +35,8 @@ export default function BottomSheet({
   isOpen,
   children,
   hideDialog: hideDialogElement,
-  onClose,
   dialogRef,
+  onClose,
 }: BottomSheetProps) {
   const [{ y }, dialogSpring] = useSpring(() => {
     return {
