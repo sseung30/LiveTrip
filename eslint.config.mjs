@@ -56,6 +56,7 @@ const eslintConfig = [
       '@typescript-eslint/no-misused-spread': 'off',
       '@typescript-eslint/prefer-nullish-coalescing': 'off',
       '@regru/prefer-early-return/prefer-early-return': 'off',
+      '@typescript-eslint/restrict-template-expressions': 'off',
     },
   },
 ];
