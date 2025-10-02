@@ -1,4 +1,5 @@
 import '@/app/globals.css';
+import Header from '@/components/header/Header';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 
@@ -21,7 +22,10 @@ export default function RootLayout({
   return (
     <html lang='ko'>
       <body className={pretendardVariable.variable}>
-        <div className='font-pretendard'>{children}</div>
+        <div className='font-pretendard'>
+          <Header />
+          {children}
+          </div>
       </body>
     </html>
   );
