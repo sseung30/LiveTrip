@@ -1,7 +1,8 @@
 import '@/app/globals.css';
-import Header from '@/components/header/Header';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
+import Header from '@/components/header/Header';
+import ToastContainer from '@/components/toast/ToastContainer';
 
 export const metadata: Metadata = {
   title: 'LiveTrip',
@@ -25,7 +26,8 @@ export default function RootLayout({
         <div className='font-pretendard'>
           <Header />
           {children}
-          </div>
+          <ToastContainer />
+        </div>
       </body>
     </html>
   );
