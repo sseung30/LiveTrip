@@ -1,10 +1,9 @@
-import Link from 'next/link';
 import Image from 'next/image';
-
+import Link from 'next/link';
 import facebook from '@/components/footer/asset/facebook.svg';
 import instagram from '@/components/footer/asset/instagram.svg';
-import youtube from '@/components/footer/asset/youtube.svg';
 import x from '@/components/footer/asset/X.svg';  
+import youtube from '@/components/footer/asset/youtube.svg';
 
 
 export default function SocialIcons() {

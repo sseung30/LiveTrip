@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import SocialIcons from './components/SocialIcons';
+
 ;
 
 export default function Footer() {
