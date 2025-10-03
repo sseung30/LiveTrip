@@ -1,4 +1,7 @@
 import type { ReactNode } from 'react';
+import DropdownItems from '@/components/dropdown/DropdownItems';
+import DropdownMenu from '@/components/dropdown/DropdownMenu';
+import DropdownTrigger from '@/components/dropdown/DropdownTrigger';
 import useDropdownClose from '@/components/dropdown/useDropdownClose';
 
 interface DropdownProps {
@@ -18,3 +21,7 @@ export default function Dropdown({ children, handleClose }: DropdownProps) {
     </div>
   );
 }
+
+Dropdown.Items = DropdownItems;
+Dropdown.Menu = DropdownMenu;
+Dropdown.Trigger = DropdownTrigger;

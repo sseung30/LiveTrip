@@ -7,7 +7,7 @@ interface DropDownTriggerProps {
   handleToggle: () => void;
 }
 
-export default function DropDownTrigger({
+export default function DropdownTrigger({
   children,
   handleToggle,
 }: DropDownTriggerProps) {
