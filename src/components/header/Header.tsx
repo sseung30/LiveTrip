@@ -1,9 +1,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import logo from '@/components/header/asset/logo.svg';
-import logoSymbol from '@/components/header/asset/logo-symbol.svg';
 import bellDefault from '@/components/header/asset/bell-default.svg';
 import defaultProfileImg from '@/components/header/asset/default-profile-img.svg';
+import logo from '@/components/header/asset/logo.svg';
+import logoSymbol from '@/components/header/asset/logo-symbol.svg';
 
 
 async function logoutAction() {

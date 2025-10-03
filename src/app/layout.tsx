@@ -1,9 +1,8 @@
 import '@/app/globals.css';
-import Header from '@/components/header/Header';
-import Footer from '@/components/footer/Footer';
-
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
+import Footer from '@/components/footer/Footer';
+import Header from '@/components/header/Header';
 
 export const metadata: Metadata = {
   title: 'LiveTrip',
