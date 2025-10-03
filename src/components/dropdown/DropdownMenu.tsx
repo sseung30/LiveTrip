@@ -1,22 +1,23 @@
 import type { ReactNode } from 'react';
+import { useDropdownContext } from '@/components/dropdown/dropdownContext';
 
 interface DropdownMenuProps {
   children?: ReactNode;
-  width: number;
-  isOpen: boolean;
   position?: string;
 }
 
 export default function DropdownMenu({
   children,
-  isOpen,
   position,
 }: DropdownMenuProps) {
+  const { isOpen, width } = useDropdownContext();
+
   return (
     <div>
       {isOpen && (
         <ul
-          className={`${position} absolute flex w-full flex-col gap-1 rounded-2xl border px-3 py-3`}
+          className={`${position} absolute flex w-full flex-col gap-1 rounded-2xl border bg-white px-3 py-3`}
+          style={{ width }}
         >
           {children}
         </ul>

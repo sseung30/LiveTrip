@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Dropdown from '@/components/dropdown/Dropdown';
 
-const DEFAULT_WIDTH = 200;
+const DEFAULT_WIDTH = 300;
 const DEFAULT_POSITION = 'top-15';
 
 interface DropdownOption {
@@ -28,34 +28,30 @@ export default function SelectDropdown({
   onSelect,
   defaultValue,
 }: DropdownProps) {
-  const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState<string | undefined>(defaultValue);
 
-  const handleClose = () => {
-    setIsOpen(false);
-  };
+  // const handleClose = () => {
+  //   setIsOpen(false);
+  // };
 
   const handleSelect = (value: string) => {
-    setIsOpen(false);
     onSelect(value);
     setSelected(value);
   };
 
-  const handleToggle = () => {
-    setIsOpen((prev) => !prev);
-  };
+  const label = selected
+    ? options.find((o) => o.value === selected)?.label
+    : placeholder;
 
   return (
     <div>
-      <Dropdown handleClose={handleClose}>
-        <Dropdown.Trigger handleToggle={handleToggle}>
+      <Dropdown width={width}>
+        <Dropdown.Trigger>
           <div className={selected ? 'text-gray-950' : 'text-gray-400'}>
-            {selected
-              ? options.find((o) => o.value === selected)?.label
-              : placeholder}
+            {label}
           </div>
         </Dropdown.Trigger>
-        <Dropdown.Menu isOpen={isOpen} width={width} position={position}>
+        <Dropdown.Menu position={position}>
           {options.map((option) => {
             return (
               <Dropdown.Items
