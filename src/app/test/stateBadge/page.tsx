@@ -1,18 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import CardList from '@/components/cardList/CardList';
 import SideMenu from '@/components/sideMenu/SideMenu';
 import StateBadge from '@/components/stateBadge/StateBadge';
-import type { StateType } from '@/components/stateBadge/type';
 import Input from '@/components/ui/Input/Input';
-
-const stateTestData: StateType[] = [
-  'cancelled',
-  'completed',
-  'rejected',
-  'experience_completed',
-  'approved',
-];
 
 export default function StateBadgeTestPage() {
   const [emailValue, setEmailValue] = useState('');
@@ -81,6 +73,69 @@ export default function StateBadgeTestPage() {
             type='password'
             value={passwordValue}
             onChange={setPasswordValue}
+          />
+        </div>
+      </div>
+
+      {/* CardList 테스트 */}
+      <div>
+        <h2 className='mb-4 text-xl font-semibold text-gray-800'>
+          CardList 컴포넌트
+        </h2>
+        <div className='flex flex-col gap-4'>
+          <CardList
+            state='completed'
+            title='함께 배우면 즐거운 스트릿 댄스'
+            date='2023.02.14'
+            startTime='11:00'
+            endTime='12:30'
+            price={35000}
+            capacity={10}
+            onChangeReservation={() => {
+              console.log('예약 변경');
+            }}
+            onCancelReservation={() => {
+              console.log('예약 취소');
+            }}
+            onWriteReview={() => {
+              console.log('후기 작성');
+            }}
+          />
+          <CardList
+            state='cancelled'
+            title='내 강아지 사진 찍어주기'
+            date='2023.02.11'
+            startTime='13:00'
+            endTime='14:00'
+            price={35000}
+            capacity={1}
+            onChangeReservation={() => {
+              console.log('예약 변경');
+            }}
+            onCancelReservation={() => {
+              console.log('예약 취소');
+            }}
+            onWriteReview={() => {
+              console.log('후기 작성');
+            }}
+          />
+          <CardList
+            state='experience_completed'
+            title='열기구 페스티벌'
+            date='0000.00.00'
+            startTime='11:00'
+            endTime='12:30'
+            price={70000}
+            capacity={2}
+            onChangeReservation={() => {
+              console.log('예약 변경');
+            }}
+            onCancelReservation={() => {
+              console.log('예약 취소');
+            }}
+            onWriteReview={() => {
+              console.log('후기 작성');
+            }}
           />
         </div>
       </div>
