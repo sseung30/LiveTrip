@@ -14,7 +14,7 @@ export const toast = ({ message, eventType }: ToastType) => {
 };
 const TOAST_DURATION = 3000;
 
-export default function ToastContainer() {
+export function ToastContainer() {
   const [toasts, setToasts] = useState<ToastType[]>([]);
 
   const deleteToastByIndex = (deletedIndex: number) => {

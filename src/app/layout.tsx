@@ -2,7 +2,7 @@ import '@/app/globals.css';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import Header from '@/components/header/Header';
-import ToastContainer from '@/components/toast/ToastContainer';
+import { ToastContainer } from '@/components/toast/ToastContainer';
 
 export const metadata: Metadata = {
   title: 'LiveTrip',

@@ -14,7 +14,7 @@ import { cx } from '@/utils/cx';
  * - children: 모달 내부에 렌더링될 자식 컴포넌트들
  */
 
-export default function ModalContainer({
+export function ModalContainer({
   dialogRef,
   onClose,
   classNames,

@@ -31,7 +31,7 @@ const CLOSE_THRESHOLD = 100;
 const CLOSE_HEIGHT = 400;
 const SPRING_DURATION = 140;
 
-export default function BottomSheet({
+export function BottomSheetContainer({
   isOpen,
   children,
   hideDialog: hideDialogElement,
