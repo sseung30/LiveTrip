@@ -1,6 +1,7 @@
 'use client';
 import Image from 'next/image';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
+import { animated, useTransition } from '@react-spring/web';
 import errorImage from '@/components/toast/assets/error.svg';
 import successImage from '@/components/toast/assets/success.svg';
 import type { ToastComponentProps, ToastType } from '@/components/toast/type';
@@ -20,15 +21,22 @@ export function ToastContainer() {
   const deleteToastByIndex = (deletedIndex: number) => {
     setToasts((prev) => prev.filter((_, i) => i !== deletedIndex));
   };
+  const deleteToast = () => {
+    setToasts((prev) => prev.slice(1));
+  };
 
   useEffect(() => {
     const handleShowToast = (e: CustomEventInit) => {
       const { message, eventType } = e.detail;
 
+      if (toasts.length >= 3) {
+        deleteToast();
+      }
       setToasts((prev) => [...prev, { message, eventType }]);
+
       //NOTE: TOAST_DURATION이 흐르면 해당 toast 제거
       setTimeout(() => {
-        setToasts((prev) => prev.slice(1));
+        deleteToast();
       }, TOAST_DURATION);
     };
 
@@ -39,19 +47,23 @@ export function ToastContainer() {
     };
   }, [toasts]);
 
+  const transitionToasts = useTransition(toasts, {
+    from: { opacity: 0, scale: 0.5 },
+    enter: { opacity: 1, scale: 1 },
+    leave: { opacity: 0, scale: 0 },
+  });
+
   return (
     <>
-      <div
-        className='absolute top-5 right-5 flex flex-col gap-2'
-        id='toast-container'
-      >
-        {toasts.map((_toast, index) => {
+      <div className='absolute flex flex-col gap-2' id='toast-container'>
+        {transitionToasts((style, _toast, _, index) => {
           return (
             <ToastComponent
               key={`toast-${crypto.randomUUID()}`}
               eventType={_toast.eventType}
               message={_toast.message}
               index={index}
+              style={style}
               deleteToastByIndex={deleteToastByIndex}
             />
           );
@@ -65,6 +77,7 @@ function ToastComponent({
   eventType,
   message,
   index,
+  style,
   deleteToastByIndex,
 }: ToastComponentProps) {
   const toastRef = useRef<HTMLDivElement>(null);
@@ -93,15 +106,16 @@ function ToastComponent({
   };
 
   return (
-    <div
+    <animated.div
       ref={toastRef}
       popover='manual'
-      className='flex-center text-18 inset-auto right-5 left-auto gap-6 bg-white px-8 py-4 font-medium shadow-sm'
+      className='flex-center text-18 inset-auto right-1/2 bottom-40 left-1/2 w-max -translate-x-1/2 gap-6 rounded-[1.875rem] bg-white px-8 py-4 font-medium shadow-sm'
       style={{
-        top: `${20 + index * 70}px`,
+        ...style,
+        bottom: `${160 - index * 70}px`,
       }}
     >
-      <div className='flex gap-4'>
+      <div className='flex items-center gap-4'>
         <span>{getEventTypeImage()}</span>
         <span>{message}</span>
       </div>
@@ -110,8 +124,13 @@ function ToastComponent({
           deleteToastByIndex(index);
         }}
       >
-        X
+        <Image
+          src='/icons/delete.svg'
+          alt='삭제 아이콘'
+          width={24}
+          height={24}
+        />
       </button>
-    </div>
+    </animated.div>
   );
 }
