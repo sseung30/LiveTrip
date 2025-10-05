@@ -7,11 +7,11 @@ export default function HeroBanner() {
         <div className='absolute right-0 left-0 h-full rounded-3xl bg-linear-to-b from-black/0 to-black/70' />
         <Image
           priority
-          className='aspect-[11/6] h-auto max-w-full rounded-3xl object-cover'
+          className='aspect-[11/6] h-auto w-full max-w-full rounded-3xl object-cover xl:w-[70rem]'
           src='/images/activities/3-activity.png'
           alt='농구 코트 위에서 음악을 틀고 춤을 추는 사람'
           width={1120}
-          height={500}
+          height={610}
         />
         <div className='margin-auto absolute bottom-9 flex w-full flex-col gap-2 text-white md:bottom-[4.5rem] md:gap-3.5 xl:bottom-24 xl:gap-5'>
           <h1 className='text-18 md:text-24 xl:text-32 text-center font-bold'>
