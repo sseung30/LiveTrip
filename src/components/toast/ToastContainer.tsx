@@ -6,6 +6,24 @@ import errorImage from '@/components/toast/assets/error.svg';
 import successImage from '@/components/toast/assets/success.svg';
 import type { ToastComponentProps, ToastType } from '@/components/toast/type';
 
+/**
+ * - toast
+ * 토스트 알림을 화면에 표시하는 함수
+ * CustomEvent를 발생시켜 ToastContainer에 토스트 표시를 요청합니다.
+ *
+ * @example
+ * // 성공 메시지 표시
+ * toast({ message: '저장되었습니다', eventType: 'success' });
+ *
+ * // 에러 메시지 표시
+ * toast({ message: '오류가 발생했습니다', eventType: 'error' });
+ *
+ * Props:
+ * - message - 토스트에 표시할 메시지 텍스트
+ * - eventType - 토스트의 타입 ('success' | 'error')
+ *                    - 'success': 성공 아이콘과 함께 표시
+ *                    - 'error': 에러 아이콘과 함께 표시
+ */
 export const toast = ({ message, eventType }: ToastType) => {
   const event = new CustomEvent('showToast', {
     detail: { message, eventType },
