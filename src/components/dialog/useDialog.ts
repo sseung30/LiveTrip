@@ -9,7 +9,7 @@ import { useRef, useState } from 'react';
  * - hideDialog: 모달을 닫는 함수 (close() 호출)
  */
 
-export default function useDialog() {
+export function useDialog() {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [isOpen, setIsOpen] = useState(false);
 

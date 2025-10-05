@@ -13,7 +13,7 @@ import ButtonSpinner from '@/components/ui/ButtonSpinner';
  * - hideModal: 모달을 숨기기 위해 호출할 함수 (취소 버튼 클릭 시)
  * - isPending: 액션의 로딩 상태
  */
-export default function AlertModalContents({
+export function AlertModalContents({
   message,
   confirmButtonText,
   rejectButtonText,

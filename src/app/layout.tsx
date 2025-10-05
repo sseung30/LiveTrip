@@ -1,6 +1,7 @@
 import '@/app/globals.css';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
+import { ToastContainer } from '@/components/toast/ToastContainer';
 
 export const metadata: Metadata = {
   title: 'LiveTrip',
@@ -21,7 +22,10 @@ export default function RootLayout({
   return (
     <html lang='ko'>
       <body className={pretendardVariable.variable}>
-        <div className='font-pretendard'>{children}</div>
+        <div className='font-pretendard'>
+          {children}
+          <ToastContainer />
+        </div>
       </body>
     </html>
   );
