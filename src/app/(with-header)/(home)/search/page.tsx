@@ -9,7 +9,7 @@ export default async function HomeSearchPage({
 
   return (
     <>
-      <div className=''> {q}</div>
+      <div className=''> 검색어 : {q}</div>
     </>
   );
 }
