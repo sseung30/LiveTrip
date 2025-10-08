@@ -26,13 +26,22 @@ export interface UseInfiniteOptions<TPage, TItem> {
   /**
    * 다음 페이지의 커서를 반환 (없으면 undefined)
    */
-  selectNextCursor: (page: TPage) => number | undefined;
+  selectNextCursor?: (page: TPage) => number | undefined;
 
   /** 총 아이템 개수 */
   selectTotalCount?: (firstPage: TPage | undefined) => number;
 
   /** ✅ (선택) 목/특수 로직: 커서 기반으로 페이지를 반환 */
   requestPage?: (cursor: number, signal: AbortSignal) => Promise<TPage>;
+
+  pageSize?: number;
+
+  /**
+   * 기본 로직용: 아이템에서 커서(id 등)를 뽑는 함수
+   * - selectNextCursor를 주지 않는 경우 필요합니다.
+   * - “마지막 아이템의 커서”를 다음 커서로 사용합니다.
+   */
+  getItemCursor?: (item: TItem) => number;
 }
 
 /** URL 자체를 커서로 쓰는 범용 무한 스크롤 훅 */
@@ -44,6 +53,8 @@ export function useInfiniteByCursor<TPage, TItem>({
   selectNextCursor,
   selectTotalCount,
   requestPage,
+  pageSize = 20,
+  getItemCursor,
 }: UseInfiniteOptions<TPage, TItem>) {
   const query = useInfiniteQuery<
     TPage,
@@ -68,17 +79,34 @@ export function useInfiniteByCursor<TPage, TItem>({
 
       return (await res.json()) as TPage;
     },
-    getNextPageParam: (lastPage) => selectNextCursor(lastPage),
+    getNextPageParam: (lastPage) => {
+      // 사용자가 제공한 계산기가 있으면 그걸 우선 사용
+      if (selectNextCursor) {
+        return selectNextCursor(lastPage);
+      }
+
+      // 기본 로직: “마지막 아이템의 커서” 사용
+      const pageItems = selectItems(lastPage);
+
+      if (pageItems.length < pageSize) {
+        return undefined;
+      }
+      if (!getItemCursor) {
+        return undefined;
+      }
+      const lastItem = pageItems[pageItems.length - 1];
+
+      return getItemCursor(lastItem);
+    },
   });
 
-  // 데이터 평탄화
-  const items = query.data?.pages.flatMap((p) => selectItems(p)) ?? [];
-  // 전체 아이템 개수
+  const pageItemsFlat = query.data?.pages.flatMap((p) => selectItems(p)) ?? [];
+
   const totalCount = selectTotalCount?.(query.data?.pages.at(0)) ?? 0;
 
   return {
     ...query,
-    items,
+    items: pageItemsFlat,
     totalCount,
   };
 }
