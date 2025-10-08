@@ -29,7 +29,7 @@ export default function Badge({ type, count }: BadgeProps) {
       className={`
         inline-flex items-center justify-center 
         px-2 py-0.5 
-        text-md font-normal
+        text-xs md:text-sm font-normal
         rounded-sm transition-colors
         ${styles.bgColor} 
         ${styles.textColor}
