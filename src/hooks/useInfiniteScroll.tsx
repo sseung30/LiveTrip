@@ -31,9 +31,6 @@ export interface UseInfiniteOptions<TPage, TItem> {
   /** 총 아이템 개수 */
   selectTotalCount?: (firstPage: TPage | undefined) => number;
 
-  /** ✅ (선택) 목/특수 로직: 커서 기반으로 페이지를 반환 */
-  requestPage?: (cursor: number, signal: AbortSignal) => Promise<TPage>;
-
   pageSize?: number;
 
   /**
@@ -52,7 +49,6 @@ export function useInfiniteByCursor<TPage, TItem>({
   selectItems,
   selectNextCursor,
   selectTotalCount,
-  requestPage,
   pageSize = 20,
   getItemCursor,
 }: UseInfiniteOptions<TPage, TItem>) {
@@ -66,10 +62,6 @@ export function useInfiniteByCursor<TPage, TItem>({
     queryKey,
     initialPageParam: initialCursor,
     queryFn: async ({ pageParam, signal }) => {
-      if (requestPage) {
-        // ✅ 목/특수 로직 사용
-        return requestPage(pageParam, signal);
-      }
       const url = buildUrl(pageParam);
       const res = await fetch(url, { signal });
 
