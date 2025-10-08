@@ -122,7 +122,7 @@ export default function StateBadgeTestPage() {
           <CardList
             state='experience_completed'
             title='열기구 페스티벌'
-            date='0000.00.00'
+            date='2024.08.28'
             startTime='11:00'
             endTime='12:30'
             price={70000}
