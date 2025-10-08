@@ -1,15 +1,22 @@
-'use client'; 
-
 import Image from 'next/image';
-import Link from 'next/link';
 import chevronLeft from '@/components/pagination/asset/chevron-left.svg'
 import chevronRight from '@/components/pagination/asset/chevron-right.svg'
 
-const PAGE_GROUP_SIZE = 5; 
+export default function Pagination({ currentPage, totalCount, limit, onPageChange }: PaginationProps) {
 
-export default function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) {
+  /**
+   * 한 그룹에 표시할 페이지 수
+   */
+  const PAGE_GROUP_SIZE = 5; 
 
-  // 페이지 그룹 계산 로직 (5개 단위로 이동)g
+  // totalPages 계산
+  const totalPages = Math.max(1, Math.ceil(totalCount / limit));
+
+  if (totalCount === 0 || totalPages === 1) {
+    return null; // 페이지가 하나 이하일 경우 페이징 컴포넌트 렌더링 안함
+  }
+
+  // 페이지 그룹 계산 로직 (5개 단위로 이동)
   const currentGroupStart = Math.floor((currentPage - 1) / PAGE_GROUP_SIZE) * PAGE_GROUP_SIZE + 1;
   const currentGroupEnd = Math.min(
     currentGroupStart + PAGE_GROUP_SIZE - 1,
@@ -22,15 +29,23 @@ export default function Pagination({ currentPage, totalPages, onPageChange }: Pa
     (_, i) => currentGroupStart + i
   );
 
+  /**
+   * 페이지 번호 클릭 핸들러
+   */
   const handlePageClick = (page: number) => {
     if (page >= 1 && page <= totalPages) {
       onPageChange(page);
     }
   };
 
+  // 이전/다음 그룹 시작 페이지 계산
   const prevGroupStart = currentGroupStart - PAGE_GROUP_SIZE;
   const nextGroupStart = currentGroupStart + PAGE_GROUP_SIZE;
 
+
+  /**
+   * 이전 그룹, 다음 그룹 클릭 핸들러
+   */
   const handlePrevGroup = () => {
     if (prevGroupStart >= 1) {
       onPageChange(prevGroupStart);

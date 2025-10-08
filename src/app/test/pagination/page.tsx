@@ -10,7 +10,12 @@ export default function PaginationTestPage() {
   /**
    * 테스트를 위한 전체 페이지 수
    */
-  const totalPages = 15; 
+  const totalCount = 100;
+  /**
+   * 한 페이지당 아이템 수
+   */
+  const limit = 5; 
+  const totalPages = Math.ceil(totalCount / limit);
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center p-10">
@@ -20,7 +25,8 @@ export default function PaginationTestPage() {
       
       <Pagination
         currentPage={currentPage}
-        totalPages={totalPages}
+        totalCount={totalCount}
+        limit={5} // 한 페이지당 아이템 수
         onPageChange={setCurrentPage} // 상태 변경 함수 전달
       />
 

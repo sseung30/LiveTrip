@@ -1,5 +1,6 @@
 interface PaginationProps {
   currentPage: number;
-  totalPages: number;
+  totalCount: number;
+  limit: number;
   onPageChange: (page: number) => void;
 }
