@@ -1,63 +1,84 @@
-import { useEffect, useRef } from 'react';
+import {
+  type InfiniteData,
+  type QueryKey,
+  useInfiniteQuery,
+} from '@tanstack/react-query';
 
-interface useInfiniteScrollProps {
-  loading: boolean;
-  hasMore: boolean;
-  setPage: (callback: (prevPage: number) => number) => void;
+export interface UseInfiniteOptions<TPage, TItem> {
+  /**
+   * React Query key (필터/검색어 등을 포함해 캐시 분리)
+   */
+  queryKey: QueryKey;
+
+  /**
+   * 페이지의 전체 URL
+   */
+  initialCursor: number;
+
+  buildUrl: (cursor: number) => string;
+
+  /**
+   * 페이지 객체에서 아이템 배열 뽑기
+   * 서버의 응답으로부터 원하는 아이템 추출
+   */
+  selectItems: (page: TPage) => TItem[];
+
+  /**
+   * 다음 페이지의 커서를 반환 (없으면 undefined)
+   */
+  selectNextCursor: (page: TPage) => number | undefined;
+
+  /** 총 아이템 개수 */
+  selectTotalCount?: (firstPage: TPage | undefined) => number;
+
+  /** ✅ (선택) 목/특수 로직: 커서 기반으로 페이지를 반환 */
+  requestPage?: (cursor: number, signal: AbortSignal) => Promise<TPage>;
 }
 
-/**
- * loading: 현재 추가 데이터를 불러오는 중인지 여부
- * hasMore: 더 불러올 데이터가 남았는지 여부
- * setPage: 페이지 번호를 증가시키는 상태 업데이트 함수
- */
-export default function useInfiniteScroll({
-  loading,
-  hasMore,
-  setPage,
-}: useInfiniteScrollProps) {
-  // 실제로 화면 스크롤 상태를 관찰하는 IntersectionObserver 인스턴스
-  const observer = useRef<IntersectionObserver | null>(null);
-  // 리스트 하단의 로딩 트리거 <div>에 연결
-  const loader = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    // 이미 요청을 보내는 중이면(로딩 중이면), 관찰자를 만들지 않음
-    if (loading) {
-      return;
-    }
-    // 이미 관찰 중이면, 관찰 연결 중단
-    if (observer.current) {
-      observer.current.disconnect();
-    }
-
-    // 새로운 IntersectionObserver
-    observer.current = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && hasMore) {
-            setPage((prev) => prev + 1);
-          }
-        });
-      },
-      {
-        rootMargin: '200px',
-        threshold: 0,
+/** URL 자체를 커서로 쓰는 범용 무한 스크롤 훅 */
+export function useInfiniteByCursor<TPage, TItem>({
+  queryKey,
+  initialCursor,
+  buildUrl,
+  selectItems,
+  selectNextCursor,
+  selectTotalCount,
+  requestPage,
+}: UseInfiniteOptions<TPage, TItem>) {
+  const query = useInfiniteQuery<
+    TPage,
+    Error,
+    InfiniteData<TPage>,
+    QueryKey,
+    number
+  >({
+    queryKey,
+    initialPageParam: initialCursor,
+    queryFn: async ({ pageParam, signal }) => {
+      if (requestPage) {
+        // ✅ 목/특수 로직 사용
+        return requestPage(pageParam, signal);
       }
-    );
+      const url = buildUrl(pageParam);
+      const res = await fetch(url, { signal });
 
-    // loader div를 관찰 대상으로 등록
-    if (loader.current) {
-      observer.current.observe(loader.current);
-    }
-
-    return () => {
-      if (observer.current) {
-        observer.current.disconnect();
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
       }
-    };
-  }, [loading, hasMore, setPage]);
 
-  // loader ref를 받아 <div ref={loader} />등에 연결할 수 있도록 반환
-  return { loader };
+      return (await res.json()) as TPage;
+    },
+    getNextPageParam: (lastPage) => selectNextCursor(lastPage),
+  });
+
+  // 데이터 평탄화
+  const items = query.data?.pages.flatMap((p) => selectItems(p)) ?? [];
+  // 전체 아이템 개수
+  const totalCount = selectTotalCount?.(query.data?.pages.at(0)) ?? 0;
+
+  return {
+    ...query,
+    items,
+    totalCount,
+  };
 }
