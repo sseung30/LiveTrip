@@ -1,3 +1,5 @@
+import SearchResult from '@/domain/home/components/SearchResult';
+
 export default async function HomeSearchPage({
   searchParams,
 }: {
@@ -8,8 +10,8 @@ export default async function HomeSearchPage({
   const { q } = await searchParams;
 
   return (
-    <>
-      <div className=''> 검색어 : {q}</div>
-    </>
+    <section className=''>
+      <SearchResult q={q} />
+    </section>
   );
 }

@@ -1,8 +1,8 @@
 'use client';
 import { useState } from 'react';
 import { ActivityTabs, tabs } from '@/domain/home/components/ActivityTabs';
-import Card from '@/domain/home/components/Card';
 import DropdownTabs from '@/domain/home/components/DropdownTabs';
+import GridCardList from '@/domain/home/components/GridCardList';
 import { getActivityList } from '@/domain/home/mock';
 
 export default function AllActivitySection() {
@@ -37,18 +37,7 @@ export default function AllActivitySection() {
         selectedTabIndex={selectedTabIndex}
         setSelectedTabIndex={setSelectedTabIndex}
       />
-      <div className='grid w-full grid-cols-2 gap-3.5 overflow-x-scroll md:justify-items-center md:gap-5 md:overflow-hidden xl:grid-cols-4'>
-        {activities.map((activity) => {
-          return (
-            <Card
-              src={activity.bannerImageUrl}
-              alt={activity.title}
-              key={crypto.randomUUID()}
-              imageClassNames='aspect-1/1'
-            />
-          );
-        })}
-      </div>
+      <GridCardList activities={activities} />
     </section>
   );
 }
