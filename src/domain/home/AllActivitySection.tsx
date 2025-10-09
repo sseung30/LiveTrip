@@ -1,32 +1,37 @@
 'use client';
-import Image from 'next/image';
 import { useState } from 'react';
 import { ActivityTabs, tabs } from '@/domain/home/ActivityTabs';
 import Card from '@/domain/home/Card';
+import DropdownTabs from '@/domain/home/components/DropdownTabs';
 import { getActivityList } from '@/domain/home/mock';
 
 export default function AllActivitySection() {
   const { activities } = getActivityList();
   const [selectedTabIndex, setSelectedTabIndex] = useState(-1);
+  const [selectedDropdownOption, setSelectedDropdownOption] =
+    useState('인기순');
+  const [isDescending, setIsDescending] = useState(true);
+
   const isTabSelected = selectedTabIndex !== -1;
   const sectionTitle = '🛼 모든 체험';
   const title = isTabSelected
     ? tabs[selectedTabIndex].emojiTitle
     : sectionTitle;
 
+  const onDropdownSelect = (value: string) => {
+    setSelectedDropdownOption(value);
+  };
+
   return (
     <section className='relative w-full'>
       <div className='mb-2.5 flex items-center justify-between md:mb-4'>
         <h2 className='text-18 md:text-24 font-bold'>{title}</h2>
-        <div className='hover:bg-gray-25 flex cursor-pointer rounded-2xl p-3 xl:absolute xl:top-[3.25rem] xl:right-0'>
-          <span className='text-16 font-medium'>가격</span>
-          <Image
-            src={'/icons/arrow-down.svg'}
-            alt='아래 화살표'
-            width={20}
-            height={20}
-          />
-        </div>
+        <DropdownTabs
+          selectedDropdownOption={selectedDropdownOption}
+          isDescending={isDescending}
+          setIsDescending={setIsDescending}
+          onDropdownSelect={onDropdownSelect}
+        />
       </div>
       <ActivityTabs
         selectedTabIndex={selectedTabIndex}
