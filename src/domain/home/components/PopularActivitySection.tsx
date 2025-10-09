@@ -1,4 +1,4 @@
-import Card from '@/domain/home/Card';
+import Card from '@/domain/home/components/Card';
 import { getActivityList } from '@/domain/home/mock';
 
 export default function PopularActivitySection() {

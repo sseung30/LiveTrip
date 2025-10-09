@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import HeroBanner from '@/domain/home/HeroBanner';
+import HeroBanner from '@/domain/home/components/HeroBanner';
 import SearchForm from '@/domain/home/SearchForm';
 
 export default function HomeLayout({ children }: { children: ReactNode }) {

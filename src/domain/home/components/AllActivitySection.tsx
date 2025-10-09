@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
-import { ActivityTabs, tabs } from '@/domain/home/ActivityTabs';
-import Card from '@/domain/home/Card';
+import { ActivityTabs, tabs } from '@/domain/home/components/ActivityTabs';
+import Card from '@/domain/home/components/Card';
 import DropdownTabs from '@/domain/home/components/DropdownTabs';
 import { getActivityList } from '@/domain/home/mock';
 

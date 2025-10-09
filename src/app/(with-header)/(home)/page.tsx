@@ -1,6 +1,6 @@
 import Pagination from '@/components/pagination/Pagination';
-import AllActivitySection from '@/domain/home/AllActivitySection';
-import PopularActivitySection from '@/domain/home/PopularActivitySection';
+import AllActivitySection from '@/domain/home/components/AllActivitySection';
+import PopularActivitySection from '@/domain/home/components/PopularActivitySection';
 
 export default function Home() {
   return (
