@@ -12,22 +12,22 @@ const MENU_ITEMS: MenuItem[] = [
   {
     id: 'myInfo',
     label: '내 정보',
-    iconPath: '/images/icon/icon_user.svg',
+    iconPath: '/images/icons/icon_user.svg',
   },
   {
     id: 'reservationHistory',
     label: '예약내역',
-    iconPath: '/images/icon/icon_list.svg',
+    iconPath: '/images/icons/icon_list.svg',
   },
   {
     id: 'manageExperiences',
     label: '내 체험 관리',
-    iconPath: '/images/icon/icon_setting.svg',
+    iconPath: '/images/icons/icon_setting.svg',
   },
   {
     id: 'reservationStatus',
     label: '예약 현황',
-    iconPath: '/images/icon/icon_calendar.svg',
+    iconPath: '/images/icons/icon_calendar.svg',
   },
 ];
 
@@ -100,7 +100,7 @@ export default function SideMenu({ size, className = '' }: SideMenuProps) {
             }}
           >
             <Image
-              src='/images/icon/icon_edit.svg'
+              src='/images/icons/icon_edit.svg'
               alt='edit'
               width={config.profile.iconSize}
               height={config.profile.iconSize}
