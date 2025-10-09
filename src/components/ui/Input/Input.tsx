@@ -85,8 +85,8 @@ export default function Input({
               height={24}
               src={
                 showPassword
-                  ? '/images/icon/icon_passwordhide.svg'
-                  : '/images/icon/icon_passwordshow.svg'
+                  ? '/images/icons/icon_passwordhide.svg'
+                  : '/images/icons/icon_passwordshow.svg'
               }
             />
           </button>
