@@ -57,6 +57,7 @@ const eslintConfig = [
       '@typescript-eslint/prefer-nullish-coalescing': 'off',
       '@regru/prefer-early-return/prefer-early-return': 'off',
       '@typescript-eslint/restrict-template-expressions': 'off',
+      'sonarjs/no-duplicate-string': 'off',
     },
   },
 ];
