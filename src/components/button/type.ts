@@ -239,7 +239,7 @@ export const LABEL: Record<LabelSize, Record<LabelState, ButtonStyle>> = {
 
 export const FILTER: Record<FilterSize, Record<FilterState, ButtonStyle>> = {
   PC: {
-    active: {
+    normal: {
       bg: BG_WHITE,
       text: TEXT_GRAY_950,
       textSize: `${TEXT_16} ${TEXT_M}`,
@@ -247,7 +247,7 @@ export const FILTER: Record<FilterSize, Record<FilterState, ButtonStyle>> = {
       stroke: BORDER_D8D8D8,
       labelSize: LABEL_LARGE,
     },
-    normal: {
+    active: {
       bg: BG_333333,
       text: TEXT_WHITE,
       textSize: `${TEXT_16} ${TEXT_B}`,
@@ -257,7 +257,7 @@ export const FILTER: Record<FilterSize, Record<FilterState, ButtonStyle>> = {
     },
   },
   mobile: {
-    active: {
+    normal: {
       bg: BG_WHITE,
       text: TEXT_GRAY_950,
       textSize: `${TEXT_14} ${TEXT_M}`,
@@ -265,7 +265,7 @@ export const FILTER: Record<FilterSize, Record<FilterState, ButtonStyle>> = {
       stroke: BORDER_D8D8D8,
       labelSize: LABEL_SMALL,
     },
-    normal: {
+    active: {
       bg: BG_333333,
       text: TEXT_WHITE,
       textSize: `${TEXT_14} ${TEXT_B}`,
