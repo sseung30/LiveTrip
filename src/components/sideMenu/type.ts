@@ -13,4 +13,5 @@ export interface MenuItem {
 export interface SideMenuProps {
   size: 'large' | 'small';
   className?: string;
+  activeItem?: MenuItemType;
 }
