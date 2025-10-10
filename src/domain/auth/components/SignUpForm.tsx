@@ -6,11 +6,13 @@ import ButtonSpinner from '@/components/ui/ButtonSpinner';
 import Input from '@/components/ui/Input/Input';
 import { submitForm } from '@/domain/auth/actions/test-submit-form.action';
 
-interface SigninInputs {
+interface SignupInputs {
   email: string;
+  nickname: string;
   password: string;
+  confirmPassword: string;
 }
-export default function SignInForm() {
+export default function SignUpForm() {
   const handleClick = () => {
     console.log('click');
   };
@@ -20,7 +22,7 @@ export default function SignInForm() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<SigninInputs>();
+  } = useForm<SignupInputs>();
 
   return (
     <form
@@ -45,12 +47,39 @@ export default function SignInForm() {
           })}
         />
         <Input
+          label='닉네임'
+          placeholder='닉네임을 입력해 주세요'
+          className='w-full xl:w-[40rem]'
+          error={errors.nickname?.message}
+          {...register('nickname', {
+            required: '닉네임을 입력하세요',
+            minLength: {
+              value: 4,
+              message: '4자 이상 입력해 주세요',
+            },
+          })}
+        />
+        <Input
           label='비밀번호'
-          placeholder='8자 이상 입력해주세요'
+          placeholder='8자 이상 입력해 주세요'
           type='password'
           className='w-full xl:w-[40rem]'
           error={errors.password?.message}
           {...register('password', {
+            required: '비밀번호를 입력하세요',
+            minLength: {
+              value: 8,
+              message: '8자 이상 입력해 주세요',
+            },
+          })}
+        />
+        <Input
+          label='비밀번호 확인'
+          placeholder='비밀번호를 한 번 더 입력해 주세요'
+          type='password'
+          className='w-full xl:w-[40rem]'
+          error={errors.confirmPassword?.message}
+          {...register('confirmPassword', {
             required: '비밀번호를 입력하세요',
             minLength: {
               value: 8,
@@ -63,11 +92,11 @@ export default function SignInForm() {
         variant='primary'
         size='lg'
         state='active'
-        width={364}
+        width={350}
         height={54}
         onClick={handleClick}
       >
-        {isPending ? <ButtonSpinner /> : '로그인'}
+        {isPending ? <ButtonSpinner /> : '회원가입'}
       </Button>
     </form>
   );
