@@ -85,9 +85,9 @@ export default function SignUpForm() {
         />
       </div>
       <Button
-        variant='secondary'
+        variant='primary'
         size='lg'
-        state='normal'
+        state='active'
         width={350}
         height={54}
         onClick={handleClick}
