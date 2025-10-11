@@ -1,10 +1,8 @@
 'use client';
-import { useActionState } from 'react';
 import { useForm } from 'react-hook-form';
 import Button from '@/components/button/Button';
 import ButtonSpinner from '@/components/ui/ButtonSpinner';
 import Input from '@/components/ui/Input/Input';
-import { submitForm } from '@/domain/auth/actions/test-submit-form.action';
 
 interface SigninInputs {
   email: string;
@@ -15,7 +13,6 @@ export default function SignInForm() {
     console.log('click');
   };
 
-  const [state, dispatch, isPending] = useActionState(submitForm, null);
   const {
     register,
     handleSubmit,
@@ -25,7 +22,6 @@ export default function SignInForm() {
   return (
     <form
       className='flex-center w-full flex-col gap-6 xl:w-fit'
-      // action={dispatch}
       onSubmit={handleSubmit(() => {
         console.log('form');
       })}
@@ -67,7 +63,7 @@ export default function SignInForm() {
         height={54}
         onClick={handleClick}
       >
-        {isPending ? <ButtonSpinner /> : '로그인'}
+        {'로그인'}
       </Button>
     </form>
   );
