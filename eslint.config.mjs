@@ -59,6 +59,7 @@ const eslintConfig = [
       '@typescript-eslint/restrict-template-expressions': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-base-to-string': 'off',
+      'sonarjs/no-duplicate-string': 'off',
     },
   },
 ];
