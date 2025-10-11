@@ -19,7 +19,7 @@ export default function SignUpPage() {
           <div className='flex-center gap-1 font-medium text-gray-400'>
             <span>회원이신가요?</span>
             <Link
-              href={'/auth/signup'}
+              href={'/auth/signin'}
               aria-label='로그인 페이지로 이동'
               className='text-gray-400 underline'
             >
