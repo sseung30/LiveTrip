@@ -35,14 +35,14 @@ export default function SignInForm() {
           {...register('email', {
             required: '이메일을 입력하세요',
             pattern: {
-              value: /^[\w.]+@([\w-]+\.)+[\w-]{2,4}$/g,
+              value: /^[\w.]+@([\w-]+\.)+[\w-]{2,4}$/,
               message: '이메일 형식으로 입력하세요',
             },
           })}
         />
         <Input
           label='비밀번호'
-          placeholder='8자 이상 입력해주세요'
+          placeholder='8자 이상 입력해 주세요'
           type='password'
           className='w-full xl:w-[40rem]'
           error={errors.password?.message}
