@@ -1,9 +1,13 @@
+import type { FieldError, FieldErrorsImpl, Merge } from 'react-hook-form';
+
 export interface InputProps {
   label?: string;
   placeholder?: string;
   type?: 'text' | 'password' | 'email';
-  value?: string;
-  onChange?: (value: string) => void;
-  error?: string;
+  error?:
+    | string
+    | FieldError
+    | Merge<FieldError, FieldErrorsImpl<any>>
+    | undefined;
   className?: string;
 }

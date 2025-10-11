@@ -13,8 +13,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-notosans: var(--font-notosans);
 
   --color-white: rgb(255, 255, 255);
   --color-black: rgb(0, 0, 0);
@@ -54,8 +53,6 @@
   --text-18-body--line-height: 140%;
   --text-20-body: 1.25rem; /* 20px */
   --text-20-body--line-height: 160%;
-
-  --font-pretendard: var(--font-pretendard);
 }
 
 @utility flex-center {

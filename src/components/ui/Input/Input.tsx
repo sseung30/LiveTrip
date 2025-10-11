@@ -8,24 +8,15 @@ export default function Input({
   label,
   placeholder = 'text',
   type = 'text',
-  value = '',
-  onChange,
   error,
   className = '',
+  ...props
 }: InputProps) {
   const [isFocused, setIsFocused] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [inputValue, setInputValue] = useState(value);
 
   const isPassword = type === 'password';
   const hasError = Boolean(error);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value;
-
-    setInputValue(newValue);
-    onChange?.(newValue);
-  };
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -51,7 +42,7 @@ export default function Input({
   };
 
   return (
-    <div className='flex flex-col'>
+    <div className='flex w-full flex-col'>
       {label && (
         <label className='mb-2 text-sm font-medium text-gray-900'>
           {label}
@@ -60,11 +51,10 @@ export default function Input({
 
       <div className={`relative w-[350px] ${className}`}>
         <input
+          {...props}
           type={getInputType()}
-          value={inputValue}
           placeholder={placeholder}
           className={`h-[54px] w-full rounded-xl border px-4 ${isPassword ? 'pr-12' : ''} text-gray-950 transition-colors placeholder:text-gray-400 focus:outline-none ${getBorderColor()}`}
-          onChange={handleInputChange}
           onFocus={() => {
             setIsFocused(true);
           }}
@@ -94,7 +84,9 @@ export default function Input({
       </div>
 
       {hasError && (
-        <span className='mt-1 ml-2 text-xs text-red-500'>{error}</span>
+        <span className='mt-1 ml-2 text-xs text-red-500'>
+          {error?.toString()}
+        </span>
       )}
     </div>
   );

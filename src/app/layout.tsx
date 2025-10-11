@@ -1,5 +1,7 @@
 import '@/app/globals.css';
+import { cx } from 'class-variance-authority';
 import type { Metadata } from 'next';
+import { Noto_Sans } from 'next/font/google';
 import localFont from 'next/font/local';
 import QueryProvider from '@/app/QueryProvider';
 import { ToastContainer } from '@/components/toast/ToastContainer';
@@ -11,8 +13,12 @@ export const metadata: Metadata = {
 const pretendardVariable = localFont({
   src: '../../public/font/PretendardVariable.woff2',
   display: 'swap',
-  variable: '--font-pretendard',
   weight: '45 920',
+});
+const notoSans = Noto_Sans({
+  weight: ['300', '700'],
+  subsets: ['latin'],
+  variable: '--font-notosans',
 });
 
 export default function RootLayout({
@@ -22,10 +28,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='ko'>
-      <body className={pretendardVariable.variable}>
+      <body className={cx(pretendardVariable.className, notoSans.variable)}>
         {/* ✅ React Query Provider로 children 감싸기 */}
         <QueryProvider>
-          <div className='font-pretendard'>
+          <div>
             {children}
             <ToastContainer />
           </div>
