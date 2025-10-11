@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { cx } from '@/utils/cx';
 
 type Variant = 'primary' | 'secondary' | 'label' | 'filter';
-type Emphasis = 'solid' | 'normal';
+type Style = 'default' | 'accent';
 
 /* 높이, 반경 */
 const HEIGHTS = {
@@ -30,53 +30,53 @@ function getDimensions(variant: Variant) {
 /* 타이포(폰트) */
 const baseFont = 'text-14 md:text-16 font-medium';
 
-const TYPO: Record<Variant, Record<Emphasis, string>> = {
+const TYPO: Record<Variant, Record<Style, string>> = {
   primary: {
-    solid: 'text-14 md:text-16 font-bold',
-    normal: '',
+    default: 'text-14 md:text-16 font-bold',
+    accent: '',
   },
   secondary: {
-    solid: baseFont,
-    normal: baseFont,
+    default: baseFont,
+    accent: baseFont,
   },
   label: {
-    solid: baseFont,
-    normal: baseFont,
+    default: baseFont,
+    accent: baseFont,
   },
   filter: {
-    solid: 'text-14 lg:text-16 font-bold',
-    normal: 'text-14 lg:text-16 font-medium',
+    default: 'text-14 lg:text-16 font-bold',
+    accent: 'text-14 lg:text-16 font-medium',
   },
 };
 
 /* 시각 톤 */
-const TONE: Record<Variant, Record<Emphasis, string>> = {
+const TONE: Record<Variant, Record<Style, string>> = {
   primary: {
-    solid:
+    default:
       'bg-primary-500 hover:bg-[#5BB2FF] text-white disabled:bg-gray-200 disabled:hover:bg-[#DADCE3] disabled:text-gray-50',
-    normal: '',
+    accent: '',
   },
   secondary: {
-    solid:
+    default:
       'bg-primary-500 hover:bg-[#5BB2FF] text-white disabled:bg-white disabled:text-gray-200 disabled:hover:bg-[#FAFAFA] disabled:border disabled:border-gray-200',
-    normal: 'bg-white hover:bg-[#FAFAFA] text-gray-600 border border-gray-200',
+    accent: 'bg-white hover:bg-[#FAFAFA] text-gray-600 border border-gray-200',
   },
   label: {
-    solid: 'bg-primary-100 hover:bg-[#D1E9FF] text-gray-950',
-    normal: 'text-gray-600 hover:bg-[#FAFAFA] ',
+    default: 'bg-primary-100 hover:bg-[#D1E9FF] text-gray-950',
+    accent: 'text-gray-600 hover:bg-[#FAFAFA] ',
   },
   filter: {
-    solid: 'bg-[#333333] hover:bg-[#4D4D4D] text-white',
-    normal: 'border border-[#D8D8D8] bg-white hover:bg-[#FAFAFA] text-gray-950',
+    default: 'bg-[#333333] hover:bg-[#4D4D4D] text-white',
+    accent: 'border border-[#D8D8D8] bg-white hover:bg-[#FAFAFA] text-gray-950',
   },
 };
 
 const BASE =
-  'inline-flex items-center justify-center text-center select-none gap-1 [&>img]:w-4 md:[&>img]:w-6 lg:[&>img]:w-6 [&>img]:h-4 md:[&>img]:h-6 lg:[&>img]:h-6';
+  'inline-flex items-center justify-center text-center select-none gap-1 [&>img]:w-4 md:[&>img]:w-6 lg:[&>img]:w-6 [&>img]:h-4 md:[&>img]:h-6 lg:[&>img]:h-6 transition-colors motion-safe:transition-transform motion-safe:transition-shadow duration-200 ease-[cubic-bezier(0.25,0.1,0.25,1)] hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 active:shadow';
 
 interface BaseProps {
   variant: Variant;
-  emphasis?: Emphasis;
+  style?: Style;
   disabled: boolean;
   classNames?: string;
   children?: ReactNode;
@@ -85,7 +85,7 @@ interface BaseProps {
 
 export default function Button({
   variant,
-  emphasis = 'solid',
+  style = 'default',
   classNames,
   disabled,
   children,
@@ -96,8 +96,9 @@ export default function Button({
   const className = cx(
     BASE,
     dimensions,
-    TYPO[variant][emphasis],
-    TONE[variant][emphasis],
+    TYPO[variant][style],
+    TONE[variant][style],
+    'w-full',
     classNames
   );
 
