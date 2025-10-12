@@ -40,9 +40,7 @@ export default function SignInForm() {
           {...register('password', SignInFormRegisterKey.password())}
         />
       </div>
-      <Button variant='primary' classNames='w-full'>
-        {'로그인'}
-      </Button>
+      <Button variant='primary'>{'로그인'}</Button>
     </form>
   );
 }

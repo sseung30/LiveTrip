@@ -6,7 +6,7 @@ import SignInForm from '@/domain/auth/components/SignInForm';
 export default function SignInPage() {
   return (
     <div className='flex-center flex-col'>
-      <div className='flex flex-col gap-7 md:gap-10 xl:gap-16'>
+      <div className='flex w-full flex-col gap-7 md:gap-10 xl:w-fit xl:gap-16'>
         <Logo />
         <div className='flex flex-col gap-5 md:gap-8'>
           <SignInForm />
