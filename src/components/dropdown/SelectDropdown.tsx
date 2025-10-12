@@ -4,7 +4,6 @@ import { useState } from 'react';
 import Dropdown from '@/components/dropdown/Dropdown';
 import type { Variant } from '@/components/dropdown/type';
 
-const DEFAULT_WIDTH = 300;
 const DEFAULT_POSITION = 'top-15';
 
 interface DropdownOption {
@@ -35,7 +34,7 @@ function getDesign(variant: Variant, selected?: string) {
 
 export default function SelectDropdown({
   variant = 'detailPage',
-  width = DEFAULT_WIDTH,
+  width,
   position = DEFAULT_POSITION,
   options,
   placeholder = '선택하세요',

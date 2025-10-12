@@ -2,7 +2,7 @@ import { createContext, useContext } from 'react';
 
 export interface DropdownContextValue {
   isOpen: boolean;
-  width: number;
+  width?: number | undefined;
   open: () => void;
   close: () => void;
   toggle: () => void;
