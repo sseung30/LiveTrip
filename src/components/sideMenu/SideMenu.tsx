@@ -59,10 +59,15 @@ const SIZE_CONFIG = {
 const PRIMARY_FILTER =
   'brightness(0) saturate(100%) invert(43%) sepia(96%) saturate(1352%) hue-rotate(188deg) brightness(119%) contrast(119%)';
 
-export default function SideMenu({ size, className = '' }: SideMenuProps) {
+export default function SideMenu({
+  size,
+  className = '',
+  activeItem: initialActiveItem = 'reservationHistory',
+}: SideMenuProps) {
   const config = SIZE_CONFIG[size];
-  const [activeItem, setActiveItem] =
-    useState<MenuItemType>('reservationHistory');
+  const [activeItem, setActiveItem] = useState<MenuItemType>(
+    initialActiveItem as MenuItemType
+  );
 
   const handleMenuClick = (itemId: MenuItemType) => {
     setActiveItem(itemId);
