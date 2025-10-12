@@ -3,16 +3,13 @@ import { useForm } from 'react-hook-form';
 import Button from '@/components/button/Button';
 import ButtonSpinner from '@/components/ui/ButtonSpinner';
 import Input from '@/components/ui/Input/Input';
+import { SignInFormRegisterKey } from '@/form/register-key/auth';
 
 interface SigninInputs {
   email: string;
   password: string;
 }
 export default function SignInForm() {
-  const handleClick = () => {
-    console.log('click');
-  };
-
   const {
     register,
     handleSubmit,
@@ -32,13 +29,7 @@ export default function SignInForm() {
           placeholder='이메일을 입력해 주세요'
           className='w-full xl:w-[40rem]'
           error={errors.email?.message}
-          {...register('email', {
-            required: '이메일을 입력하세요',
-            pattern: {
-              value: /^[\w.]+@([\w-]+\.)+[\w-]{2,4}$/,
-              message: '이메일 형식으로 입력하세요',
-            },
-          })}
+          {...register('email', SignInFormRegisterKey.email())}
         />
         <Input
           label='비밀번호'
@@ -46,23 +37,10 @@ export default function SignInForm() {
           type='password'
           className='w-full xl:w-[40rem]'
           error={errors.password?.message}
-          {...register('password', {
-            required: '비밀번호를 입력하세요',
-            minLength: {
-              value: 8,
-              message: '8자 이상 입력해 주세요',
-            },
-          })}
+          {...register('password', SignInFormRegisterKey.password())}
         />
       </div>
-      <Button
-        variant='primary'
-        size='lg'
-        state='active'
-        width={364}
-        height={54}
-        onClick={handleClick}
-      >
+      <Button variant='primary' classNames='w-full'>
         {'로그인'}
       </Button>
     </form>
