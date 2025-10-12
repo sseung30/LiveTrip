@@ -32,7 +32,7 @@ export default function DropdownItems({
   const { close } = useDropdownContext();
 
   const BASE =
-    'hover:bg-primary-100 flex h-[48px] items-center text-gray-900 hover:rounded-xl';
+    'hover:bg-primary-100 flex h-[48px] items-center text-gray-900 hover:text-gray-600 hover:rounded-xl';
   const className = cx(BASE, getDesign(variant));
 
   return (
