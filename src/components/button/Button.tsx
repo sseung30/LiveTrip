@@ -77,10 +77,10 @@ const BASE =
 interface BaseProps {
   variant: Variant;
   style?: Style;
-  disabled: boolean;
+  disabled?: boolean;
   classNames?: string;
   children?: ReactNode;
-  onClick: () => void;
+  onClick?: (...args: unknown[]) => void;
 }
 
 export default function Button({
