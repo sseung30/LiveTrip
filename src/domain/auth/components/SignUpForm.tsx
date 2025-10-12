@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import Button from '@/components/button/Button';
 import ButtonSpinner from '@/components/ui/ButtonSpinner';
 import Input from '@/components/ui/Input/Input';
+import { SignUpFormRegisterKey } from '@/form/register-key/auth';
 
 interface SignupInputs {
   email: string;
@@ -11,14 +12,11 @@ interface SignupInputs {
   confirmPassword: string;
 }
 export default function SignUpForm() {
-  const handleClick = () => {
-    console.log('click');
-  };
-
   const {
     register,
     handleSubmit,
     formState: { errors },
+    watch,
   } = useForm<SignupInputs>();
 
   return (
@@ -34,26 +32,14 @@ export default function SignUpForm() {
           placeholder='이메일을 입력해 주세요'
           className='w-full xl:w-[40rem]'
           error={errors.email?.message}
-          {...register('email', {
-            required: '이메일을 입력하세요',
-            pattern: {
-              value: /^[\w.]+@([\w-]+\.)+[\w-]{2,4}$/,
-              message: '이메일 형식으로 입력하세요',
-            },
-          })}
+          {...register('email', SignUpFormRegisterKey.email())}
         />
         <Input
           label='닉네임'
           placeholder='닉네임을 입력해 주세요'
           className='w-full xl:w-[40rem]'
           error={errors.nickname?.message}
-          {...register('nickname', {
-            required: '닉네임을 입력하세요',
-            minLength: {
-              value: 4,
-              message: '4자 이상 입력해 주세요',
-            },
-          })}
+          {...register('nickname', SignUpFormRegisterKey.nickname())}
         />
         <Input
           label='비밀번호'
@@ -61,13 +47,7 @@ export default function SignUpForm() {
           type='password'
           className='w-full xl:w-[40rem]'
           error={errors.password?.message}
-          {...register('password', {
-            required: '비밀번호를 입력하세요',
-            minLength: {
-              value: 8,
-              message: '8자 이상 입력해 주세요',
-            },
-          })}
+          {...register('password', SignUpFormRegisterKey.password())}
         />
         <Input
           label='비밀번호 확인'
@@ -75,25 +55,13 @@ export default function SignUpForm() {
           type='password'
           className='w-full xl:w-[40rem]'
           error={errors.confirmPassword?.message}
-          {...register('confirmPassword', {
-            required: '비밀번호를 입력하세요',
-            minLength: {
-              value: 8,
-              message: '8자 이상 입력해 주세요',
-            },
-          })}
+          {...register(
+            'confirmPassword',
+            SignUpFormRegisterKey.confirmPassword(watch('password'))
+          )}
         />
       </div>
-      <Button
-        variant='primary'
-        size='lg'
-        state='active'
-        width={350}
-        height={54}
-        onClick={handleClick}
-      >
-        {'회원가입'}
-      </Button>
+      <Button variant='primary'>{'회원가입'}</Button>
     </form>
   );
 }
