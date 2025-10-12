@@ -16,7 +16,7 @@ export default function DropdownMenu({
     <div>
       {isOpen && (
         <ul
-          className={`${position} absolute flex w-full flex-col gap-1 rounded-2xl border bg-white px-3 py-3`}
+          className={`${position} absolute z-10 flex w-full flex-col gap-1 rounded-2xl border bg-white px-3 py-3`}
           style={{ width }}
         >
           {children}
