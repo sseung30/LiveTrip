@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { useDropdownContext } from '@/components/dropdown/dropdownContext';
 import type { Variant } from '@/components/dropdown/type';
 import { cx } from '@/utils/cx';
 
@@ -28,6 +29,8 @@ export default function DropdownItems({
   value,
   onSelect,
 }: DropdownItemsProps) {
+  const { close } = useDropdownContext();
+
   const BASE =
     'hover:bg-primary-100 flex h-[48px] items-center text-gray-900 hover:rounded-xl';
   const className = cx(BASE, getDesign(variant));
@@ -36,6 +39,7 @@ export default function DropdownItems({
     <button
       onClick={() => {
         onSelect(value);
+        close();
       }}
     >
       <li className={className}>{children}</li>
