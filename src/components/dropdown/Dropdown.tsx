@@ -30,8 +30,6 @@ export default function Dropdown({ children, width }: DropdownProps) {
 
   const className = cx(BASE, width ? `w-[${width}px]` : 'w-full');
 
-  console.log(className);
-
   return (
     <DropdownContext.Provider value={{ isOpen, open, close, toggle, width }}>
       <div ref={dropdownRef} className={className} style={{ width }}>
