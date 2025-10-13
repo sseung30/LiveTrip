@@ -1,6 +1,9 @@
 'use client';
-import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/router';
+import { type SubmitHandler, useForm } from 'react-hook-form';
+import { apiFetch } from '@/app/api/api';
 import Button from '@/components/button/Button';
+import { toast } from '@/components/toast';
 import ButtonSpinner from '@/components/ui/ButtonSpinner';
 import Input from '@/components/ui/Input/Input';
 import { SignUpFormRegisterKey } from '@/form/register-key/auth';
@@ -19,12 +22,27 @@ export default function SignUpForm() {
     watch,
   } = useForm<SignupInputs>();
 
+  const router = useRouter();
+  const signup: SubmitHandler<SignupInputs> = async (signupInputs) => {
+    try {
+      await apiFetch('/users', {
+        method: 'POST',
+        body: JSON.stringify({
+          ...signupInputs,
+        }),
+      });
+      router.push('/');
+    } catch (error) {
+      if (error instanceof Error) {
+        toast({ message: error.message, eventType: 'error' });
+      }
+    }
+  };
+
   return (
     <form
       className='flex-center w-full flex-col gap-6 xl:w-fit'
-      onSubmit={handleSubmit(() => {
-        console.log('form');
-      })}
+      onSubmit={handleSubmit(signup)}
     >
       <div className='flex-center w-full flex-col gap-4 xl:w-fit'>
         <Input

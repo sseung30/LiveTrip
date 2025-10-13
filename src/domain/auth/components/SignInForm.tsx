@@ -1,6 +1,13 @@
 'use client';
-import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
+import {
+  type SubmitErrorHandler,
+  type SubmitHandler,
+  useForm,
+} from 'react-hook-form';
+import { apiFetch } from '@/app/api/api';
 import Button from '@/components/button/Button';
+import { toast } from '@/components/toast';
 import ButtonSpinner from '@/components/ui/ButtonSpinner';
 import Input from '@/components/ui/Input/Input';
 import { SignInFormRegisterKey } from '@/form/register-key/auth';
@@ -13,15 +20,30 @@ export default function SignInForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<SigninInputs>();
+
+  const router = useRouter();
+  const login: SubmitHandler<SigninInputs> = async (signInInputs) => {
+    try {
+      await apiFetch('/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({
+          ...signInInputs,
+        }),
+      });
+      router.push('/');
+    } catch (error) {
+      if (error instanceof Error) {
+        toast({ message: error.message, eventType: 'error' });
+      }
+    }
+  };
 
   return (
     <form
       className='flex-center w-full flex-col gap-6 xl:w-fit'
-      onSubmit={handleSubmit(() => {
-        console.log('form');
-      })}
+      onSubmit={handleSubmit(login)}
     >
       <div className='flex-center w-full flex-col gap-4 xl:w-fit'>
         <Input
@@ -40,7 +62,9 @@ export default function SignInForm() {
           {...register('password', SignInFormRegisterKey.password())}
         />
       </div>
-      <Button variant='primary'>{'로그인'}</Button>
+      <Button variant='primary'>
+        {isSubmitting ? <ButtonSpinner /> : '로그인'}
+      </Button>
     </form>
   );
 }
