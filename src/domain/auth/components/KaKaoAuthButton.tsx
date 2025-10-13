@@ -3,10 +3,8 @@
 import Image from 'next/image';
 import Button from '@/components/button/Button';
 import kakaoIcon from '@/domain/auth/assets/icon_kakao.svg';
+import type { KaKaoAuthButtonProps } from '@/domain/auth/type';
 
-interface KaKaoAuthButtonProps {
-  text: string;
-}
 export default function KaKaoAuthButton({ text }: KaKaoAuthButtonProps) {
   return (
     <Button variant='secondary' style='accent'>

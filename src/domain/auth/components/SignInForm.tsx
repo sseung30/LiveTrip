@@ -1,21 +1,13 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import {
-  type SubmitErrorHandler,
-  type SubmitHandler,
-  useForm,
-} from 'react-hook-form';
-import { apiFetch } from '@/app/api/api';
+import { type SubmitHandler, useForm } from 'react-hook-form';
 import Button from '@/components/button/Button';
-import { toast } from '@/components/toast';
 import ButtonSpinner from '@/components/ui/ButtonSpinner';
 import Input from '@/components/ui/Input/Input';
+import { mutateSignin } from '@/domain/auth/api';
+import type { SigninInputs } from '@/domain/auth/type';
 import { SignInFormRegisterKey } from '@/form/register-key/auth';
 
-interface SigninInputs {
-  email: string;
-  password: string;
-}
 export default function SignInForm() {
   const {
     register,
@@ -24,20 +16,8 @@ export default function SignInForm() {
   } = useForm<SigninInputs>();
 
   const router = useRouter();
-  const login: SubmitHandler<SigninInputs> = async (signInInputs) => {
-    try {
-      await apiFetch('/auth/login', {
-        method: 'POST',
-        body: JSON.stringify({
-          ...signInInputs,
-        }),
-      });
-      router.push('/');
-    } catch (error) {
-      if (error instanceof Error) {
-        toast({ message: error.message, eventType: 'error' });
-      }
-    }
+  const login: SubmitHandler<SigninInputs> = async (signinInputs) => {
+    mutateSignin({ signinInputs, router });
   };
 
   return (

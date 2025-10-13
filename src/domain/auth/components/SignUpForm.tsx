@@ -1,42 +1,24 @@
 'use client';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { type SubmitHandler, useForm } from 'react-hook-form';
-import { apiFetch } from '@/app/api/api';
 import Button from '@/components/button/Button';
-import { toast } from '@/components/toast';
 import ButtonSpinner from '@/components/ui/ButtonSpinner';
 import Input from '@/components/ui/Input/Input';
+import { mutateSignup } from '@/domain/auth/api';
+import type { SignupInputs } from '@/domain/auth/type';
 import { SignUpFormRegisterKey } from '@/form/register-key/auth';
 
-interface SignupInputs {
-  email: string;
-  nickname: string;
-  password: string;
-  confirmPassword: string;
-}
 export default function SignUpForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     watch,
   } = useForm<SignupInputs>();
 
   const router = useRouter();
   const signup: SubmitHandler<SignupInputs> = async (signupInputs) => {
-    try {
-      await apiFetch('/users', {
-        method: 'POST',
-        body: JSON.stringify({
-          ...signupInputs,
-        }),
-      });
-      router.push('/');
-    } catch (error) {
-      if (error instanceof Error) {
-        toast({ message: error.message, eventType: 'error' });
-      }
-    }
+    mutateSignup({ signupInputs, router });
   };
 
   return (
@@ -79,7 +61,9 @@ export default function SignUpForm() {
           )}
         />
       </div>
-      <Button variant='primary'>{'회원가입'}</Button>
+      <Button variant='primary'>
+        {isSubmitting ? <ButtonSpinner /> : '회원가입'}
+      </Button>
     </form>
   );
 }
