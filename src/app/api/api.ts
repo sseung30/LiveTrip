@@ -1,29 +1,24 @@
 const BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}`;
 
-//인증이 필요한 API는 token 옵션을 전달
-type ApiOptions = RequestInit & {
-  token?: string;
-};
+type ApiOptions = RequestInit;
 
-/** 
- *공용 fetch 함수
+/**
+ * ✅ HttpOnly 쿠키를 사용하는 인증 방식
+ * -> Authorization 헤더를 수동으로 붙이지 않고,
+ * -> fetch에 credentials: "include" 옵션을 줘서 브라우저가 자동 전송하도록 함
  */
 export async function apiFetch<T>(path: string, options: ApiOptions = {}): Promise<T> {
-  const { token, headers, ...restOptions } = options;
-
   const res = await fetch(`${BASE_URL}${path}`, {
-    ...restOptions,
+    ...options,
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
-      ...(token && { Authorization: `Bearer ${token}` }),
-      ...headers,
+      ...options.headers,
     },
   });
 
   if (!res.ok) {
-    const message = await res.text();
-
-    throw new Error(`API Error (${res.status}): ${message}`);
+    throw new Error(`API Error (${res.status}): ${await res.text()}`);
   }
 
   return res.json() as Promise<T>;
