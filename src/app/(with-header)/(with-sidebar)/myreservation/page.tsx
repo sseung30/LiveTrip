@@ -1,11 +1,12 @@
 'use client';
 
 import Image from 'next/image';
-import { useActionState, useState } from 'react';
+import { useActionState, useEffect, useState } from 'react';
 import Button from '@/components/button/Button';
 import CardList from '@/components/cardList/CardList';
 import { AlertModalContents } from '@/components/dialog';
 import { ModalContainer } from '@/components/dialog/Modal/ModalContainer';
+import { ReviewModalContents } from '@/components/dialog/Modal/ReviewModalContents';
 import { useDialog } from '@/components/dialog/useDialog';
 import type { StateType } from '@/components/stateBadge/type';
 import mockData from '@/mocks/mockReservations.json';
@@ -27,17 +28,30 @@ const deleteAction = async () => {
   return { state: 'success' };
 };
 
+const closeReviewModalAction = async () => {
+  await new Promise((resolve) => {
+    setTimeout(resolve, 1500);
+  });
+
+  return { state: 'close' };
+};
+
 export default function Page() {
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
 
   const { reservations, totalCount } = mockData;
-
   const hasReservations = Boolean(totalCount);
 
-  const [state, formAction, isPending] = useActionState(deleteAction, {
-    state: ' ',
-  });
+  const [deleteModalState, deleteModalFormAction, deleteModalIsPending] =
+    useActionState(deleteAction, {
+      state: ' ',
+    });
+
   const cancelReservationDialog = useDialog();
+
+  const [reviewModalState, reviewModalFormAction, reviewModalIsPending] =
+    useActionState(closeReviewModalAction, { state: ' ' });
+  const [rating, setRating] = useState<number>(0);
   const writeReviewDialog = useDialog();
 
   const onChangeReservation = () => {
@@ -48,6 +62,13 @@ export default function Page() {
     cancelReservationDialog.openDialog();
   };
 
+  useEffect(() => {
+    if (reviewModalState.state === 'close') {
+      console.log('모달 종료');
+      setRating(0);
+    }
+  }, [reviewModalState.state]);
+
   return (
     <>
       <ModalContainer dialogRef={cancelReservationDialog.dialogRef}>
@@ -56,11 +77,10 @@ export default function Page() {
           confirmButtonText='취소하기'
           rejectButtonText='아니오'
           hideModal={cancelReservationDialog.hideDialog}
-          confirmAction={formAction}
-          isPending={isPending}
+          confirmAction={deleteModalFormAction}
+          isPending={deleteModalIsPending}
         />
       </ModalContainer>
-      <ModalContainer dialogRef={writeReviewDialog.dialogRef}></ModalContainer>
 
       <main className='w-full'>
         <section className='pb-30'>
@@ -105,15 +125,29 @@ export default function Page() {
                       price={r.totalPrice}
                       capacity={10}
                       onChangeReservation={() => {
-                        onChangeReservation();
+                        console.log('예약 변경');
                       }}
                       onCancelReservation={() => {
                         onCancelReservation();
                       }}
                       onWriteReview={() => {
-                        console.log('후기 작성');
+                        writeReviewDialog.openDialog();
                       }}
                     />
+                    <ModalContainer dialogRef={writeReviewDialog.dialogRef}>
+                      <ReviewModalContents
+                        title={r.activity.title}
+                        date={r.date}
+                        startTime={r.startTime}
+                        endTime={r.endTime}
+                        rating={rating}
+                        formAction={deleteAction}
+                        hideModal={writeReviewDialog.hideDialog}
+                        isPending={reviewModalIsPending}
+                        onChange={setRating}
+                        onClose={reviewModalFormAction}
+                      />
+                    </ModalContainer>
                   </div>
                 );
               })}
