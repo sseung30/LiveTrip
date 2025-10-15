@@ -38,6 +38,11 @@ export function ReviewModalContents({
     onTextChange(e.target.value);
   };
 
+  const onCloseModal = () => {
+    onTextChange('');
+    onRatingChange(0);
+  };
+
   /**
    * [1, 2, 3, 4, 5]
    */
@@ -46,7 +51,11 @@ export function ReviewModalContents({
   return (
     <div className='mx-auto w-82 md:w-96'>
       <div className='mb-7.5'>
-        <div className='flex justify-end'>x</div>
+        <div className='flex justify-end'>
+          <button onClick={onCloseModal}>
+            <Image alt='close' src='/icons/delete.svg' width={24} height={24} />
+          </button>
+        </div>
         <div className='flex flex-col'>
           <div className='text-16 mb-1.5 flex justify-center font-bold text-[#112211]'>
             {title}
