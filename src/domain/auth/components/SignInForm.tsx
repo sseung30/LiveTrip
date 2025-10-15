@@ -1,6 +1,7 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
+import { useTransition } from 'react';
 import { type SubmitHandler, useForm } from 'react-hook-form';
 import Button from '@/components/button/Button';
 import { toast } from '@/components/toast';
@@ -16,6 +17,7 @@ export default function SignInForm() {
     formState: { errors, isSubmitting },
   } = useForm<SigninInputs>();
 
+  const [, startTransition] = useTransition();
   const router = useRouter();
   const onSubmit: SubmitHandler<SigninInputs> = async (signinInputs) => {
     const res = await signIn('credentials', {
@@ -26,7 +28,10 @@ export default function SignInForm() {
     if (res.error) {
       toast({ message: res.code || '', eventType: 'error' });
     } else {
-      router.push('/');
+      startTransition(() => {
+        router.push('/');
+        toast({ message: '로그인에 성공했습니다', eventType: 'success' });
+      });
     }
   };
 

@@ -5,7 +5,7 @@ import bellDefault from '@/components/header/asset/bell-default.svg';
 import defaultProfileImg from '@/components/header/asset/default-profile-img.svg';
 import logo from '@/components/header/asset/logo.svg';
 import logoSymbol from '@/components/header/asset/logo-symbol.svg';
-import { logoutAction } from '@/form/auth/logout.action';
+import LogoutForm from '@/components/header/LogoutForm';
 
 export default async function Header() {
   const session = await auth();
@@ -61,9 +61,7 @@ export default async function Header() {
               </Link>
             </div>
             {/* Server Action을 이용한 로그아웃 폼 */}
-            <form action={logoutAction}>
-              <button>로그아웃</button>
-            </form>
+            <LogoutForm />
           </div>
         ) : (
           // ⭐️ 로그아웃 상태: 로그인 및 회원가입 링크

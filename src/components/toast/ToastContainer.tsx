@@ -112,10 +112,10 @@ function ToastComponent({
   const getEventTypeImage = (): ReactNode => {
     switch (eventType) {
       case 'success': {
-        return <Image src={successImage} alt='체크 이미지' />;
+        return <Image priority src={successImage} alt='체크 이미지' />;
       }
       case 'error': {
-        return <Image src={errorImage} alt='X 이미지' />;
+        return <Image priority src={errorImage} alt='X 이미지' />;
       }
       default: {
         return null;
@@ -143,6 +143,7 @@ function ToastComponent({
         }}
       >
         <Image
+          priority
           src='/icons/delete.svg'
           alt='삭제 아이콘'
           width={24}
