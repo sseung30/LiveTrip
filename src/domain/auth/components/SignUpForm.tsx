@@ -1,10 +1,11 @@
 'use client';
 import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 import { type SubmitHandler, useForm } from 'react-hook-form';
 import Button from '@/components/button/Button';
+import { toast } from '@/components/toast';
 import ButtonSpinner from '@/components/ui/ButtonSpinner';
 import Input from '@/components/ui/Input/Input';
-import { mutateSignup } from '@/domain/auth/api';
 import type { SignupInputs } from '@/domain/auth/type';
 import { SignUpFormRegisterKey } from '@/form/register-key/auth';
 
@@ -15,16 +16,24 @@ export default function SignUpForm() {
     formState: { errors, isSubmitting },
     watch,
   } = useForm<SignupInputs>();
-
   const router = useRouter();
-  const signup: SubmitHandler<SignupInputs> = async (signupInputs) => {
-    mutateSignup({ signupInputs, router });
+  const onSubmit: SubmitHandler<SignupInputs> = async (signupInputs) => {
+    const res = await signIn('credentials', {
+      ...signupInputs,
+      redirect: false,
+    });
+
+    if (res.error) {
+      toast({ message: res.code || '', eventType: 'error' });
+    } else {
+      router.push('/');
+    }
   };
 
   return (
     <form
       className='flex-center w-full flex-col gap-6 xl:w-fit'
-      onSubmit={handleSubmit(signup)}
+      onSubmit={handleSubmit(onSubmit)}
     >
       <div className='flex-center w-full flex-col gap-4 xl:w-fit'>
         <Input

@@ -1,3 +1,8 @@
+export const nickNameRegex = /^[가-힣a-z0-9]+$/i;
+export const emailRegex = /^[\w.%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
+export const passwordRegex =
+  /^(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Z\d@$!%*?&]+$/i;
+
 export const AuthRegisterKey = {
   nickname: () => {
     return {
@@ -7,11 +12,11 @@ export const AuthRegisterKey = {
         message: '4자 이상 입력하세요',
       },
       maxLength: {
-        value: 10,
-        message: '10자 이하로 입력하세요',
+        value: 12,
+        message: '12자 이하로 입력하세요',
       },
       pattern: {
-        value: /^[가-힣a-z0-9]+$/i,
+        value: nickNameRegex,
         message: '한글, 영문, 숫자만 사용 가능합니다',
       },
     };
@@ -20,7 +25,7 @@ export const AuthRegisterKey = {
     return {
       required: '이메일을 입력하세요',
       pattern: {
-        value: /^[\w.%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i,
+        value: emailRegex,
         message: '올바른 이메일 형식이 아닙니다',
       },
     };
@@ -37,7 +42,7 @@ export const AuthRegisterKey = {
         message: '20자 이하로 입력하세요',
       },
       pattern: {
-        value: /^(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Z\d@$!%*?&]+$/i,
+        value: passwordRegex,
         message: '영문, 숫자, 특수문자를 포함해야 합니다',
       },
     };

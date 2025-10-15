@@ -1,10 +1,11 @@
 'use client';
 import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 import { type SubmitHandler, useForm } from 'react-hook-form';
 import Button from '@/components/button/Button';
+import { toast } from '@/components/toast';
 import ButtonSpinner from '@/components/ui/ButtonSpinner';
 import Input from '@/components/ui/Input/Input';
-import { mutateSignin } from '@/domain/auth/api';
 import type { SigninInputs } from '@/domain/auth/type';
 import { SignInFormRegisterKey } from '@/form/register-key/auth';
 
@@ -16,14 +17,23 @@ export default function SignInForm() {
   } = useForm<SigninInputs>();
 
   const router = useRouter();
-  const login: SubmitHandler<SigninInputs> = async (signinInputs) => {
-    mutateSignin({ signinInputs, router });
+  const onSubmit: SubmitHandler<SigninInputs> = async (signinInputs) => {
+    const res = await signIn('credentials', {
+      ...signinInputs,
+      redirect: false,
+    });
+
+    if (res.error) {
+      toast({ message: res.code || '', eventType: 'error' });
+    } else {
+      router.push('/');
+    }
   };
 
   return (
     <form
       className='flex-center w-full flex-col gap-6 xl:w-fit'
-      onSubmit={handleSubmit(login)}
+      onSubmit={handleSubmit(onSubmit)}
     >
       <div className='flex-center w-full flex-col gap-4 xl:w-fit'>
         <Input

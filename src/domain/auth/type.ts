@@ -1,16 +1,37 @@
-import type { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
+import z from 'zod';
+import { nickNameRegex, passwordRegex } from '@/form/register-key/auth';
 
-export interface SignupInputs {
-  email: string;
-  nickname: string;
-  password: string;
-  confirmPassword: string;
-}
-export interface SigninInputs {
-  email: string;
-  password: string;
-}
-export interface User {
+export const signupInputSchema = z.object({
+  email: z.email(),
+  nickname: z
+    .string()
+    .min(4, '4자 이상 입력하세요')
+    .max(12, '12자 이하로 입력하세요')
+    .regex(nickNameRegex),
+  password: z.string().min(8).max(20).regex(passwordRegex),
+  confirmPassword: z.string().min(8).max(20).regex(passwordRegex),
+});
+export const signinInputSchema = z.object({
+  email: z.email(),
+  password: z.string().min(8).max(20).regex(passwordRegex),
+});
+export const signinResponseSchema = z.object({
+  accessToken: z.string(),
+  refreshToken: z.string(),
+  user: z.object({
+    id: z.number(),
+    email: z.string(),
+    nickname: z.string(),
+    profileImageUrl: z.union([z.string(), z.null()]),
+    createdAt: z.string(),
+    updatedAt: z.string(),
+  }),
+});
+export type SigninInputs = z.infer<typeof signinInputSchema>;
+export type SignupInputs = z.infer<typeof signupInputSchema>;
+export type SignInResponse = z.infer<typeof signinResponseSchema>;
+
+export interface UserInfo {
   id: number;
   email: string;
   nickname: string;
@@ -19,23 +40,8 @@ export interface User {
   updatedAt: string;
 }
 
-export type SignUpResponse = User;
-
-export interface SignInResponse {
-  accessToken: string;
-  refreshToken: string;
-  user: User;
-}
+export type SignUpResponse = UserInfo;
 
 export interface KaKaoAuthButtonProps {
   text: string;
-}
-
-export interface mutateSigninParams {
-  signinInputs: SigninInputs;
-  router: AppRouterInstance;
-}
-export interface mutateSignupParams {
-  signupInputs: SignupInputs;
-  router: AppRouterInstance;
 }

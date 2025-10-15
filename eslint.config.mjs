@@ -61,6 +61,9 @@ const eslintConfig = [
       '@typescript-eslint/no-base-to-string': 'off',
       'sonarjs/no-duplicate-string': 'off',
       'regexp/no-obscure-range': 'off',
+      'unicorn/prefer-type-error': 'off',
+      'no-restricted-syntax/noClasses': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
     },
   },
 ];

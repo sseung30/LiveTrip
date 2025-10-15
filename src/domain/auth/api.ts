@@ -1,43 +1,34 @@
 import { apiFetch } from '@/api/api';
-import { toast } from '@/components/toast';
-import type {
-  mutateSigninParams,
-  mutateSignupParams,
-  SignInResponse,
-  SignUpResponse,
+import {
+  type SigninInputs,
+  type SignInResponse,
+  signinResponseSchema,
+  type SignupInputs,
+  type SignUpResponse,
 } from '@/domain/auth/type';
 
 const SIGNIN_ENDPOINT = '/auth/login';
 const SIGNUP_ENDPOINT = '/users';
 
-export const mutateSignin = async ({
-  signinInputs,
-  router,
-}: mutateSigninParams) => {
+export const mutateSignin = async (signinInputs: SigninInputs) => {
   try {
-    const { accessToken, refreshToken, user } = await apiFetch<SignInResponse>(
-      SIGNIN_ENDPOINT,
-      {
-        method: 'POST',
-        body: JSON.stringify({
-          ...signinInputs,
-        }),
-      }
-    );
+    const res = await apiFetch<SignInResponse>(SIGNIN_ENDPOINT, {
+      method: 'POST',
+      body: JSON.stringify({
+        ...signinInputs,
+      }),
+    });
 
-    router.push('/');
+    return signinResponseSchema.parse(res);
   } catch (error) {
     if (error instanceof Error) {
-      toast({ message: error.message, eventType: 'error' });
+      throw error;
     }
   }
 };
-export const mutateSignup = async ({
-  signupInputs,
-  router,
-}: mutateSignupParams) => {
+export const mutateSignup = async (signupInputs: SignupInputs) => {
   try {
-    const user = await apiFetch<SignUpResponse>(SIGNUP_ENDPOINT, {
+    await apiFetch<SignUpResponse>(SIGNUP_ENDPOINT, {
       method: 'POST',
       body: JSON.stringify({
         ...signupInputs,
@@ -48,10 +39,12 @@ export const mutateSignup = async ({
       password: signupInputs.password,
     };
 
-    await mutateSignin({ signinInputs, router });
+    const res = await mutateSignin(signinInputs);
+
+    return res;
   } catch (error) {
     if (error instanceof Error) {
-      toast({ message: error.message, eventType: 'error' });
+      throw error;
     }
   }
 };
