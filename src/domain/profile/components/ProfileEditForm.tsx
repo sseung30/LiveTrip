@@ -2,25 +2,27 @@
 import { useForm } from 'react-hook-form';
 import Button from '@/components/button/Button';
 import Input from '@/components/ui/Input/Input';
+import type {
+  ProfileEditFormInputs,
+  ProfileEditFormProps,
+} from '@/domain/profile/components/type';
 import { SignUpFormRegisterKey as profileFormRegisterKey } from '@/form/auth/register-key';
 
-interface ProfileEditFormInputs {
-  email: string;
-  nickname: string;
-  password: string;
-  confirmPassword: string;
-}
-export default function ProfileEditForm() {
-  const nickname = '정만철';
-  const email = 'example@test.com';
+export default function ProfileEditForm({
+  nickname,
+  email,
+}: ProfileEditFormProps) {
   const {
     register,
     handleSubmit,
     formState: { errors },
     watch,
-  } = useForm<ProfileEditFormInputs>();
-
-  console.log(errors);
+  } = useForm<ProfileEditFormInputs>({
+    defaultValues: {
+      nickname,
+      email,
+    },
+  });
 
   return (
     <form
@@ -31,14 +33,14 @@ export default function ProfileEditForm() {
     >
       <Input
         label='닉네임'
-        placeholder={nickname}
+        placeholder={'닉네임을 입력해 주세요'}
         className='w-full'
         error={errors.nickname?.message}
         {...register('nickname', profileFormRegisterKey.nickname())}
       />
       <Input
         label='이메일'
-        placeholder={email}
+        placeholder={'이메일을 입력해 주세요'}
         className='w-full'
         error={errors.email?.message}
         {...register('email', profileFormRegisterKey.email())}
@@ -49,6 +51,7 @@ export default function ProfileEditForm() {
         type='password'
         className='w-full'
         error={errors.password?.message}
+        autoComplete='new-password'
         {...register('password', profileFormRegisterKey.password())}
       />
       <Input
@@ -57,6 +60,7 @@ export default function ProfileEditForm() {
         type='password'
         className='w-full'
         error={errors.confirmPassword?.message}
+        autoComplete='new-password'
         {...register(
           'confirmPassword',
           profileFormRegisterKey.confirmPassword(watch('password'))

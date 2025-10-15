@@ -74,6 +74,7 @@ declare module 'next-auth' {
   export interface Session {
     user: UserObject;
     validity: AuthValidity;
+    accessToken: JWT;
     error: 'RefreshTokenExpired' | 'RefreshAccessTokenError';
   }
 }

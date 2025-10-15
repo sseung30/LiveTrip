@@ -121,6 +121,7 @@ export const {
       session.user = token.data.user;
       session.validity = token.data.validity;
       session.error = token.error;
+      session.accessToken = token.data.tokens.access;
 
       return session;
     },

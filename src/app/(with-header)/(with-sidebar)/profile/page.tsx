@@ -1,6 +1,11 @@
+import { apiFetch } from '@/api/api';
+import type { UserInfo } from '@/domain/auth/type';
 import ProfileEditForm from '@/domain/profile/components/ProfileEditForm';
 
-export default function ProfilePage() {
+export default async function ProfilePage() {
+  const user = await apiFetch<UserInfo>('/users/me');
+  const { email, nickname } = user;
+
   return (
     <>
       <main className='w-full'>
@@ -10,7 +15,7 @@ export default function ProfilePage() {
             닉네임과 비밀번호를 수정하실 수 있습니다.
           </div>
         </div>
-        <ProfileEditForm />
+        <ProfileEditForm nickname={nickname} email={email} />
       </main>
     </>
   );

@@ -9,5 +9,6 @@ export interface InputProps {
     | FieldError
     | Merge<FieldError, FieldErrorsImpl<any>>
     | undefined;
+  autoComplete?: string;
   className?: string;
 }
