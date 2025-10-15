@@ -2,7 +2,7 @@
 import { useForm } from 'react-hook-form';
 import Button from '@/components/button/Button';
 import Input from '@/components/ui/Input/Input';
-import { SignUpFormRegisterKey as profileFormRegisterKey } from '@/form/register-key/auth';
+import { SignUpFormRegisterKey as profileFormRegisterKey } from '@/form/auth/register-key';
 
 interface ProfileEditFormInputs {
   email: string;

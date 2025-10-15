@@ -1,5 +1,5 @@
 import z from 'zod';
-import { nickNameRegex, passwordRegex } from '@/form/register-key/auth';
+import { nickNameRegex, passwordRegex } from '@/form/auth/register-key';
 
 export const signupInputSchema = z.object({
   email: z.email(),

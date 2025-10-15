@@ -7,7 +7,7 @@ import { toast } from '@/components/toast';
 import ButtonSpinner from '@/components/ui/ButtonSpinner';
 import Input from '@/components/ui/Input/Input';
 import type { SigninInputs } from '@/domain/auth/type';
-import { SignInFormRegisterKey } from '@/form/register-key/auth';
+import { SignInFormRegisterKey } from '@/form/auth/register-key';
 
 export default function SignInForm() {
   const {
