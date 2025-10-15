@@ -8,9 +8,10 @@ export interface ReviewModalContentsProps {
   startTime: string;
   endTime: string;
   rating: number;
-  onChange: (v: number) => void;
+  onRatingChange: (v: number) => void;
+  text: string;
+  onTextChange: (t: string) => void;
   placeholder?: string;
-  onClose?: (...args: unknown[]) => void;
   formAction: (...args: unknown[]) => void;
   hideModal: () => void;
   isPending?: boolean;
@@ -23,8 +24,9 @@ export function ReviewModalContents({
   endTime,
   rating,
   placeholder = '체험에서 느낀 경험을 자유롭게 남겨주세요',
-  onClose,
-  onChange,
+  onRatingChange,
+  text,
+  onTextChange,
   formAction,
   hideModal,
   isPending,
@@ -33,8 +35,12 @@ export function ReviewModalContents({
 
   const onInputHandler = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setInputCount(e.target.value.length);
+    onTextChange(e.target.value);
   };
 
+  /**
+   * [1, 2, 3, 4, 5]
+   */
   const stars = Array.from({ length: 5 }, (_, i) => i + 1);
 
   return (
@@ -51,20 +57,13 @@ export function ReviewModalContents({
         </div>
         <div className='flex justify-center'>
           {stars.map((n) => {
-            // const minusRating = rating >= Number(star.id.split('-')[1]);
-
             const filled = rating >= n;
 
             return (
               <div key={n}>
                 <button
                   onClick={() => {
-                    // setRating(Number(star.id.split('-')[1]));
-                    onChange(n);
-                    console.log(rating);
-                    console.log(n);
-                    console.log(filled);
-                    console.log('\n');
+                    onRatingChange(n);
                   }}
                 >
                   <Image
@@ -89,6 +88,7 @@ export function ReviewModalContents({
             placeholder={placeholder}
             maxLength={100}
             className='h-49 w-full resize-none items-start rounded-xl border border-gray-100 px-4 pt-4'
+            value={text}
             onChange={onInputHandler}
           ></textarea>
           <div className='text-14 text-right font-medium text-gray-600'>

@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useActionState, useEffect, useState } from 'react';
+import { type ChangeEvent, useActionState, useEffect, useState } from 'react';
 import Button from '@/components/button/Button';
 import CardList from '@/components/cardList/CardList';
 import { AlertModalContents } from '@/components/dialog';
@@ -28,12 +28,12 @@ const deleteAction = async () => {
   return { state: 'success' };
 };
 
-const closeReviewModalAction = async () => {
-  await new Promise((resolve) => {
-    setTimeout(resolve, 1500);
-  });
+const ReviewModalAction = async () => {
+  // await new Promise((resolve) => {
+  //   setTimeout(resolve, 1500);
+  // });
 
-  return { state: 'close' };
+  return { state: 'success' };
 };
 
 export default function Page() {
@@ -50,7 +50,7 @@ export default function Page() {
   const cancelReservationDialog = useDialog();
 
   const [reviewModalState, reviewModalFormAction, reviewModalIsPending] =
-    useActionState(closeReviewModalAction, { state: ' ' });
+    useActionState(ReviewModalAction, { state: ' ' });
   const [rating, setRating] = useState<number>(0);
   const writeReviewDialog = useDialog();
 
@@ -62,12 +62,12 @@ export default function Page() {
     cancelReservationDialog.openDialog();
   };
 
-  useEffect(() => {
-    if (reviewModalState.state === 'close') {
-      console.log('모달 종료');
-      setRating(0);
-    }
-  }, [reviewModalState.state]);
+  const [inputText, setInputText] = useState<string>();
+
+  const onCloseModalContainer = () => {
+    setRating(0);
+    setInputText('');
+  };
 
   return (
     <>
@@ -125,7 +125,7 @@ export default function Page() {
                       price={r.totalPrice}
                       capacity={10}
                       onChangeReservation={() => {
-                        console.log('예약 변경');
+                        onChangeReservation();
                       }}
                       onCancelReservation={() => {
                         onCancelReservation();
@@ -134,7 +134,10 @@ export default function Page() {
                         writeReviewDialog.openDialog();
                       }}
                     />
-                    <ModalContainer dialogRef={writeReviewDialog.dialogRef}>
+                    <ModalContainer
+                      dialogRef={writeReviewDialog.dialogRef}
+                      onClose={onCloseModalContainer}
+                    >
                       <ReviewModalContents
                         title={r.activity.title}
                         date={r.date}
@@ -144,8 +147,9 @@ export default function Page() {
                         formAction={deleteAction}
                         hideModal={writeReviewDialog.hideDialog}
                         isPending={reviewModalIsPending}
-                        onChange={setRating}
-                        onClose={reviewModalFormAction}
+                        text={inputText ?? ''}
+                        onRatingChange={setRating}
+                        onTextChange={setInputText}
                       />
                     </ModalContainer>
                   </div>
