@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { type ChangeEvent, useActionState, useEffect, useState } from 'react';
+import { useActionState, useState } from 'react';
 import Button from '@/components/button/Button';
 import CardList from '@/components/cardList/CardList';
 import { AlertModalContents } from '@/components/dialog';
@@ -37,32 +37,32 @@ const ReviewModalAction = async () => {
 };
 
 export default function Page() {
-  const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
-
   const { reservations, totalCount } = mockData;
+
   const hasReservations = Boolean(totalCount);
 
+  const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
+
+  const cancelDialog = useDialog();
   const [deleteModalState, deleteModalFormAction, deleteModalIsPending] =
     useActionState(deleteAction, {
       state: ' ',
     });
 
-  const cancelReservationDialog = useDialog();
-
+  const reviewDialog = useDialog();
   const [reviewModalState, reviewModalFormAction, reviewModalIsPending] =
     useActionState(ReviewModalAction, { state: ' ' });
+
   const [rating, setRating] = useState<number>(0);
-  const writeReviewDialog = useDialog();
+  const [inputText, setInputText] = useState<string>();
 
   const onChangeReservation = () => {
     console.log('예약 변경');
   };
 
   const onCancelReservation = () => {
-    cancelReservationDialog.openDialog();
+    cancelDialog.openDialog();
   };
-
-  const [inputText, setInputText] = useState<string>();
 
   const onCloseModalContainer = () => {
     setRating(0);
@@ -71,12 +71,12 @@ export default function Page() {
 
   return (
     <>
-      <ModalContainer dialogRef={cancelReservationDialog.dialogRef}>
+      <ModalContainer dialogRef={cancelDialog.dialogRef}>
         <AlertModalContents
           message='예약을 취소하시겠어요?'
           confirmButtonText='취소하기'
           rejectButtonText='아니오'
-          hideModal={cancelReservationDialog.hideDialog}
+          hideModal={cancelDialog.hideDialog}
           confirmAction={deleteModalFormAction}
           isPending={deleteModalIsPending}
         />
@@ -131,11 +131,11 @@ export default function Page() {
                         onCancelReservation();
                       }}
                       onWriteReview={() => {
-                        writeReviewDialog.openDialog();
+                        reviewDialog.openDialog();
                       }}
                     />
                     <ModalContainer
-                      dialogRef={writeReviewDialog.dialogRef}
+                      dialogRef={reviewDialog.dialogRef}
                       onClose={onCloseModalContainer}
                     >
                       <ReviewModalContents
@@ -145,7 +145,7 @@ export default function Page() {
                         endTime={r.endTime}
                         rating={rating}
                         formAction={deleteAction}
-                        hideModal={writeReviewDialog.hideDialog}
+                        hideModal={reviewDialog.hideDialog}
                         isPending={reviewModalIsPending}
                         text={inputText ?? ''}
                         onRatingChange={setRating}
