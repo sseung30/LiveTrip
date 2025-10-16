@@ -45,7 +45,7 @@ function CalendarCell({
     }
 
     if (dayData.reservations.confirmed > 0) {
-      badges.push({ type: 'approval', count: dayData.reservations.confirmed });
+      badges.push({ type: 'confirmed', count: dayData.reservations.confirmed });
     }
 
     if (dayData.reservations.pending > 0) {
@@ -222,7 +222,6 @@ export default function ReservationStatusPage() {
         {/* 체험 선택 드롭다운 */}
         <div className='relative z-10 mb-4 w-full sm:mb-6'>
           <SelectDropdown
-            width={100}
             options={EXPERIENCES}
             defaultValue={selectedExperience}
             placeholder='체험을 선택하세요'
