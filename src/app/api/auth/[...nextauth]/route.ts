@@ -1,3 +1,4 @@
+/* eslint-disable require-atomic-updates */
 import { jwtDecode } from 'jwt-decode';
 import NextAuth, {
   type AuthValidity,
@@ -9,12 +10,8 @@ import NextAuth, {
 } from 'next-auth';
 import type { JWT } from 'next-auth/jwt';
 import Credentials from 'next-auth/providers/credentials';
-import { mutateSignin, mutateSignup } from '@/domain/auth/api';
-import {
-  signinInputSchema,
-  type SignInResponse,
-  signupInputSchema,
-} from '@/domain/auth/type';
+import { fetchNewToken, mutateSignin, mutateSignup } from '@/domain/auth/api';
+import { signinInputSchema, signupInputSchema } from '@/domain/auth/type';
 
 class InvalidLoginError extends CredentialsSignin {
   code = 'Invalid identifier or password';
@@ -23,6 +20,7 @@ class InvalidLoginError extends CredentialsSignin {
     this.code = message;
   }
 }
+
 export const {
   handlers,
   signIn,
@@ -109,8 +107,10 @@ export const {
         return token;
       }
       if (isRefreshTokenValid) {
-        //  console.debug("Access token is being refreshed");
-        // return await refreshAccessToken(token);
+        console.debug('Access token is being refreshed');
+        const res = await refreshAccessToken(token);
+
+        return res;
       }
 
       console.debug('Both tokens have expired');
@@ -134,13 +134,42 @@ const _sign = async (credentials: Partial<Record<string, unknown>>) => {
       signupInputSchema.parse({ ...credentials })
     );
 
-    return signupRes as SignInResponse;
+    return signupRes;
   }
   const signinRes = await mutateSignin(
     signinInputSchema.parse({ ...credentials })
   );
 
-  return signinRes as SignInResponse;
+  return signinRes;
 };
 
+async function refreshAccessToken(nextAuthJWTCookie: JWT): Promise<JWT> {
+  try {
+    const refreshToken = nextAuthJWTCookie.data.tokens.refresh;
+
+    if (!refreshToken) {
+      throw new Error('Token is required');
+    }
+    const res = await fetchNewToken(nextAuthJWTCookie.data.tokens.refresh);
+
+    const { accessToken: newAccessToken, refreshToken: newRefreshToken } = res;
+    const { exp: newAccessTokenExp }: DecodedJWT = jwtDecode(newAccessToken);
+    const { exp: newRefreshTokenExp }: DecodedJWT = jwtDecode(newRefreshToken);
+
+    // Update the token and validity in the next-auth cookie
+    nextAuthJWTCookie.data.validity.validUntil = newAccessTokenExp;
+    nextAuthJWTCookie.data.validity.refreshUntil = newRefreshTokenExp;
+    nextAuthJWTCookie.data.tokens.access = newAccessToken;
+    nextAuthJWTCookie.data.tokens.refresh = newRefreshToken;
+
+    return { ...nextAuthJWTCookie };
+  } catch (error) {
+    console.debug(error);
+
+    return {
+      ...nextAuthJWTCookie,
+      error: 'RefreshAccessTokenError',
+    };
+  }
+}
 export const { GET, POST } = handlers;

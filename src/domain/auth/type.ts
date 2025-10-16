@@ -27,9 +27,14 @@ export const signinResponseSchema = z.object({
     updatedAt: z.string(),
   }),
 });
+export const newTokenResponseSchema = z.object({
+  accessToken: z.string(),
+  refreshToken: z.string(),
+});
 export type SigninInputs = z.infer<typeof signinInputSchema>;
 export type SignupInputs = z.infer<typeof signupInputSchema>;
 export type SignInResponse = z.infer<typeof signinResponseSchema>;
+export type NewTokenResponse = z.infer<typeof newTokenResponseSchema>;
 
 export interface UserInfo {
   id: number;
