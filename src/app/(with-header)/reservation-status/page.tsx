@@ -45,7 +45,7 @@ function CalendarCell({
     }
 
     if (dayData.reservations.confirmed > 0) {
-      badges.push({ type: 'approval', count: dayData.reservations.confirmed });
+      badges.push({ type: 'confirmed', count: dayData.reservations.confirmed });
     }
 
     if (dayData.reservations.pending > 0) {
@@ -76,7 +76,7 @@ function CalendarCell({
       ref={cellRef}
       role={hasReservations ? 'button' : undefined}
       tabIndex={hasReservations ? 0 : undefined}
-      className={`relative flex min-h-[150px] flex-col items-center bg-white p-3 ${
+      className={`relative flex min-h-[100px] flex-col items-center bg-white p-2 sm:min-h-[120px] sm:p-3 md:min-h-[150px] ${
         !isLastRow ? 'border-b border-gray-200' : ''
       } ${hasReservations ? 'cursor-pointer hover:bg-gray-50' : ''}`}
       onClick={handleClick}
@@ -84,20 +84,20 @@ function CalendarCell({
     >
       <div className='flex w-full items-start justify-center'>
         <span
-          className={`relative text-sm ${!isCurrentMonth ? 'text-gray-300' : 'text-gray-800'}`}
+          className={`relative text-xs sm:text-sm ${!isCurrentMonth ? 'text-gray-300' : 'text-gray-800'}`}
         >
           {date.getDate()}
           {hasReservations && (
-            <div className='absolute -top-0.5 -right-1.5 h-1.5 w-1.5 rounded-full bg-red-500' />
+            <div className='absolute -top-0.5 -right-1 h-1 w-1 rounded-full bg-red-500 sm:-right-1.5 sm:h-1.5 sm:w-1.5' />
           )}
         </span>
       </div>
 
-      <div className='mt-2 flex flex-col gap-1'>
+      <div className='mt-1 flex flex-col gap-0.5 sm:mt-2 sm:gap-1'>
         {badges.map((badge, index) => {
           return (
             <CalendarBadge
-              key={`${dateString}-${badge.type}-${index}`}
+              key={`${dateString}-${badge.type}`}
               type={badge.type}
               count={badge.count}
             />
@@ -133,7 +133,6 @@ export default function ReservationStatusPage() {
     EXPERIENCES[0].value
   );
   const [currentDate, setCurrentDate] = useState(new Date(2023, 1, 1));
-  const [dropdownWidth, setDropdownWidth] = useState(720);
   const [popupState, setPopupState] = useState<{
     isOpen: boolean;
     selectedDate: Date | null;
@@ -148,22 +147,6 @@ export default function ReservationStatusPage() {
   const month = currentDate.getMonth();
   const calendarDates = getCalendarDates(year, month);
 
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setDropdownWidth(window.innerWidth - 32);
-      } else {
-        setDropdownWidth(720);
-      }
-    };
-
-    handleResize();
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
 
   const goToPreviousMonth = () => {
     setCurrentDate(new Date(year, month - 1, 1));
@@ -219,26 +202,26 @@ export default function ReservationStatusPage() {
   };
 
   return (
-    <div className='mx-auto flex max-w-[1200px] gap-8 px-4 py-8 md:px-12'>
-      {/* 왼쪽: SideMenu (태블릿 이상에서만 표시) */}
-      <aside className='hidden md:block'>
+    <div className='mx-auto flex max-w-[1200px] gap-4 px-4 py-4 sm:gap-6 sm:px-6 sm:py-6 md:gap-8 md:px-12 md:py-8'>
+      {/* 왼쪽: SideMenu (모바일에서만 숨김) */}
+      <aside className='hidden md:block lg:w-auto'>
         <SideMenu size='large' activeItem='reservationStatus' />
       </aside>
 
       {/* 오른쪽: 메인 콘텐츠 */}
-      <main className='w-full md:max-w-[720px]'>
+      <main className='w-full md:flex-1 lg:max-w-[720px]'>
         {/* 헤더 */}
-        <div className='mb-6'>
-          <h1 className='mb-2 text-2xl font-bold text-gray-900'>예약 현황</h1>
-          <p className='text-sm text-gray-600'>
+        <div className='mb-4 sm:mb-6'>
+          <h1 className='mb-2 text-xl font-bold text-gray-900 sm:text-2xl'>예약 현황</h1>
+          <p className='text-xs text-gray-600 sm:text-sm'>
             내 체험의 예약 내역을 월 단위로 확인할 수 있습니다.
           </p>
         </div>
 
         {/* 체험 선택 드롭다운 */}
-        <div className='relative z-10 mb-6'>
+        <div className='relative z-10 mb-4 w-full sm:mb-6'>
           <SelectDropdown
-            width={dropdownWidth}
+            width="100%"
             options={EXPERIENCES}
             defaultValue={selectedExperience}
             placeholder='체험을 선택하세요'
@@ -247,22 +230,22 @@ export default function ReservationStatusPage() {
         </div>
 
         {/* 달력 */}
-        <div className='relative overflow-visible rounded-xl bg-white p-6 shadow-lg'>
+        <div className='relative overflow-visible rounded-xl bg-white p-3 shadow-lg sm:p-4 md:p-6'>
           {/* 달력 헤더 */}
-          <div className='mb-6 flex items-center justify-center gap-4'>
+          <div className='mb-4 flex items-center justify-center gap-3 sm:mb-6 sm:gap-4'>
             <button
               type='button'
-              className='flex h-8 w-8 items-center justify-center rounded hover:bg-gray-100'
+              className='flex h-7 w-7 items-center justify-center rounded hover:bg-gray-100 sm:h-8 sm:w-8'
               onClick={goToPreviousMonth}
             >
               ◀
             </button>
-            <h2 className='text-lg font-semibold text-gray-900'>
+            <h2 className='text-base font-semibold text-gray-900 sm:text-lg'>
               {year}년 {month + 1}월
             </h2>
             <button
               type='button'
-              className='flex h-8 w-8 items-center justify-center rounded hover:bg-gray-100'
+              className='flex h-7 w-7 items-center justify-center rounded hover:bg-gray-100 sm:h-8 sm:w-8'
               onClick={goToNextMonth}
             >
               ▶
@@ -277,7 +260,7 @@ export default function ReservationStatusPage() {
                 return (
                   <div
                     key={day}
-                    className='py-3 text-center text-sm font-semibold text-gray-900'
+                    className='py-2 text-center text-xs font-semibold text-gray-900 sm:py-3 sm:text-sm'
                   >
                     {day}
                   </div>
