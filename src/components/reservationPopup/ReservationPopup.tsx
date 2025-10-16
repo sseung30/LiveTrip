@@ -2,10 +2,11 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { BottomSheetContainer } from '@/components/dialog/BottomSheet/BottomSheetContainer';
+import ConfirmModal from '@/components/dialog/Modal/ConfirmModal';
+import { ModalContainer } from '@/components/dialog/Modal/ModalContainer';
 import { useDialog } from '@/components/dialog/useDialog';
 import SelectDropdown from '@/components/dropdown/SelectDropdown';
 import ReservationCard from '@/components/reservationPopup/ReservationCard';
-import { toast } from '@/components/toast';
 import type {
   ReservationPopupProps,
   ReservationStatusType,
@@ -32,8 +33,19 @@ export default function ReservationPopup({
     null
   );
   const [isBottomSheet, setIsBottomSheet] = useState(false);
+  const [confirmAction, setConfirmAction] = useState<{
+    type: 'approve' | 'reject';
+    id: number;
+  } | null>(null);
   const popupRef = useRef<HTMLDivElement>(null);
-  const { dialogRef, hideDialog, isOpen: dialogIsOpen } = useDialog();
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  const { dialogRef, hideDialog } = useDialog();
+  const {
+    dialogRef: confirmDialogRef,
+    openDialog: openConfirmDialog,
+    hideDialog: hideConfirmDialog,
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  } = useDialog();
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(max-width: 1023px)');
@@ -52,13 +64,16 @@ export default function ReservationPopup({
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (isOpen && isBottomSheet && dialogRef.current) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
       dialogRef.current.showModal();
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     } else if (!isOpen && isBottomSheet && dialogRef.current) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
       dialogRef.current.close();
     }
   }, [isOpen, isBottomSheet, dialogRef]);
-
 
   const reservationsByStatus = useMemo(() => {
     const pending = reservations.filter((r) => r.status === 'pending');
@@ -78,12 +93,12 @@ export default function ReservationPopup({
   }, [reservations]);
 
   const scheduleOptions = useMemo(() => {
-     
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     return schedules.map((schedule) => {
       return {
-         
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         label: `${schedule.startTime} - ${schedule.endTime}`,
-         
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         value: String(schedule.scheduleId),
       };
     });
@@ -93,19 +108,37 @@ export default function ReservationPopup({
     selectedScheduleId !== null ? reservationsByStatus[activeTab] : [];
 
   const handleApprove = (id: number) => {
-    onApprove?.(id);
-    toast({ 
-      message: '예약이 승인되었습니다', 
-      eventType: 'success' 
-    });
+    setConfirmAction({ type: 'approve', id });
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    openConfirmDialog();
   };
 
   const handleReject = (id: number) => {
-    onReject?.(id);
-    toast({ 
-      message: '예약이 거절되었습니다', 
-      eventType: 'success' 
-    });
+    setConfirmAction({ type: 'reject', id });
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    openConfirmDialog();
+  };
+
+  const handleConfirm = () => {
+    if (!confirmAction) {
+      return;
+    }
+
+    if (confirmAction.type === 'approve') {
+      onApprove?.(confirmAction.id);
+    } else {
+      onReject?.(confirmAction.id);
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    hideConfirmDialog();
+    setConfirmAction(null);
+  };
+
+  const handleCancel = () => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    hideConfirmDialog();
+    setConfirmAction(null);
   };
 
   // eslint-disable-next-line
@@ -202,11 +235,12 @@ export default function ReservationPopup({
             <h3 className='mb-2 text-base font-semibold text-gray-900'>
               예약 시간
             </h3>
+            {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */}
             {scheduleOptions.length > 0 && (
               <div className={isBottomSheet ? 'w-full' : ''}>
                 <SelectDropdown
                   key={selectedScheduleId}
-                  width={isBottomSheet ? "100%" : 302}
+                  width={isBottomSheet ? 450 : 302}
                   options={scheduleOptions}
                   placeholder='예약 시간을 선택하세요'
                   defaultValue={
@@ -226,13 +260,14 @@ export default function ReservationPopup({
             <h3 className='mb-2 text-base font-semibold text-gray-900'>
               예약 내역
             </h3>
-            {selectedScheduleId === null ? (
-              <p className='text-sm text-gray-500'>시간을 선택해주세요</p>
-            ) : filteredReservations.length > 0 ? (
+            {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */}
+            {filteredReservations.length > 0 && (
               <div className='space-y-3'>
+                {/* eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access */}
                 {filteredReservations.map((reservation) => {
                   return (
                     <ReservationCard
+                      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                       key={reservation.id}
                       reservation={reservation}
                       activeTab={activeTab}
@@ -242,8 +277,6 @@ export default function ReservationPopup({
                   );
                 })}
               </div>
-            ) : (
-              <p className='text-sm text-gray-500'>해당 시간에 예약이 없습니다</p>
             )}
           </div>
         </div>
@@ -262,6 +295,19 @@ export default function ReservationPopup({
         >
           {({ closeDialog }) => renderContent(closeDialog as () => void)}
         </BottomSheetContainer>
+        <ModalContainer dialogRef={confirmDialogRef}>
+          <ConfirmModal
+            confirmText={confirmAction?.type === 'approve' ? '승인' : '거절'}
+            cancelText='취소'
+            message={
+              confirmAction?.type === 'approve'
+                ? '이 예약을 승인하시겠습니까?'
+                : '이 예약을 거절하시겠습니까?'
+            }
+            onConfirm={handleConfirm}
+            onCancel={handleCancel}
+          />
+        </ModalContainer>
       </>
     );
   }
@@ -278,6 +324,19 @@ export default function ReservationPopup({
       >
         {renderContent()}
       </div>
+      <ModalContainer dialogRef={confirmDialogRef}>
+        <ConfirmModal
+          confirmText={confirmAction?.type === 'approve' ? '승인' : '거절'}
+          cancelText='취소'
+          message={
+            confirmAction?.type === 'approve'
+              ? '이 예약을 승인하시겠습니까?'
+              : '이 예약을 거절하시겠습니까?'
+          }
+          onConfirm={handleConfirm}
+          onCancel={handleCancel}
+        />
+      </ModalContainer>
     </>
   );
 }
