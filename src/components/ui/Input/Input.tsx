@@ -10,7 +10,8 @@ export default function Input({
   type = 'text',
   error,
   className = '',
-  ...props
+  autoComplete = '',
+  ...rest
 }: InputProps) {
   const [isFocused, setIsFocused] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -51,9 +52,10 @@ export default function Input({
 
       <div className={`relative w-[350px] ${className}`}>
         <input
-          {...props}
+          {...rest}
           type={getInputType()}
           placeholder={placeholder}
+          autoComplete={autoComplete}
           className={`h-[54px] w-full rounded-xl border px-4 ${isPassword ? 'pr-12' : ''} text-gray-950 transition-colors placeholder:text-gray-400 focus:outline-none ${getBorderColor()}`}
           onFocus={() => {
             setIsFocused(true);

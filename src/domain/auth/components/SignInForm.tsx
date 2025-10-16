@@ -1,27 +1,44 @@
 'use client';
-import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
+import { useTransition } from 'react';
+import { type SubmitHandler, useForm } from 'react-hook-form';
 import Button from '@/components/button/Button';
+import { toast } from '@/components/toast';
 import ButtonSpinner from '@/components/ui/ButtonSpinner';
 import Input from '@/components/ui/Input/Input';
-import { SignInFormRegisterKey } from '@/form/register-key/auth';
+import type { SigninInputs } from '@/domain/auth/type';
+import { SignInFormRegisterKey } from '@/form/auth/register-key';
 
-interface SigninInputs {
-  email: string;
-  password: string;
-}
 export default function SignInForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<SigninInputs>();
+
+  const [, startTransition] = useTransition();
+  const router = useRouter();
+  const onSubmit: SubmitHandler<SigninInputs> = async (signinInputs) => {
+    const res = await signIn('credentials', {
+      ...signinInputs,
+      redirect: false,
+    });
+
+    if (res.error) {
+      toast({ message: res.code || '', eventType: 'error' });
+    } else {
+      startTransition(() => {
+        router.push('/');
+        toast({ message: '로그인에 성공했습니다', eventType: 'success' });
+      });
+    }
+  };
 
   return (
     <form
       className='flex-center w-full flex-col gap-6 xl:w-fit'
-      onSubmit={handleSubmit(() => {
-        console.log('form');
-      })}
+      onSubmit={handleSubmit(onSubmit)}
     >
       <div className='flex-center w-full flex-col gap-4 xl:w-fit'>
         <Input
@@ -40,7 +57,9 @@ export default function SignInForm() {
           {...register('password', SignInFormRegisterKey.password())}
         />
       </div>
-      <Button variant='primary'>{'로그인'}</Button>
+      <Button variant='primary'>
+        {isSubmitting ? <ButtonSpinner /> : '로그인'}
+      </Button>
     </form>
   );
 }
