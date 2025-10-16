@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Button from '@/components/button/Button';
 import { BottomSheetContainer } from '@/components/dialog/BottomSheet/BottomSheetContainer';
 import { useDialog } from '@/components/dialog/useDialog';
@@ -31,21 +31,16 @@ export default function MobileReservationBar({
   const { dialogRef, openDialog, hideDialog, isOpen } = useDialog();
   const [step, setStep] = useState<'calendar' | 'participant'>('calendar');
 
-  /**
-   * 바텀시트가 닫힐 때 스텝 초기화
-   */
-  const handleCloseDialog = () => {
+  // 바텀시트 닫을 때 스텝 초기화
+  const handleCloseDialog = useCallback(() => {
     setStep('calendar');
     hideDialog();
-  };
+  }, [hideDialog]);
 
-  /**
-   * PC 사이즈로 창이 커질 때 바텀시트 자동 닫기
-   */
+  // PC 사이즈로 창이 커지면 바텀시트 자동 닫기
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1024 && isOpen) {
-        // lg 브레이크포인트(1024px) 이상에서 바텀시트가 열려있으면 닫기
         handleCloseDialog();
       }
     };
@@ -55,7 +50,7 @@ export default function MobileReservationBar({
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, [isOpen]);
+  }, [isOpen, handleCloseDialog]);
 
   const formatDate = (date: Date | null) => {
     if (!date) {
@@ -119,16 +114,15 @@ export default function MobileReservationBar({
         hideDialog={hideDialog}
         onClose={handleCloseDialog}
       >
-        {({ closeDialog }) => {
+        {() => {
           return (
             <div className='flex flex-col'>
-              {/* 모바일: 스텝별 표시 */}
+              {/* 모바일용 바텀시트: 스텝별 표시 */}
               <div className='md:hidden'>
                 {step === 'calendar' && (
                   <>
                     {/* 1단계: 날짜와 시간 선택 */}
                     <div className='flex flex-col gap-6'>
-                      {/* 캘린더 */}
                       <div className='max-h-[40vh] overflow-y-auto'>
                         <Calendar
                           selectedDate={selectedDate}
@@ -136,7 +130,6 @@ export default function MobileReservationBar({
                         />
                       </div>
 
-                      {/* 시간 선택 */}
                       <div className='p-4'>
                         {selectedDate ? (
                           <TimeSelector
@@ -159,7 +152,6 @@ export default function MobileReservationBar({
                       </div>
                     </div>
 
-                    {/* 다음 버튼 */}
                     <div className='mt-6 px-4 pb-4'>
                       <Button
                         variant='primary'
@@ -179,7 +171,6 @@ export default function MobileReservationBar({
                   <>
                     {/* 2단계: 인원 선택 */}
                     <div className='flex flex-col'>
-                      {/* 헤더 */}
                       <div className='flex items-center gap-4 border-b border-gray-200 p-4'>
                         <button
                           className='text-gray-600 hover:text-gray-800'
@@ -217,10 +208,10 @@ export default function MobileReservationBar({
                 )}
               </div>
 
-              {/* 태블릿: 기존 방식 (한 화면에 모든 것) */}
+              {/* 태블릿용 바텀시트 */}
               <div className='hidden md:block'>
                 <div className='flex gap-6 md:flex-row'>
-                  {/* 좌측: 캘린더 */}
+                  {/* 캘린더 */}
                   <div className='max-h-[50vh] flex-1 overflow-y-auto'>
                     <Calendar
                       selectedDate={selectedDate}
@@ -228,7 +219,6 @@ export default function MobileReservationBar({
                     />
                   </div>
 
-                  {/* 우측: 시간 + 인원 */}
                   <div className='flex-1 space-y-6 p-4'>
                     {/* 예약 가능한 시간 */}
                     <div>
