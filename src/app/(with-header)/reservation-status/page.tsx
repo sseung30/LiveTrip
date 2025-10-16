@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import CalendarBadge from '@/components/calendarBadge/CalendarBadge';
 import type { BadgeType } from '@/components/calendarBadge/type';
 import SelectDropdown from '@/components/dropdown/SelectDropdown';
@@ -16,7 +16,7 @@ import {
 /**
  * 요일 헤더
  */
-const WEEKDAYS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+const WEEKDAYS = ['월', '화', '수', '목', '금', '토', '일'];
 
 /**
  * 달력 셀 컴포넌트
@@ -45,7 +45,7 @@ function CalendarCell({
     }
 
     if (dayData.reservations.confirmed > 0) {
-      badges.push({ type: 'confirmed', count: dayData.reservations.confirmed });
+      badges.push({ type: 'approval', count: dayData.reservations.confirmed });
     }
 
     if (dayData.reservations.pending > 0) {
@@ -147,7 +147,6 @@ export default function ReservationStatusPage() {
   const month = currentDate.getMonth();
   const calendarDates = getCalendarDates(year, month);
 
-
   const goToPreviousMonth = () => {
     setCurrentDate(new Date(year, month - 1, 1));
   };
@@ -212,7 +211,9 @@ export default function ReservationStatusPage() {
       <main className='w-full md:flex-1 lg:max-w-[720px]'>
         {/* 헤더 */}
         <div className='mb-4 sm:mb-6'>
-          <h1 className='mb-2 text-xl font-bold text-gray-900 sm:text-2xl'>예약 현황</h1>
+          <h1 className='mb-2 text-xl font-bold text-gray-900 sm:text-2xl'>
+            예약 현황
+          </h1>
           <p className='text-xs text-gray-600 sm:text-sm'>
             내 체험의 예약 내역을 월 단위로 확인할 수 있습니다.
           </p>
@@ -221,7 +222,7 @@ export default function ReservationStatusPage() {
         {/* 체험 선택 드롭다운 */}
         <div className='relative z-10 mb-4 w-full sm:mb-6'>
           <SelectDropdown
-            width="100%"
+            width={100}
             options={EXPERIENCES}
             defaultValue={selectedExperience}
             placeholder='체험을 선택하세요'
