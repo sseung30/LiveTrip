@@ -16,7 +16,7 @@ import {
 /**
  * 요일 헤더
  */
-const WEEKDAYS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+const WEEKDAYS = ['월', '화', '수', '목', '금', '토', '일'];
 
 /**
  * 달력 셀 컴포넌트
@@ -45,7 +45,7 @@ function CalendarCell({
     }
 
     if (dayData.reservations.confirmed > 0) {
-      badges.push({ type: 'confirmed', count: dayData.reservations.confirmed });
+      badges.push({ type: 'approval', count: dayData.reservations.confirmed });
     }
 
     if (dayData.reservations.pending > 0) {
