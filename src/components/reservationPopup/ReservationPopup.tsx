@@ -240,7 +240,7 @@ export default function ReservationPopup({
               <div className={isBottomSheet ? 'w-full' : ''}>
                 <SelectDropdown
                   key={selectedScheduleId}
-                  width={isBottomSheet ? 450 : 302}
+                  width={isBottomSheet ? "100%" : 302}
                   options={scheduleOptions}
                   placeholder='예약 시간을 선택하세요'
                   defaultValue={
