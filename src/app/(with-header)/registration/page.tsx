@@ -2,14 +2,14 @@
 
 import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
-import { Controller, type FieldErrors,useForm } from 'react-hook-form';
+import { Controller, type FieldErrors, useForm } from 'react-hook-form';
 import { apiFetch } from '@/api/api';
 import { BasicInfoFields } from '@/app/(with-header)/registration/_components/BasicInfoFields';
 import { ImageUploader } from '@/app/(with-header)/registration/_components/ImageUploader';
 import { TimeSlotsField } from '@/app/(with-header)/registration/_components/TimeSlotsField';
 import { useImageUpload } from '@/app/(with-header)/registration/_hooks/useImageUpload';
 import { buildRegistrationPayload } from '@/app/(with-header)/registration/_utils/buildRegistrationPayload';
-import { createEmptyTimeSlot,type TimeSlot } from '@/app/(with-header)/registration/_utils/createEmptyTimeSlot';
+import { createEmptyTimeSlot, type TimeSlot } from '@/app/(with-header)/registration/_utils/createEmptyTimeSlot';
 import { validateRegistration } from '@/app/(with-header)/registration/_utils/validateRegistration';
 import Button from '@/components/button/Button';
 import { toast } from '@/components/toast';
@@ -32,15 +32,6 @@ const CATEGORY_OPTIONS = [
 ];
 
 const MAX_IMAGE_COUNT = 4;
-
-const TIME_OPTIONS = Array.from({ length: 24 * 2 }, (_, index) => {
-  const hour = Math.floor(index / 2)
-    .toString()
-    .padStart(2, '0');
-  const minute = index % 2 === 0 ? '00' : '30';
-
-  return `${hour}:${minute}`;
-});
 
 export default function RegistrationPage() {
   const formRef = useRef<HTMLFormElement>(null);
@@ -77,19 +68,35 @@ export default function RegistrationPage() {
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([createEmptyTimeSlot()]);
 
   const handleAddTimeSlot = () => { setTimeSlots(prev => [...prev, createEmptyTimeSlot()]); };
-  const handleRemoveTimeSlot = (id: string) =>
-    { setTimeSlots(prev => prev.filter(slot => slot.id !== id)); };
-  const handleChangeTimeSlot = (
-    id: string,
-    field: keyof Omit<TimeSlot, 'id'>,
-    value: string,
-  ) => {
-    setTimeSlots(prev =>
-      prev.map(slot => (slot.id === id ? { ...slot, [field]: value } : slot)),
-    );
+  const handleRemoveTimeSlot = (id: string) => { setTimeSlots(prev => prev.filter(slot => slot.id !== id)); };
+  const handleChangeTimeSlot = (id: string, field: keyof Omit<TimeSlot, 'id'>, value: string) => {
+    setTimeSlots(prev => prev.map(slot => (slot.id === id ? { ...slot, [field]: value } : slot)));
+  };
+
+  /**
+   * ✅ 이미지 업로드 함수 (Promise.all 병렬)
+   */
+  const uploadImagesToServer = async (files: { file: File }[]): Promise<string[]> => {
+    const uploads = files.map(({ file }) => {
+      const formData = new FormData();
+
+      formData.append('image', file);
+
+      return apiFetch<{ activityImageUrl: string }>('/activities/image', {
+        method: 'POST',
+        body: formData,
+        credentials: 'include',
+        headers: {},
+      }).then((data) => data.activityImageUrl);
+    });
+
+    return Promise.all(uploads);
   };
 
   const onSubmit = async (formData: FormValues) => {
+    console.log("✅ BANNER (Local):", bannerImages);
+    console.log("✅ INTRO (Local):", introImages);
+
     const errorMessage = validateRegistration({
       title: formData.title,
       category: formData.category,
@@ -106,33 +113,36 @@ export default function RegistrationPage() {
       return;
     }
 
-    const payload = buildRegistrationPayload({
-      formData,
-      bannerImageUrl: bannerImages[0]?.src ?? '',
-      introImages,
-      timeSlots,
-    });
-
     try {
+      // ✅ 서버 업로드 실행
+      const [bannerUrls, introUrls] = await Promise.all([
+        uploadImagesToServer(bannerImages),
+        uploadImagesToServer(introImages),
+      ]);
+
+      console.log("✅ BANNER (Server URLs):", bannerUrls);
+      console.log("✅ INTRO (Server URLs):", introUrls);
+
+      const payload = buildRegistrationPayload({
+        formData,
+        bannerImageUrl: bannerUrls[0] ?? '',
+        introImages: introUrls.map((src) => ({ src, id: 0 })),
+        timeSlots,
+      });
+
       await apiFetch('/activities', {
         method: 'POST',
         body: JSON.stringify(payload),
       });
 
-      toast({
-        message: '체험 등록이 완료되었습니다.',
-        eventType: 'success',
-      });
+      toast({ message: '체험 등록이 완료되었습니다.', eventType: 'success' });
 
-      // 뒤로 가기 시도 → 실패하면 /activities로 이동
       setTimeout(() => {
-        if (document.referrer) {
-          router.back();
-        } else {
-          router.push('/activities');
-        }
+        if (document.referrer) {router.back();}
+        else {router.push('/activities');}
       }, 700);
     } catch (error) {
+      console.error("🔥 Upload error", error);
       toast({ message: '등록에 실패했습니다.', eventType: 'error' });
     }
   };
@@ -162,7 +172,7 @@ export default function RegistrationPage() {
 
         <TimeSlotsField
           timeSlots={timeSlots}
-          timeOptions={TIME_OPTIONS}
+          timeOptions={Array.from({ length: 48 }, (_, i) => `${String(Math.floor(i / 2)).padStart(2, '0')}:${i % 2 ? '30' : '00'}`)}
           onAdd={handleAddTimeSlot}
           onRemove={handleRemoveTimeSlot}
           onChange={handleChangeTimeSlot}
@@ -187,10 +197,7 @@ export default function RegistrationPage() {
         />
 
         <div className="flex justify-center pt-4">
-          <Button
-            variant="primary"
-            onClick={() => formRef.current?.requestSubmit()}
-          >
+          <Button variant="primary" onClick={() => formRef.current?.requestSubmit()}>
             {isSubmitting ? '등록 중...' : '체험 등록하기'}
           </Button>
         </div>

@@ -1,4 +1,6 @@
-import { type ChangeEvent,useState } from 'react';
+// Registration/components/ImageUploader.tsx
+
+import { type ChangeEvent, useId } from 'react';
 import type { UploadedImage } from '@/app/(with-header)/registration/_hooks/useImageUpload';
 
 interface ImageUploaderProps {
@@ -18,8 +20,7 @@ export function ImageUploader({
   onRemove,
   maxCount,
 }: ImageUploaderProps) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [inputId, setInputId] = useState(() => `image-uploader-${Date.now()}-${Math.random()}`);
+  const inputId = useId(); 
 
   return (
     <section className="flex flex-col gap-4">
@@ -74,59 +75,19 @@ export function ImageUploader({
 
 function UploadIcon() {
   return (
-    <svg
-      width="28"
-      height="28"
-      viewBox="0 0 28 28"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <rect
-        x="1.5"
-        y="1.5"
-        width="25"
-        height="25"
-        rx="12.5"
-        stroke="#C7C8CF"
-        strokeWidth="1.5"
-      />
-      <path
-        d="M14 9V19"
-        stroke="#7A7A80"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-      <path
-        d="M9 14H19"
-        stroke="#7A7A80"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="1.5" y="1.5" width="25" height="25" rx="12.5" stroke="#C7C8CF" strokeWidth="1.5" />
+      <path d="M14 9V19" stroke="#7A7A80" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M9 14H19" stroke="#7A7A80" strokeWidth="1.5" strokeLinecap="round" />
     </svg>
   );
 }
 
 function CloseIcon() {
   return (
-    <svg
-      width="12"
-      height="12"
-      viewBox="0 0 12 12"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M3 3L9 9"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-      <path
-        d="M9 3L3 9"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M3 3L9 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M9 3L3 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
     </svg>
   );
 }

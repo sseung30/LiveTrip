@@ -1,34 +1,23 @@
 // Registration/hooks/useImageUpload.ts
 
-import { type ChangeEvent,useState } from 'react';
-import { apiFetch } from '@/api/api';
-import { toast } from '@/components/toast';
+import { type ChangeEvent, useState } from 'react';
 
 export interface UploadedImage {
   id: string;
   /**
-   * 업로드된 URL
+   * Blob URL
    */
   src: string; 
+  /**
+   * 실제 서버 업로드에 사용할 원본 파일
+   */
+  file: File;  
 }
 
 export function useImageUpload(maxCount: number) {
   const [images, setImages] = useState<UploadedImage[]>([]);
 
-  const uploadImageToServer = async (file: File) => {
-    const formData = new FormData();
-
-    formData.append('image', file);
-
-    const res = await apiFetch('/activities/image', {
-      method: 'POST',
-      body: formData,
-    });
-
-    return (res as { activityImageUrl: string }).activityImageUrl;
-  };
-
-  const handleUpload = async (event: ChangeEvent<HTMLInputElement>) => {
+  const handleUpload = (event: ChangeEvent<HTMLInputElement>) => {
     const { files } = event.target;
 
     if (!files?.length) {return;}
@@ -36,36 +25,25 @@ export function useImageUpload(maxCount: number) {
     const remain = maxCount - images.length;
 
     if (remain <= 0) {
-      toast({ message: `이미지는 최대 ${maxCount}장까지 업로드할 수 있어요.`, eventType: 'error' });
       event.target.value = '';
 
       return;
     }
 
-    try {
-      const slice = [...files].slice(0, remain);
-      const uploaded: UploadedImage[] = [];
+    const slice = [...files].slice(0, remain);
 
-      for (const file of slice) {
-        const url = await uploadImageToServer(file);
+    const newImages = slice.map((file) => { return {
+      id: `${Date.now()}-${Math.random()}`,
+      src: URL.createObjectURL(file), // 즉시 미리보기용 Blob URL
+      file,
+    } });
 
-        uploaded.push({
-          id: `${Date.now()}-${Math.random()}`,
-          src: url,
-        });
-      }
-
-      setImages(prev => [...prev, ...uploaded]);
-      toast({ message: '이미지를 업로드했습니다.', eventType: 'success' });
-    } catch {
-      toast({ message: '이미지 업로드에 실패했습니다.', eventType: 'error' });
-    } finally {
-      event.target.value = '';
-    }
+    setImages((prev) => [...prev, ...newImages]);
+    event.target.value = '';
   };
 
   const removeImage = (id: string) => {
-    setImages(prev => prev.filter(img => img.id !== id));
+    setImages((prev) => prev.filter((img) => img.id !== id));
   };
 
   return { images, setImages, handleUpload, removeImage };

@@ -15,18 +15,28 @@ export async function apiFetch<T>(
   path: string,
   options: RequestInit = {}
 ): Promise<T> {
-  const { headers } = options;
+    /**
+     * ✅ 구조 분해
+     */
+    const { body, headers: customHeaders } = options; 
   const token = await getToken();
+  const isFormData = typeof FormData !== "undefined" && body instanceof FormData;
 
   const res = await fetch(`${BASE_URL}${path}`, {
     ...options,
     credentials: 'include',
     headers: {
-      'Content-Type': 'application/json',
       ...(token && { Authorization: `Bearer ${token}` }),
-      ...headers,
+      ...(isFormData
+        ? customHeaders // ✅ FormData일 경우 Content-Type 자동 설정에 맡김
+        : {
+            'Content-Type': 'application/json', // ✅ JSON 요청 기본값
+            ...customHeaders,
+          }),
     },
   });
+
+    const text = await res.text();
 
   if (!res.ok) {
     throw new Error(`API Error (${res.status}): ${await res.text()}`);
