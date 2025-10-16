@@ -1,5 +1,5 @@
-import type { ReservationStatusType } from '@/components/reservationPopup/type';
 import StateBadge from '@/components/stateBadge/StateBadge';
+import type { ReservationStatusType } from '@/components/reservationPopup/type';
 
 interface ReservationCardProps {
   reservation: {

@@ -37,10 +37,14 @@ export default function DropdownItems({
 
   return (
     <button
-      onClick={() => {
-        onSelect(value);
-        close();
-      }}
+        type="button"
+        className={className}
+        onClick={(e) => {
+          e.stopPropagation(); // 이벤트 버블링 방지
+          e.preventDefault();  // 혹시 모를 form submit 방지
+          onSelect(value);
+          close();
+        }}
     >
       <li className={className}>{children}</li>
     </button>

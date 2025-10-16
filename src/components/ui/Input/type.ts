@@ -1,9 +1,10 @@
 import type { FieldError, FieldErrorsImpl, Merge } from 'react-hook-form';
 
-export interface InputProps {
+export interface InputProps 
+  extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   placeholder?: string;
-  type?: 'text' | 'password' | 'email';
+  type?: 'text' | 'password' | 'email' | 'number';
   error?:
     | string
     | FieldError
