@@ -41,6 +41,7 @@ export default function RegistrationPage() {
     control,
     register,
     handleSubmit,
+    setValue,
     formState: { isSubmitting },
   } = useForm<FormValues>({
     mode: 'onSubmit',
@@ -74,7 +75,7 @@ export default function RegistrationPage() {
   };
 
   /**
-   * ✅ 이미지 업로드 함수 (Promise.all 병렬)
+   * ✅ 이미지 업로드 함수 (병렬 Promise.all)
    */
   const uploadImagesToServer = async (files: { file: File }[]): Promise<string[]> => {
     const uploads = files.map(({ file }) => {
@@ -87,16 +88,13 @@ export default function RegistrationPage() {
         body: formData,
         credentials: 'include',
         headers: {},
-      }).then((data) => data.activityImageUrl);
+      }).then((data: { activityImageUrl: string }) => data.activityImageUrl);
     });
 
     return Promise.all(uploads);
   };
 
   const onSubmit = async (formData: FormValues) => {
-    console.log("✅ BANNER (Local):", bannerImages);
-    console.log("✅ INTRO (Local):", introImages);
-
     const errorMessage = validateRegistration({
       title: formData.title,
       category: formData.category,
@@ -114,14 +112,10 @@ export default function RegistrationPage() {
     }
 
     try {
-      // ✅ 서버 업로드 실행
       const [bannerUrls, introUrls] = await Promise.all([
         uploadImagesToServer(bannerImages),
         uploadImagesToServer(introImages),
       ]);
-
-      console.log("✅ BANNER (Server URLs):", bannerUrls);
-      console.log("✅ INTRO (Server URLs):", introUrls);
 
       const payload = buildRegistrationPayload({
         formData,
@@ -168,7 +162,7 @@ export default function RegistrationPage() {
         className="flex flex-col gap-12 rounded-3xl bg-white px-6 py-8 md:px-10 md:py-12"
         onSubmit={handleSubmit(onSubmit, onInvalid)}
       >
-        <BasicInfoFields control={control} register={register} categoryOptions={CATEGORY_OPTIONS} />
+        <BasicInfoFields control={control} register={register} setValue={setValue} categoryOptions={CATEGORY_OPTIONS} />
 
         <TimeSlotsField
           timeSlots={timeSlots}

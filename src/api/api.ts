@@ -36,8 +36,6 @@ export async function apiFetch<T>(
     },
   });
 
-    const text = await res.text();
-
   if (!res.ok) {
     throw new Error(`API Error (${res.status}): ${await res.text()}`);
   }

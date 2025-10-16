@@ -1,6 +1,5 @@
-// Registration/components/BasicInfoFields.tsx
-
-import { type Control,Controller, type UseFormRegister } from 'react-hook-form';
+import { useDaumPostcodePopup } from 'react-daum-postcode';
+import { type Control, Controller, type UseFormRegister, type UseFormSetValue } from 'react-hook-form';
 import SelectDropdown from '@/components/dropdown/SelectDropdown';
 import Input from '@/components/ui/Input/Input';
 
@@ -15,10 +14,19 @@ interface FormValues {
 interface BasicInfoFieldsProps {
   control: Control<FormValues>;
   register: UseFormRegister<FormValues>;
+  setValue: UseFormSetValue<FormValues>;
   categoryOptions: { label: string; value: string }[];
 }
+export function BasicInfoFields({ control, register, setValue, categoryOptions }: BasicInfoFieldsProps) {
+  const openPostcode = useDaumPostcodePopup();
 
-export function BasicInfoFields({ control, register, categoryOptions }: BasicInfoFieldsProps) {
+  const handleAddressSelect = (data: unknown) => {
+    const d = data as { roadAddress?: string; jibunAddress?: string };
+    const fullAddress = d.roadAddress || d.jibunAddress || "";
+
+    setValue("address", fullAddress, { shouldValidate: true });
+  };
+
   return (
     <>
       {/* 제목 */}
@@ -67,8 +75,7 @@ export function BasicInfoFields({ control, register, categoryOptions }: BasicInf
         control={control}
         rules={{
           required: '가격은 필수입니다.',
-          validate: v =>
-            !Number.isNaN(Number(v)) && Number(v) > 0 || '가격은 0보다 큰 숫자여야 합니다.',
+          validate: (v) => (!Number.isNaN(Number(v)) && Number(v) > 0) || '가격은 0보다 큰 숫자여야 합니다.',
         }}
         render={({ field }) => 
           { return <Input
@@ -82,21 +89,32 @@ export function BasicInfoFields({ control, register, categoryOptions }: BasicInf
         }
       />
 
-      {/* 주소 */}
-      <Controller
-        name="address"
-        control={control}
-        rules={{ required: '주소는 필수입니다.' }}
-        render={({ field }) => 
-          { return <Input
-            label="주소"
-            placeholder="주소를 입력해 주세요"
-            className="w-full"
-            value={field.value}
-            onChange={field.onChange}
-          /> }
-        }
-      />
+      {/* ✅ 주소 */}
+        <Controller
+    name="address"
+    control={control}
+    rules={{ required: '주소는 필수입니다.' }}
+    render={({ field }) => 
+        { return <label className="flex flex-col w-full text-sm font-medium text-gray-900">
+        주소
+        <div className="flex gap-2 mt-2">
+            <input
+            {...field}
+            readOnly
+            className="flex-1 h-[54px] rounded-xl border px-4 bg-gray-50"
+            placeholder="주소를 검색해 주세요"
+            />
+            <button
+            type="button"
+            className="w-28 bg-gray-100 rounded-xl"
+            onClick={() => openPostcode({ onComplete: handleAddressSelect })}
+            >
+            주소 검색
+            </button>
+        </div>
+        </label> }
+    }
+    />
     </>
   );
 }
