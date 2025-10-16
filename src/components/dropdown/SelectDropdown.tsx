@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import Dropdown from '@/components/dropdown/Dropdown';
+import type { Variant } from '@/components/dropdown/type';
 
-const DEFAULT_WIDTH = 300;
 const DEFAULT_POSITION = 'top-15';
 
 interface DropdownOption {
@@ -12,6 +12,7 @@ interface DropdownOption {
 }
 
 interface DropdownProps {
+  variant?: Variant;
   width?: number;
   position?: string;
   options: DropdownOption[];
@@ -20,8 +21,20 @@ interface DropdownProps {
   defaultValue?: string;
 }
 
+/**
+ * placeholder 색상 지정
+ */
+function getDesign(variant: Variant, selected?: string) {
+  if (variant === 'detailPage') {
+    return selected ? 'text-gray-950' : 'text-gray-400';
+  }
+
+  return 'text-gray-950';
+}
+
 export default function SelectDropdown({
-  width = DEFAULT_WIDTH,
+  variant = 'detailPage',
+  width,
   position = DEFAULT_POSITION,
   options,
   placeholder = '선택하세요',
@@ -29,10 +42,6 @@ export default function SelectDropdown({
   defaultValue,
 }: DropdownProps) {
   const [selected, setSelected] = useState<string | undefined>(defaultValue);
-
-  // const handleClose = () => {
-  //   setIsOpen(false);
-  // };
 
   const handleSelect = (value: string) => {
     onSelect(value);
@@ -43,13 +52,13 @@ export default function SelectDropdown({
     ? options.find((o) => o.value === selected)?.label
     : placeholder;
 
+  const triggerDesign = getDesign(variant, selected);
+
   return (
     <div>
       <Dropdown width={width}>
-        <Dropdown.Trigger>
-          <div className={selected ? 'text-gray-950' : 'text-gray-400'}>
-            {label}
-          </div>
+        <Dropdown.Trigger variant={variant}>
+          <div className={triggerDesign}>{label}</div>
         </Dropdown.Trigger>
         <Dropdown.Menu position={position}>
           {options.map((option) => {
@@ -57,6 +66,7 @@ export default function SelectDropdown({
               <Dropdown.Items
                 key={option.value}
                 value={option.value}
+                variant={variant}
                 onSelect={handleSelect}
               >
                 {option.label}

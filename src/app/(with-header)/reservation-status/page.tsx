@@ -37,7 +37,8 @@ function CalendarCell({
   const dateString = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
   const dayData = MOCK_RESERVATION_DASHBOARD.find((d) => d.date === dateString);
 
-  const badges: Array<{ type: BadgeType; count: number }> = [];
+  const badges: { type: BadgeType; count: number }[] = [];
+
   if (dayData) {
     if (dayData.reservations.completed > 0) {
       badges.push({ type: 'completed', count: dayData.reservations.completed });

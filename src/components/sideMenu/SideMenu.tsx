@@ -66,7 +66,7 @@ export default function SideMenu({
 }: SideMenuProps) {
   const config = SIZE_CONFIG[size];
   const [activeItem, setActiveItem] = useState<MenuItemType>(
-    initialActiveItem as MenuItemType
+    initialActiveItem
   );
 
   const handleMenuClick = (itemId: MenuItemType) => {

@@ -13,8 +13,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-notosans: var(--font-notosans);
 
   --color-white: rgb(255, 255, 255);
   --color-black: rgb(0, 0, 0);
@@ -25,6 +24,7 @@
   --color-gray-25: rgb(248, 248, 248);
   --color-gray-50: rgb(237, 238, 242);
   --color-gray-100: rgb(224, 224, 229);
+  --color-gray-150: rgb(216, 216, 216);
   --color-gray-200: rgb(198, 200, 207);
   --color-gray-300: rgb(179, 180, 188);
   --color-gray-400: rgb(159, 160, 167);
@@ -53,8 +53,6 @@
   --text-18-body--line-height: 140%;
   --text-20-body: 1.25rem; /* 20px */
   --text-20-body--line-height: 160%;
-
-  --font-pretendard: var(--font-pretendard);
 }
 
 @utility flex-center {
@@ -73,4 +71,11 @@ button {
 }
 button:disabled {
   cursor: not-allowed;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }

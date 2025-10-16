@@ -57,6 +57,13 @@ const eslintConfig = [
       '@typescript-eslint/prefer-nullish-coalescing': 'off',
       '@regru/prefer-early-return/prefer-early-return': 'off',
       '@typescript-eslint/restrict-template-expressions': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-base-to-string': 'off',
+      'sonarjs/no-duplicate-string': 'off',
+      'regexp/no-obscure-range': 'off',
+      'unicorn/prefer-type-error': 'off',
+      'no-restricted-syntax/noClasses': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
     },
   },
 ];
