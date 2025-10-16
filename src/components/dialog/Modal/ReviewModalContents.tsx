@@ -38,6 +38,12 @@ export function ReviewModalContents({
     onTextChange(e.target.value);
   };
 
+  const onCloseModal = () => {
+    hideModal();
+    onTextChange('');
+    onRatingChange(0);
+  };
+
   /**
    * [1, 2, 3, 4, 5]
    */
@@ -46,7 +52,16 @@ export function ReviewModalContents({
   return (
     <div className='mx-auto w-82 md:w-96'>
       <div className='mb-7.5'>
-        <div className='flex justify-end'>x</div>
+        <div className='flex justify-end'>
+          <button className='relative h-6 w-6' onClick={onCloseModal}>
+            <Image
+              fill
+              alt='close'
+              src='/icons/delete.svg'
+              style={{ objectFit: 'cover' }}
+            />
+          </button>
+        </div>
         <div className='flex flex-col'>
           <div className='text-16 mb-1.5 flex justify-center font-bold text-[#112211]'>
             {title}
@@ -55,23 +70,23 @@ export function ReviewModalContents({
             {date} / {startTime} ~ {endTime}
           </div>
         </div>
-        <div className='flex justify-center'>
+        <div className='flex justify-center gap-1.5 md:gap-3'>
           {stars.map((n) => {
             const filled = rating >= n;
 
             return (
               <div key={n}>
                 <button
+                  className='relative flex h-9 w-9 items-center md:h-10.5 md:w-10.5'
                   onClick={() => {
                     onRatingChange(n);
                   }}
                 >
                   <Image
+                    fill
                     alt=''
                     src={filled ? '/icons/star.svg' : '/icons/empty-star.svg'}
                     className='star-lg'
-                    width={36}
-                    height={36}
                   />
                 </button>
               </div>
