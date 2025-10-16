@@ -33,7 +33,16 @@ export default function DropdownTrigger({
   const className = cx(BASE, getDesign(variant));
 
   return (
-    <button className={className} onClick={toggle}>
+    <button className={className} 
+       type="button" /**
+       * ✅ 기본 submit 방지
+       */
+      onClick={(e) => {
+        e.stopPropagation(); // 이벤트 상위 전파 방지
+        e.preventDefault(); // 혹시 모를 form submit 방지
+        toggle();
+      }}
+    >
       {children}
       <Image className='h-[24px] w-[24px]' src={ArrowDown} alt='메뉴 열기' />
     </button>
