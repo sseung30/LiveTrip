@@ -1,10 +1,12 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 'use client';
 
 import { useEffect, useRef } from 'react';
-import type { ExperienceInfoProps } from '@/components/experienceDetail/type';
+import type { GeocodeResult, LatLngInstance, MapInstance } from '@/types/kakao';
+
+interface KakaoMapProps {
+  address: string;
+  className?: string;
+}
 
 /** 카카오맵 SDK 로딩 최대 대기 시간 지정(30초) */
 const KAKAO_LOAD_TIMEOUT = 30000;
@@ -26,10 +28,7 @@ const createCustomOverlayContent = (locationName: string) => {
 `;
 };
 
-export default function ExperienceInfo({
-  description,
-  address,
-}: ExperienceInfoProps) {
+export default function KakaoMap({ address, className = '' }: KakaoMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -41,8 +40,19 @@ export default function ExperienceInfo({
     let attempts = 0;
     const maxAttempts = KAKAO_LOAD_TIMEOUT / 100;
 
-    const createCustomOverlay = (map: any, position: any) => {
-      new (window.kakao as any).maps.CustomOverlay({
+    const isKakaoLoaded = (): boolean => Boolean(window.kakao?.maps);
+
+    const createCustomOverlay = (
+      map: MapInstance,
+      position: LatLngInstance
+    ) => {
+      const { kakao } = window;
+
+      if (!kakao?.maps) {
+        return;
+      }
+
+      new kakao.maps.CustomOverlay({
         map,
         position,
         content: createCustomOverlayContent(address),
@@ -51,32 +61,37 @@ export default function ExperienceInfo({
     };
 
     const handleGeocodeResult = (
-      result: { x: string; y: string }[],
+      result: GeocodeResult[],
       status: string,
       container: HTMLElement
     ) => {
-      if (!isMounted || !mapRef.current) {
+      const { kakao } = window;
+
+      if (!isMounted || !mapRef.current || !kakao?.maps) {
         return;
       }
 
-      if (status === (window.kakao as any).maps.services.Status.OK) {
-        const coords = new (window.kakao as any).maps.LatLng(
-          result[0].y,
-          result[0].x
+      const { maps } = kakao;
+
+      if (status === maps.services.Status.OK && result.length > 0) {
+        const firstResult = result[0];
+        const coords = new maps.LatLng(
+          parseFloat(firstResult.y),
+          parseFloat(firstResult.x)
         );
-        const map = new (window.kakao as any).maps.Map(container, {
+        const map = new maps.Map(container, {
           center: coords,
           level: MAP_LEVEL,
         });
 
         createCustomOverlay(map, coords);
       } else {
-        const defaultCenter = new (window.kakao as any).maps.LatLng(
+        const defaultCenter = new maps.LatLng(
           SEOUL_CITY_HALL.lat,
           SEOUL_CITY_HALL.lng
         );
 
-        new (window.kakao as any).maps.Map(container, {
+        new maps.Map(container, {
           center: defaultCenter,
           level: MAP_LEVEL,
         });
@@ -84,30 +99,40 @@ export default function ExperienceInfo({
     };
 
     const initMap = () => {
-      if (!isMounted || !mapRef.current) {
+      const { kakao } = window;
+
+      if (!isMounted || !mapRef.current || !kakao?.maps) {
         return;
       }
 
-      const { kakao } = window;
+      const { maps } = kakao;
+      const { load } = maps;
 
-      kakao?.maps.load(() => {
-        if (!isMounted || !mapRef.current) {
+      load(() => {
+        const { kakao: kakaoInner } = window;
+
+        if (!isMounted || !mapRef.current || !kakaoInner?.maps) {
           return;
         }
 
         const container = mapRef.current;
-        const geocoder = new kakao.maps.services.Geocoder();
+        const { maps: kakaoMaps } = kakaoInner;
+        const { services } = kakaoMaps;
+        const geocoder = new services.Geocoder();
 
-        geocoder.addressSearch(address, (result: any[], status) => {
-          handleGeocodeResult(result, status, container);
-        });
+        geocoder.addressSearch(
+          address,
+          (result: GeocodeResult[], status: string) => {
+            handleGeocodeResult(result, status, container);
+          }
+        );
       });
     };
 
     const checkKakaoLoaded = setInterval(() => {
       attempts = attempts + 1;
 
-      if (window.kakao?.maps) {
+      if (isKakaoLoaded()) {
         clearInterval(checkKakaoLoaded);
         initMap();
       } else if (attempts >= maxAttempts) {
@@ -122,28 +147,10 @@ export default function ExperienceInfo({
   }, [address]);
 
   return (
-    <div className='space-y-8'>
-      {/* 체험 설명 */}
-      <div>
-        <h2 className='mb-4 text-2xl font-bold text-gray-900'>체험 설명</h2>
-        <p className='leading-relaxed text-gray-700'>{description}</p>
-      </div>
-
-      <div className='border-t border-gray-200'></div>
-
-      {/* 오시는 길 */}
-      <div>
-        <h2 className='mb-4 text-2xl font-bold text-gray-900'>오시는 길</h2>
-        <p className='mb-4 text-gray-700'>{address}</p>
-
-        <div
-          id='map'
-          ref={mapRef}
-          className='relative h-96 w-full overflow-hidden rounded-2xl bg-gray-100'
-        />
-      </div>
-
-      <div className='border-t border-gray-200'></div>
-    </div>
+    <div
+      id='map'
+      ref={mapRef}
+      className={`relative h-96 w-full overflow-hidden rounded-2xl bg-gray-100 ${className}`}
+    />
   );
 }

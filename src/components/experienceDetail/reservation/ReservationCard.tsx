@@ -1,10 +1,10 @@
 'use client';
 
-import Calendar from '@/components/experienceDetail/Calendar';
-import ExperienceHeader from '@/components/experienceDetail/ExperienceHeader';
-import MobileReservationBar from '@/components/experienceDetail/MobileReservationBar';
-import ParticipantCounter from '@/components/experienceDetail/ParticipantCounter';
-import TimeSelector from '@/components/experienceDetail/TimeSelector';
+import ExperienceHeader from '@/components/experienceDetail/experience/ExperienceHeader';
+import Calendar from '@/components/experienceDetail/reservation/Calendar';
+import MobileReservationBar from '@/components/experienceDetail/reservation/MobileReservationBar';
+import ParticipantCounter from '@/components/experienceDetail/reservation/ParticipantCounter';
+import TimeSelector from '@/components/experienceDetail/reservation/TimeSelector';
 import type { ReservationCardProps } from '@/components/experienceDetail/type';
 import { toast } from '@/components/toast';
 
@@ -135,12 +135,12 @@ export default function ReservationCard({
       {/* 모바일/태블릿용 하단 고정 예약 바 */}
       <MobileReservationBar
         experience={experience}
-        onDateChange={onDateChange}
-        onParticipantChange={onParticipantChange}
-        onTimeChange={onTimeChange}
         participantCount={participantCount}
         selectedDate={selectedDate}
         selectedTime={selectedTime}
+        onDateChange={onDateChange}
+        onParticipantChange={onParticipantChange}
+        onTimeChange={onTimeChange}
       />
     </>
   );

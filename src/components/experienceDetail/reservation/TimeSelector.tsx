@@ -1,3 +1,4 @@
+import Button from '@/components/button/Button';
 import type { Schedule } from '@/components/experienceDetail/type';
 
 interface TimeSelectorProps {
@@ -19,21 +20,20 @@ export default function TimeSelector({
       <div className='grid grid-cols-1 gap-2'>
         {schedules.map((schedule) => {
           const timeString = `${schedule.startTime}-${schedule.endTime}`;
+          const isSelected = selectedTime === timeString;
 
           return (
-            <button
+            <Button
               key={schedule.id}
-              className={`rounded-lg border p-3 text-center text-sm transition-colors ${
-                selectedTime === timeString
-                  ? 'border-primary-500 bg-primary-100 text-primary-500 font-bold'
-                  : 'border-gray-300 text-gray-700 hover:border-gray-400'
-              }`}
+              variant={isSelected ? 'label' : 'secondary'}
+              style={isSelected ? 'default' : 'accent'}
+              classNames={`!h-auto !py-3 ${isSelected ? '!border-2 !border-primary-500' : ''}`}
               onClick={() => {
                 onTimeChange(timeString);
               }}
             >
               {timeString}
-            </button>
+            </Button>
           );
         })}
       </div>

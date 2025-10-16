@@ -29,7 +29,7 @@ export default function ExperienceReviews({
 }: ExperienceReviewsProps) {
   const [currentPage, setCurrentPage] = useState(1);
 
-  // TODO: 이후 API 연동 시 서버에서 페이징된 데이터를 받아오도록 수정할 예정
+  // TODO: 이후 API 연동 시 데이터 받아오도록
   const currentReviews = reviews.slice(
     (currentPage - 1) * REVIEWS_PER_PAGE,
     currentPage * REVIEWS_PER_PAGE

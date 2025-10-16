@@ -1,33 +1,47 @@
 'use client';
 
 import { useState } from 'react';
-import ExperienceHeader from '@/components/experienceDetail/ExperienceHeader';
-import ExperienceInfo from '@/components/experienceDetail/ExperienceInfo';
-import ExperienceReviews from '@/components/experienceDetail/ExperienceReviews';
-import ImageGallery from '@/components/experienceDetail/ImageGallery';
-import MobileExperienceHeader from '@/components/experienceDetail/MobileExperienceHeader';
-import ReservationCard from '@/components/experienceDetail/ReservationCard';
+import ExperienceInfo from '@/components/experienceDetail/experience/ExperienceInfo';
+import ExperienceReviews from '@/components/experienceDetail/experience/ExperienceReviews';
+import ImageGallery from '@/components/experienceDetail/experience/ImageGallery';
+import MobileExperienceHeader from '@/components/experienceDetail/experience/MobileExperienceHeader';
+import ReservationCard from '@/components/experienceDetail/reservation/ReservationCard';
 import {
   MOCK_EXPERIENCE_DETAIL,
   MOCK_REVIEWS,
 } from '@/mocks/experienceDetailMock';
+
+/**
+ * 타입 안전한 이미지 배열 생성 함수
+ */
+const createImageArray = (
+  experience: typeof MOCK_EXPERIENCE_DETAIL
+): string[] => {
+  const { subImages } = experience as {
+    subImages: { id: number; imageUrl: string }[];
+  };
+
+  return [experience.bannerImageUrl, ...subImages.map((img) => img.imageUrl)];
+};
+
+/**
+ * 타입 안전한 리뷰 데이터 추출 함수
+ */
+const extractReviewData = (reviews: typeof MOCK_REVIEWS) => {
+  return {
+    reviews: (reviews as { reviews: any[] }).reviews,
+    totalCount: (reviews as { totalCount: number }).totalCount,
+    averageRating: (reviews as { averageRating: number }).averageRating,
+  };
+};
 
 export default function ExperienceDetailPage() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [participantCount, setParticipantCount] = useState(1);
 
-  const handleReservation = () => {
-    if (!selectedDate || !selectedTime) {
-      alert('날짜와 시간을 선택해주세요.');
-
-      return;
-    }
-
-    const totalPrice = MOCK_EXPERIENCE_DETAIL.price * participantCount;
-
-    alert(`예약이 완료되었습니다!\n총 금액: ₩${totalPrice.toLocaleString()}`);
-  };
+  const imageArray = createImageArray(MOCK_EXPERIENCE_DETAIL);
+  const reviewData = extractReviewData(MOCK_REVIEWS);
 
   return (
     <div className='min-h-screen'>
@@ -37,17 +51,9 @@ export default function ExperienceDetailPage() {
           {/* 좌측 콘텐츠 영역 */}
           <div className='space-y-6 lg:col-span-2 lg:space-y-8'>
             {/* 이미지 갤러리 */}
-            <ImageGallery
-              images={[
-                MOCK_EXPERIENCE_DETAIL.bannerImageUrl,
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-                ...(MOCK_EXPERIENCE_DETAIL as any).subImages.map(
-                  (img: { id: number; imageUrl: string }) => img.imageUrl
-                ),
-              ]}
-            />
+            <ImageGallery images={imageArray} />
 
-            {/* 모바일/태블릿에서만 표시되는 체험 간략 설명 */}
+            {/* 모바일/태블릿 버전 체험 간략 설명 */}
             <div className='lg:hidden'>
               <MobileExperienceHeader experience={MOCK_EXPERIENCE_DETAIL} />
             </div>
@@ -60,12 +66,9 @@ export default function ExperienceDetailPage() {
 
             {/* 체험 후기 */}
             <ExperienceReviews
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-              reviews={(MOCK_REVIEWS as any).reviews || []}
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-              totalReviews={(MOCK_REVIEWS as any).totalCount || 0}
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-              averageRating={(MOCK_REVIEWS as any).averageRating || 0}
+              reviews={reviewData.reviews}
+              totalReviews={reviewData.totalCount}
+              averageRating={reviewData.averageRating}
             />
           </div>
 
