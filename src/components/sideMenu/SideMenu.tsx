@@ -81,9 +81,10 @@ export default function SideMenu({
 
   return (
     <div
-      className={`rounded-lg bg-white shadow-sm ${className}`}
+      className={`rounded-lg bg-white shadow-sm ${className} ${
+        size === 'large' ? 'w-[291px] md:w-[20vw] md:min-w-[200px] lg:w-[291px]' : 'w-[178px]'
+      }`}
       style={{
-        width: config.container.width,
         height: config.container.height,
       }}
     >

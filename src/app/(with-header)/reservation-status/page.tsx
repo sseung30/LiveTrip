@@ -45,7 +45,7 @@ function CalendarCell({
     }
 
     if (dayData.reservations.confirmed > 0) {
-      badges.push({ type: 'approval', count: dayData.reservations.confirmed });
+      badges.push({ type: 'confirmed', count: dayData.reservations.confirmed });
     }
 
     if (dayData.reservations.pending > 0) {
@@ -97,7 +97,7 @@ function CalendarCell({
         {badges.map((badge, index) => {
           return (
             <CalendarBadge
-              key={`${dateString}-${badge.type}-${index}`}
+              key={`${dateString}-${badge.type}`}
               type={badge.type}
               count={badge.count}
             />
@@ -203,13 +203,13 @@ export default function ReservationStatusPage() {
 
   return (
     <div className='mx-auto flex max-w-[1200px] gap-4 px-4 py-4 sm:gap-6 sm:px-6 sm:py-6 md:gap-8 md:px-12 md:py-8'>
-      {/* 왼쪽: SideMenu (태블릿 이상에서만 표시) */}
-      <aside className='hidden lg:block'>
+      {/* 왼쪽: SideMenu (모바일에서만 숨김) */}
+      <aside className='hidden md:block lg:w-auto'>
         <SideMenu size='large' activeItem='reservationStatus' />
       </aside>
 
       {/* 오른쪽: 메인 콘텐츠 */}
-      <main className='w-full lg:max-w-[720px]'>
+      <main className='w-full md:flex-1 lg:max-w-[720px]'>
         {/* 헤더 */}
         <div className='mb-4 sm:mb-6'>
           <h1 className='mb-2 text-xl font-bold text-gray-900 sm:text-2xl'>예약 현황</h1>

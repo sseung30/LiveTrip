@@ -1,5 +1,5 @@
-// 뱃지 타입 (reservation, approval, completed)
-export type BadgeType = 'reservation' | 'approval' | 'completed';
+// 뱃지 타입 (reservation, confirmed, completed)
+export type BadgeType = 'reservation' | 'confirmed' | 'completed';
 
 // 뱃지 스타일 객체의 구조를 정의 (데이터는 포함하지 않음)
 export interface BadgeStyle {

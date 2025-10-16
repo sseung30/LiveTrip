@@ -8,7 +8,7 @@ const BADGE_STYLES: BadgeStyleMap = {
     textColor: 'text-primary-500', 
   },
   // 승인 
-  approval: {
+  confirmed: {
     text: '승인',
     bgColor: 'bg-orange-100',    
     textColor: 'text-orange-400', 
@@ -28,8 +28,8 @@ export default function Badge({ type, count }: BadgeProps) {
     <div
       className={`
         inline-flex items-center justify-center 
-        px-2 py-0.5 
-        text-xs md:text-sm font-normal
+        px-1.5 py-0.5 
+        text-xs font-normal
         rounded-sm transition-colors
         ${styles.bgColor} 
         ${styles.textColor}
