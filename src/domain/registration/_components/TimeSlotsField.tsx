@@ -1,7 +1,7 @@
 // Registration/components/TimeSlotsField.tsx
 
-import type { TimeSlot } from '@/domain/registration/_utils/createEmptyTimeSlot';
 import { RoundIconButton } from '@/domain/registration/_components/RoundIconButton';
+import type { TimeSlot } from '@/domain/registration/_utils/createEmptyTimeSlot';
 
 interface TimeSlotsFieldProps {
   timeSlots: TimeSlot[];
