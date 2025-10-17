@@ -1,3 +1,5 @@
+'use client';
+
 import { useSearchParams } from 'next/navigation';
 import GridCardList from '@/domain/home/components/GridCardList';
 import { getActivityList } from '@/domain/home/mock';
