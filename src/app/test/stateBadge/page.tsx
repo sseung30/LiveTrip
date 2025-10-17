@@ -65,14 +65,14 @@ export default function StateBadgeTestPage() {
             type='email'
             value={emailValue}
             error={emailError}
-            onChange={setEmailValue}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => { setEmailValue(e.target.value); }}
           />
           <Input
             label='비밀번호'
             placeholder='비밀번호를 입력해 주세요'
             type='password'
             value={passwordValue}
-            onChange={setPasswordValue}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => { setEmailValue(e.target.value); }}
           />
         </div>
       </div>
