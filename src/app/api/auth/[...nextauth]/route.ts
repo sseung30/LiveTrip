@@ -90,8 +90,6 @@ export const {
       const isInitLogin = Boolean(account);
 
       if (isInitLogin) {
-        console.debug('Initial signin');
-
         return {
           ...token,
           data: user,
@@ -103,17 +101,11 @@ export const {
         Date.now() < token.data.validity.refreshUntil * 1000;
 
       if (isAccessTokenValid) {
-        console.debug('Access token is still valid');
-
         return token;
       }
       if (isRefreshTokenValid) {
-        console.debug('Access token is being refreshed');
-
         return await refreshAccessToken(token);
       }
-
-      console.debug('Both tokens have expired');
 
       return { ...token, error: 'RefreshTokenExpired' } as JWT;
     },
