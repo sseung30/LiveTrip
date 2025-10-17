@@ -21,5 +21,11 @@ export default auth((req) => {
 });
 
 export const config = {
-  matcher: ['/profile', '/reservation-status', '/registration'],
+  matcher: [
+    '/profile',
+    '/reservation-status',
+    '/myactivities',
+    '/myreservation',
+    '/registration',
+  ],
 };
