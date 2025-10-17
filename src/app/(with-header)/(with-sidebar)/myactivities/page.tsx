@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Button from '@/components/button/Button';
 import ActivitiyCard from '@/domain/myactivities/components/ActivityCard';
-import mockData from '@/mocks/mockMyActivities2.json'; // 🗄️ 목 데이터
+import mockData from '@/mocks/mockMyActivities.json'; // 🗄️ 목 데이터
 
 export default function Page() {
   // 🗄️ 목 데이터
