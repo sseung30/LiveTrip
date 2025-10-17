@@ -13,23 +13,29 @@ const SIGNIN_ENDPOINT = '/auth/login';
 const SIGNUP_ENDPOINT = '/users';
 const NEW_TOKEN_ENDPOINT = '/auth/tokens';
 
-export const fetchNewToken = async (
+export async function fetchNewToken(
   refreshToken: string
-): Promise<NewTokenResponse> => {
-  try {
-    const res = await apiFetch<NewTokenResponse>(NEW_TOKEN_ENDPOINT, {
+): Promise<NewTokenResponse> {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}${NEW_TOKEN_ENDPOINT}`,
+    {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${refreshToken}`,
-        _retry: 'true',
       },
-    });
+    }
+  );
 
-    return newTokenResponseSchema.parse(res);
-  } catch (error) {
-    throw new Error('Refresh token expired');
+  if (!res.ok) {
+    const message = await res.text();
+
+    throw new Error(message);
   }
-};
+  const result = await res.json();
+
+  return newTokenResponseSchema.parse(result);
+}
+
 export const mutateSignin = async (
   signinInputs: SigninInputs
 ): Promise<SignInResponse> => {

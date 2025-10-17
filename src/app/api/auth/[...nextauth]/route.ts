@@ -44,6 +44,7 @@ export const {
           const refresh: DecodedJWT = {
             ...jwtDecode(tokens.refresh),
           };
+
           const validity: AuthValidity = {
             validUntil: access.exp,
             refreshUntil: refresh.exp,
@@ -108,9 +109,8 @@ export const {
       }
       if (isRefreshTokenValid) {
         console.debug('Access token is being refreshed');
-        const res = await refreshAccessToken(token);
 
-        return res;
+        return await refreshAccessToken(token);
       }
 
       console.debug('Both tokens have expired');
