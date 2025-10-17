@@ -12,6 +12,7 @@ interface DropdownOption {
 }
 
 interface DropdownProps {
+  label?: string;
   variant?: Variant;
   width?: number;
   position?: string;

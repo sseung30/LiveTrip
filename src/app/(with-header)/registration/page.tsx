@@ -4,15 +4,15 @@ import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
 import { Controller, type FieldErrors, useForm } from 'react-hook-form';
 import { apiFetch } from '@/api/api';
-import { BasicInfoFields } from '@/app/(with-header)/registration/_components/BasicInfoFields';
-import { ImageUploader } from '@/app/(with-header)/registration/_components/ImageUploader';
-import { TimeSlotsField } from '@/app/(with-header)/registration/_components/TimeSlotsField';
-import { useImageUpload } from '@/app/(with-header)/registration/_hooks/useImageUpload';
-import { buildRegistrationPayload } from '@/app/(with-header)/registration/_utils/buildRegistrationPayload';
-import { createEmptyTimeSlot, type TimeSlot } from '@/app/(with-header)/registration/_utils/createEmptyTimeSlot';
-import { validateRegistration } from '@/app/(with-header)/registration/_utils/validateRegistration';
 import Button from '@/components/button/Button';
 import { toast } from '@/components/toast';
+import { BasicInfoFields } from '@/domain/registration/_components/BasicInfoFields';
+import { ImageUploader } from '@/domain/registration/_components/ImageUploader';
+import { TimeSlotsField } from '@/domain/registration/_components/TimeSlotsField';
+import { useImageUpload } from '@/domain/registration/_hooks/useImageUpload';
+import { buildRegistrationPayload } from '@/domain/registration/_utils/buildRegistrationPayload';
+import { createEmptyTimeSlot, type TimeSlot } from '@/domain/registration/_utils/createEmptyTimeSlot';
+import { validateRegistration } from '@/domain/registration/_utils/validateRegistration';
 
 interface FormValues {
   title: string;

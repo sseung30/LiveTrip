@@ -52,6 +52,7 @@ export function BasicInfoFields({ control, register, setValue, categoryOptions }
         rules={{ required: '카테고리는 필수입니다.' }}
         render={({ field }) => 
           { return <SelectDropdown
+            label="카테고리"
             options={categoryOptions}
             placeholder="카테고리를 선택해 주세요"
             defaultValue={field.value || undefined}
