@@ -3,11 +3,12 @@
 import Image from 'next/image';
 import Button from '@/components/button/Button';
 import ActivitiyCard from '@/domain/myactivities/components/ActivityCard';
-import mockData from '@/mocks/mockMyActivities.json'; // 🗄️ 목 데이터
+import type { Activity, MyActivities } from '@/domain/myactivities/type';
+import mockData from '@/mocks/mockMyActivities2.json'; // 🗄️ 목 데이터
 
 export default function Page() {
   // 🗄️ 목 데이터
-  const { activities, totalCount } = mockData;
+  const { activities, totalCount } = mockData as MyActivities;
 
   const hasActivities = Boolean(totalCount);
 
@@ -39,7 +40,7 @@ export default function Page() {
         </div>
         <div className='scrollbar-hide flex h-full flex-col gap-6 overflow-y-auto'>
           {hasActivities &&
-            activities.map((a) => {
+            activities.map((a: Activity) => {
               return (
                 <div key={a.id}>
                   <ActivitiyCard
