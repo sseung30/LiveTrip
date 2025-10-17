@@ -44,7 +44,7 @@ function CalendarCell({
     }
 
     if (dayData.reservations.confirmed > 0) {
-      badges.push({ type: 'confirmed', count: dayData.reservations.confirmed });
+      badges.push({ type: 'approval', count: dayData.reservations.confirmed });
     }
 
     if (dayData.reservations.pending > 0) {
