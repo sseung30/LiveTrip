@@ -34,6 +34,7 @@ function getDesign(variant: Variant, selected?: string) {
 }
 
 export default function SelectDropdown({
+  label: titleLabel,
   variant = 'detailPage',
   width,
   position = DEFAULT_POSITION,
@@ -49,7 +50,7 @@ export default function SelectDropdown({
     setSelected(value);
   };
 
-  const label = selected
+  const displayLabel = selected
     ? options.find((o) => o.value === selected)?.label
     : placeholder;
 
@@ -57,9 +58,10 @@ export default function SelectDropdown({
 
   return (
     <div>
+      {titleLabel && <label className="block mb-2 text-sm text-black">{titleLabel}</label>}
       <Dropdown width={width}>
         <Dropdown.Trigger variant={variant}>
-          <div className={triggerDesign}>{label}</div>
+          <div className={triggerDesign}>{displayLabel}</div>
         </Dropdown.Trigger>
         <Dropdown.Menu position={position}>
           {options.map((option) => {
