@@ -38,13 +38,13 @@ export default function ReservationPopup({
     id: number;
   } | null>(null);
   const popupRef = useRef<HTMLDivElement>(null);
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+   
   const { dialogRef, hideDialog } = useDialog();
   const {
     dialogRef: confirmDialogRef,
     openDialog: openConfirmDialog,
     hideDialog: hideConfirmDialog,
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+     
   } = useDialog();
 
   useEffect(() => {
@@ -64,13 +64,13 @@ export default function ReservationPopup({
   }, []);
 
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+     
     if (isOpen && isBottomSheet && dialogRef.current) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+       
       dialogRef.current.showModal();
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+       
     } else if (!isOpen && isBottomSheet && dialogRef.current) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+       
       dialogRef.current.close();
     }
   }, [isOpen, isBottomSheet, dialogRef]);
@@ -93,12 +93,12 @@ export default function ReservationPopup({
   }, [reservations]);
 
   const scheduleOptions = useMemo(() => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+     
     return schedules.map((schedule) => {
       return {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+         
         label: `${schedule.startTime} - ${schedule.endTime}`,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+         
         value: String(schedule.scheduleId),
       };
     });
@@ -109,13 +109,13 @@ export default function ReservationPopup({
 
   const handleApprove = (id: number) => {
     setConfirmAction({ type: 'approve', id });
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+     
     openConfirmDialog();
   };
 
   const handleReject = (id: number) => {
     setConfirmAction({ type: 'reject', id });
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+     
     openConfirmDialog();
   };
 
@@ -130,13 +130,13 @@ export default function ReservationPopup({
       onReject?.(confirmAction.id);
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+     
     hideConfirmDialog();
     setConfirmAction(null);
   };
 
   const handleCancel = () => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+     
     hideConfirmDialog();
     setConfirmAction(null);
   };
@@ -235,7 +235,7 @@ export default function ReservationPopup({
             <h3 className='mb-2 text-base font-semibold text-gray-900'>
               예약 시간
             </h3>
-            {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */}
+            { }
             {scheduleOptions.length > 0 && (
               <div className={isBottomSheet ? 'w-full' : ''}>
                 <SelectDropdown
@@ -260,14 +260,14 @@ export default function ReservationPopup({
             <h3 className='mb-2 text-base font-semibold text-gray-900'>
               예약 내역
             </h3>
-            {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */}
+            { }
             {filteredReservations.length > 0 && (
               <div className='space-y-3'>
-                {/* eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access */}
+                { }
                 {filteredReservations.map((reservation) => {
                   return (
                     <ReservationCard
-                      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                       
                       key={reservation.id}
                       reservation={reservation}
                       activeTab={activeTab}
