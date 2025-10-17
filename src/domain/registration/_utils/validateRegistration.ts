@@ -1,4 +1,4 @@
-import type { TimeSlot } from '@/app/(with-header)/registration/_utils/createEmptyTimeSlot';
+import type { TimeSlot } from '@/domain/registration/_utils/createEmptyTimeSlot';
 
 export interface RegistrationValidationInput {
   title: string;
