@@ -1,20 +1,19 @@
-'use client';
-
 import Image from 'next/image';
+import { apiFetch } from '@/api/api';
 import Button from '@/components/button/Button';
 import ActivitiyCard from '@/domain/myactivities/components/ActivityCard';
+import RegisterActivity from '@/domain/myactivities/components/RegitsterActivity';
 import type { Activity, MyActivities } from '@/domain/myactivities/type';
-import mockData from '@/mocks/mockMyActivities2.json'; // 🗄️ 목 데이터
+// import mockData from '@/mocks/mockMyActivities.json'; // 🗄️ 목 데이터
 
-export default function Page() {
+export default async function Page() {
   // 🗄️ 목 데이터
-  const { activities, totalCount } = mockData as MyActivities;
+  // const { activities, totalCount } = mockData as MyActivities;
+
+  const { activities, totalCount } =
+    await apiFetch<MyActivities>('/my-activities');
 
   const hasActivities = Boolean(totalCount);
-
-  const handleClick = () => {
-    console.log('clicked');
-  };
 
   return (
     <main className='w-full'>
@@ -29,13 +28,7 @@ export default function Page() {
             </p>
           </div>
           <div className='hidden sm:block'>
-            <Button
-              variant='primary'
-              classNames='w-[138px]'
-              onClick={handleClick}
-            >
-              체험 등록하기
-            </Button>
+            <RegisterActivity />
           </div>
         </div>
         <div className='scrollbar-hide flex h-full flex-col gap-6 overflow-y-auto'>
