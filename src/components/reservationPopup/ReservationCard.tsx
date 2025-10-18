@@ -59,9 +59,9 @@ export default function ReservationCard({
           </div>
         )}
 
-        {activeTab === 'confirmed' && <StateBadge state='approved' />}
+        {activeTab === 'confirmed' && <StateBadge state='confirmed' />}
 
-        {activeTab === 'declined' && <StateBadge state='rejected' />}
+        {activeTab === 'declined' && <StateBadge state='declined' />}
       </div>
     </div>
   );
