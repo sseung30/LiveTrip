@@ -52,6 +52,7 @@ export function BasicInfoFields({ control, register, setValue, categoryOptions }
         rules={{ required: '카테고리는 필수입니다.' }}
         render={({ field }) => 
           { return <SelectDropdown
+            label="카테고리"
             options={categoryOptions}
             placeholder="카테고리를 선택해 주세요"
             defaultValue={field.value || undefined}
@@ -62,6 +63,7 @@ export function BasicInfoFields({ control, register, setValue, categoryOptions }
 
       {/* 설명 */}
       <div className="flex flex-col gap-3">
+        <label htmlFor="description" className="text-sm font-medium text-gray-900">설명</label>
         <textarea
           className="min-h-[180px] w-full rounded-3xl border border-gray-100 bg-white px-5 py-4 text-base text-gray-900 placeholder:text-gray-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-100"
           placeholder="체험에 대한 설명을 입력해 주세요"

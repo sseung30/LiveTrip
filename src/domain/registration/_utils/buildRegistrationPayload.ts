@@ -1,6 +1,6 @@
 // Registration/utils/buildRegistrationPayload.ts
 
-import type { TimeSlot } from '@/app/(with-header)/registration/_utils/createEmptyTimeSlot';
+import type { TimeSlot } from '@/domain/registration/_utils/createEmptyTimeSlot';
 
 interface PayloadInput {
   formData: {

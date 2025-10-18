@@ -6,7 +6,7 @@ import type { Variant } from '@/components/dropdown/type';
 import { cx } from '@/utils/cx';
 
 interface DropDownTriggerProps {
-  variant: Variant;
+  variant?: Variant;
   children: ReactNode;
 }
 
@@ -15,7 +15,7 @@ const DESIGN = {
   mainPage: 'justify-center',
 };
 
-function getDesign(variant: Variant) {
+function getDesign(variant: Variant = 'mainPage') {
   if (variant === 'detailPage') {
     return DESIGN.detailPage;
   }
@@ -24,7 +24,7 @@ function getDesign(variant: Variant) {
 }
 
 export default function DropdownTrigger({
-  variant,
+  variant = 'mainPage',
   children,
 }: DropDownTriggerProps) {
   const { toggle } = useDropdownContext();

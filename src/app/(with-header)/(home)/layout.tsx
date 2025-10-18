@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { type ReactNode, Suspense } from 'react';
 import HeroBanner from '@/domain/home/components/HeroBanner';
 import SearchForm from '@/domain/home/SearchForm';
 
@@ -10,7 +10,9 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
         <h1 className='text-16 md:text-32 text-center font-bold'>
           무엇을 체험하고 싶으신가요?
         </h1>
-        <SearchForm />
+        <Suspense fallback={<div>Loading...</div>}>
+          <SearchForm />
+        </Suspense>
       </div>
       {children}
     </main>
