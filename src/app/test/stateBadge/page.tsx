@@ -75,7 +75,7 @@ export default function StateBadgeTestPage() {
             type='password'
             value={passwordValue}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              setPasswordValue(e.target.value);
+              setEmailValue(e.target.value);
             }}
           />
         </div>
