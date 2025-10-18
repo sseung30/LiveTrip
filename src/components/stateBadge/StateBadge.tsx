@@ -1,10 +1,6 @@
-import type {
-  StateBadgeProps,
-  StateConfig,
-  StateType,
-} from '@/components/stateBadge/type';
+import type { StateBadgeProps } from '@/components/stateBadge/type';
 
-const STATE_CONFIG: Record<StateType, StateConfig> = {
+const STATE_CONFIG = {
   canceled: {
     text: '예약 취소',
     className: 'bg-gray-100 text-gray-600',
@@ -27,13 +23,23 @@ const STATE_CONFIG: Record<StateType, StateConfig> = {
   },
 };
 
+function isValidState(state: string): state is keyof typeof STATE_CONFIG {
+  return state in STATE_CONFIG;
+}
+
 export default function StateBadge({ state, className = '' }: StateBadgeProps) {
+  if (!isValidState(state)) {
+    console.warn(`Invalid state: ${state}`);
+
+    return null;
+  }
+
   const stateConfig = STATE_CONFIG[state];
 
   return (
     <span
-      className={`inline-flex items-center justify-center rounded-full px-3 py-1.5 text-sm font-bold ${stateConfig.className || ''} ${className}`}
-      style={stateConfig.style || undefined}
+      className={`inline-flex items-center justify-center rounded-full px-3 py-1.5 text-sm font-bold ${'className' in stateConfig ? stateConfig.className : ''} ${className}`}
+      style={'style' in stateConfig ? stateConfig.style : undefined}
     >
       {stateConfig.text}
     </span>
