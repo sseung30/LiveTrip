@@ -1,9 +1,9 @@
 export type StateType =
-  | 'cancelled'
-  | 'completed'
-  | 'rejected'
-  | 'experience_completed'
-  | 'approved';
+  | 'pending'
+  | 'confirmed'
+  | 'declined'
+  | 'canceled'
+  | 'completed';
 
 export interface StateConfig {
   text: string;
