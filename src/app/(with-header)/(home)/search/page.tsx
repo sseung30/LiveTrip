@@ -11,10 +11,10 @@ export default async function HomeSearchPage({
   const { q } = await searchParams;
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
     <section className=''>
-      <SearchResult q={q} />
+      <Suspense key={q} fallback={<div>Loading...</div>}>
+        <SearchResult q={q} />
+      </Suspense>
     </section>
-    </Suspense>
   );
 }
