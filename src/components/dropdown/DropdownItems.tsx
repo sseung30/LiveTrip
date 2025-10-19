@@ -4,7 +4,7 @@ import type { Variant } from '@/components/dropdown/type';
 import { cx } from '@/utils/cx';
 
 interface DropdownItemsProps {
-  variant: Variant;
+  variant?: Variant;
   children: ReactNode;
   value: string;
   onSelect: (value: string) => void;
@@ -15,7 +15,7 @@ const DESIGN = {
   mainPage: 'justify-center',
 };
 
-function getDesign(variant: Variant) {
+function getDesign(variant: Variant = 'mainPage') {
   if (variant === 'detailPage') {
     return DESIGN.detailPage;
   }
@@ -24,7 +24,7 @@ function getDesign(variant: Variant) {
 }
 
 export default function DropdownItems({
-  variant,
+  variant = 'mainPage',
   children,
   value,
   onSelect,
@@ -37,10 +37,14 @@ export default function DropdownItems({
 
   return (
     <button
-      onClick={() => {
-        onSelect(value);
-        close();
-      }}
+        type="button"
+        className={className}
+        onClick={(e) => {
+          e.stopPropagation(); // 이벤트 버블링 방지
+          e.preventDefault();  // 혹시 모를 form submit 방지
+          onSelect(value);
+          close();
+        }}
     >
       <li className={className}>{children}</li>
     </button>

@@ -24,11 +24,11 @@ export default function StateBadgeTestPage() {
           StateBadge 컴포넌트
         </h2>
         <div className='flex flex-wrap gap-2'>
-          <StateBadge state='cancelled' />
-          <StateBadge state='rejected' />
+          <StateBadge state='canceled' />
+          <StateBadge state='pending' />
+          <StateBadge state='declined' />
           <StateBadge state='completed' />
-          <StateBadge state='experience_completed' />
-          <StateBadge state='approved' />
+          <StateBadge state='confirmed' />
         </div>
       </div>
 
@@ -65,14 +65,14 @@ export default function StateBadgeTestPage() {
             type='email'
             value={emailValue}
             error={emailError}
-            onChange={setEmailValue}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => { setEmailValue(e.target.value); }}
           />
           <Input
             label='비밀번호'
             placeholder='비밀번호를 입력해 주세요'
             type='password'
             value={passwordValue}
-            onChange={setPasswordValue}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => { setEmailValue(e.target.value); }}
           />
         </div>
       </div>
@@ -102,7 +102,7 @@ export default function StateBadgeTestPage() {
             }}
           />
           <CardList
-            state='cancelled'
+            state='canceled'
             title='내 강아지 사진 찍어주기'
             date='2023.02.11'
             startTime='13:00'
@@ -120,7 +120,7 @@ export default function StateBadgeTestPage() {
             }}
           />
           <CardList
-            state='experience_completed'
+            state='completed'
             title='열기구 페스티벌'
             date='2025.08.28'
             startTime='11:00'

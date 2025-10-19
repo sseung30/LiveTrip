@@ -1,32 +1,39 @@
-import type {
-  StateBadgeProps,
-  StateConfig,
-} from '@/components/stateBadge/type';
+import type { StateBadgeProps } from '@/components/stateBadge/type';
 
 const STATE_CONFIG = {
-  cancelled: {
+  canceled: {
     text: '예약 취소',
     className: 'bg-gray-100 text-gray-600',
   },
-  completed: {
+  pending: {
     text: '예약 완료',
     style: { backgroundColor: '#E9FBE4', color: '#2BA90D' },
   },
-  rejected: {
+  declined: {
     text: '예약 거절',
     style: { backgroundColor: '#FCECEA', color: '#F96767' },
   },
-  experience_completed: {
+  completed: {
     text: '체험 완료',
     style: { backgroundColor: '#DAF0FF', color: '#0D6CD1' },
   },
-  approved: {
+  confirmed: {
     text: '예약 승인',
     style: { backgroundColor: '#DDF9F9', color: '#1790A0' },
   },
 };
 
+function isValidState(state: string): state is keyof typeof STATE_CONFIG {
+  return state in STATE_CONFIG;
+}
+
 export default function StateBadge({ state, className = '' }: StateBadgeProps) {
+  if (!isValidState(state)) {
+    console.warn(`Invalid state: ${state}`);
+
+    return null;
+  }
+
   const stateConfig = STATE_CONFIG[state];
 
   return (

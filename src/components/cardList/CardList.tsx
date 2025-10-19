@@ -25,7 +25,7 @@ export default function CardList({
   onWriteReview,
 }: CardListProps) {
   const showActionButtons = state === 'completed';
-  const showReviewButton = state === 'experience_completed';
+  const showReviewButton = state === 'completed';
   const timeRange = `${startTime} - ${endTime}`;
   const formattedPrice = `₩${price.toLocaleString()}`;
 

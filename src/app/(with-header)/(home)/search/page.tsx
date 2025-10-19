@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import SearchResult from '@/domain/home/components/SearchResult';
 
 export default async function HomeSearchPage({
@@ -11,7 +12,9 @@ export default async function HomeSearchPage({
 
   return (
     <section className=''>
-      <SearchResult q={q} />
+      <Suspense key={q} fallback={<div>Loading...</div>}>
+        <SearchResult q={q} />
+      </Suspense>
     </section>
   );
 }
