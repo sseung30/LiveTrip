@@ -77,11 +77,14 @@ export const {
             email: res.user.email,
             profileImageUrl: res.user.profileImageUrl,
           };
+          const isKakao = user.email.split('@')[1].includes('kakao.com');
+          const type = isKakao ? 'kakao' : 'normal';
 
           return {
             refreshId: refresh.id,
             tokens,
             user,
+            type,
             validity,
           } as User;
         } catch (error) {
@@ -142,6 +145,7 @@ export const {
       session.validity = token.data.validity;
       session.error = token.error;
       session.accessToken = token.data.tokens.access;
+      session.type = token.data.type;
 
       return session;
     },

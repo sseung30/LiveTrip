@@ -9,7 +9,6 @@ import {
   type SignUpResponse,
 } from '@/domain/auth/type';
 import {
-  KAKAO_LOGOUT_URI,
   NEW_TOKEN_ENDPOINT,
   SIGNIN_ENDPOINT,
   SIGNUP_ENDPOINT,
@@ -122,15 +121,3 @@ export const mutateKaKaoSignUp = async ({
 
   return json as Promise<SignInResponse>;
 };
-
-// export const mutateKaKaoLogout = async ({}) => {
-//   const auth = await getAuth();
-//   const res = await fetch(KAKAO_LOGOUT_URI, {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json',
-//       Authorization: `Bearer ${auth?.accessToken}`,
-//     },
-//     body: JSON.stringify({}),
-//   });
-// };

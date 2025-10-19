@@ -26,10 +26,12 @@ declare module 'next-auth' {
     validUntil: number;
     refreshUntil: number;
   }
+  export type SessionType = 'kakao' | 'normal';
 
   export interface User {
     refreshId: number;
     tokens: BackendJWT;
+    type: SessionType;
     user: UserObject;
     validity: AuthValidity;
     error?: string;
@@ -39,6 +41,7 @@ declare module 'next-auth' {
     user: UserObject;
     validity: AuthValidity;
     accessToken: JWT;
+    type: SessionType;
     error: 'RefreshTokenExpired' | 'RefreshAccessTokenError';
   }
 }
