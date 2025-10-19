@@ -15,7 +15,7 @@ export const signupInputSchema = z.object({
 export const signinInputSchema = z.object({
   email: z.email(),
   password: z.string().min(8).max(20).regex(passwordRegex),
-  type: z.string(),
+  type: z.string().optional(),
 });
 export const signinResponseSchema = z.object({
   accessToken: z.string(),

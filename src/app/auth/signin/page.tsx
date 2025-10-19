@@ -2,7 +2,6 @@ import Link from 'next/link';
 import KaKaoAuthButton from '@/domain/auth/components/KaKaoAuthButton';
 import Logo from '@/domain/auth/components/Logo';
 import SignInForm from '@/domain/auth/components/SignInForm';
-import { KAKAO_SIGNIN_URI } from '@/domain/auth/util';
 
 export default function SignInPage() {
   return (
@@ -16,7 +15,10 @@ export default function SignInPage() {
             <div>or</div>
             <div className='h-[1px] grow bg-gray-100' />
           </div>
-          <KaKaoAuthButton text='카카오 로그인' kakaoUri={KAKAO_SIGNIN_URI} />
+          <KaKaoAuthButton
+            text='카카오 로그인'
+            kakaoUri={`${process.env.NEXT_PUBLIC_KAKAO_SIGNIN_CALLBACK_URI}`}
+          />
           <div className='flex-center gap-1 font-medium text-gray-400'>
             <span>회원이 아니신가요?</span>
             <Link

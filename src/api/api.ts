@@ -1,4 +1,4 @@
-import { getAuth } from '@/domain/auth/util';
+import { getAuth } from '@/utils/getAuth';
 
 const BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}`;
 

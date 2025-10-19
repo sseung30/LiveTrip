@@ -3,7 +3,7 @@ import {
   KakaoAlreadySignupError,
   signIn,
 } from '@/app/api/auth/[...nextauth]/route';
-import { getKaKaoAuthroizeURL, KAKAO_SIGNIN_URI } from '@/domain/auth/util';
+import { getKaKaoAuthroizeURL } from '@/domain/auth/util';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -33,7 +33,11 @@ export async function GET(request: Request) {
   } catch (error) {
     if (error instanceof KakaoAlreadySignupError) {
       return NextResponse.redirect(
-        new URL(getKaKaoAuthroizeURL(KAKAO_SIGNIN_URI))
+        new URL(
+          getKaKaoAuthroizeURL(
+            `${process.env.NEXT_PUBLIC_KAKAO_SIGNIN_CALLBACK_URI}`
+          )
+        )
       );
     }
 

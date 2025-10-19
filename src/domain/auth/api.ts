@@ -9,10 +9,7 @@ import {
   type SignUpResponse,
 } from '@/domain/auth/type';
 import {
-  getAuth,
   KAKAO_LOGOUT_URI,
-  KAKAO_SIGNIN_URI,
-  KAKAO_SIGNUP_URI,
   NEW_TOKEN_ENDPOINT,
   SIGNIN_ENDPOINT,
   SIGNUP_ENDPOINT,
@@ -82,7 +79,7 @@ export const mutateKaKaoSignIn = async (
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        redirectUri: KAKAO_SIGNIN_URI,
+        redirectUri: `${process.env.NEXT_PUBLIC_KAKAO_SIGNIN_CALLBACK_URI}`,
         token,
       }),
     }
@@ -112,7 +109,7 @@ export const mutateKaKaoSignUp = async ({
       },
       body: JSON.stringify({
         nickname,
-        redirectUri: KAKAO_SIGNUP_URI,
+        redirectUri: `${process.env.NEXT_PUBLIC_KAKAO_SIGNUP_CALLBACK_URI}`,
         token,
       }),
     }
