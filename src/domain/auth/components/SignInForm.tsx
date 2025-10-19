@@ -22,6 +22,7 @@ export default function SignInForm() {
   const onSubmit: SubmitHandler<SigninInputs> = async (signinInputs) => {
     const res = await signIn('credentials', {
       ...signinInputs,
+      type: 'signin',
       redirect: false,
     });
 

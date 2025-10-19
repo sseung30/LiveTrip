@@ -1,6 +1,5 @@
 /* eslint-disable require-atomic-updates */
 import { jwtDecode } from 'jwt-decode';
-import { redirect } from 'next/navigation';
 import NextAuth, {
   type AuthValidity,
   type BackendJWT,
@@ -20,7 +19,6 @@ import {
   mutateSignup,
 } from '@/domain/auth/api';
 import { signinInputSchema, signupInputSchema } from '@/domain/auth/type';
-import { getKaKaoAuthroizeURL, KAKAO_SIGNUP_URI } from '@/domain/auth/util';
 
 class InvalidLoginError extends CredentialsSignin {
   code = 'Invalid identifier or password';
@@ -151,46 +149,49 @@ export const {
 });
 
 const _sign = async (credentials: Partial<Record<string, unknown>>) => {
-  if (credentials.type === 'kakao-signup') {
-    try {
-      const res = await mutateKaKaoSignUp({
-        nickname: credentials.nickname as string,
-        token: credentials.token as string,
-      });
+  switch (credentials.type) {
+    case 'kakao-signup': {
+      try {
+        const res = await mutateKaKaoSignUp({
+          nickname: credentials.nickname as string,
+          token: credentials.token as string,
+        });
 
-      return res;
-    } catch (error) {
-      if (error instanceof ApiError && error.status === 400) {
-        // 이미 등록된 사용자
-        throw new KakaoAlreadySignupError();
+        return res;
+      } catch (error) {
+        if (error instanceof ApiError && error.status === 400) {
+          // 이미 등록된 사용자
+          throw new KakaoAlreadySignupError();
+        }
       }
     }
-  }
-  if (credentials.type === 'kakao-signin') {
-    try {
-      const res = await mutateKaKaoSignIn(credentials.token as string);
+    case 'kakao-signin': {
+      try {
+        const res = await mutateKaKaoSignIn(credentials.token as string);
 
-      return res;
-    } catch (error) {
-      if (error instanceof ApiError && error.status === 403) {
-        // 카카오 로그인 시 회원가입 필요
-        throw new KakaoSigninRequiredError();
+        return res;
+      } catch (error) {
+        if (error instanceof ApiError && error.status === 403) {
+          // 카카오 로그인 시 회원가입 필요
+          throw new KakaoSigninRequiredError();
+        }
       }
     }
+    case 'signup': {
+      const signupRes = await mutateSignup(
+        signupInputSchema.parse({ ...credentials })
+      );
+
+      return signupRes;
+    }
+    default: {
+      const signinRes = await mutateSignin(
+        signinInputSchema.parse({ ...credentials })
+      );
+
+      return signinRes;
+    }
   }
-
-  if ('nickname' in credentials) {
-    const signupRes = await mutateSignup(
-      signupInputSchema.parse({ ...credentials })
-    );
-
-    return signupRes;
-  }
-  const signinRes = await mutateSignin(
-    signinInputSchema.parse({ ...credentials })
-  );
-
-  return signinRes;
 };
 
 async function refreshAccessToken(nextAuthJWTCookie: JWT): Promise<JWT> {

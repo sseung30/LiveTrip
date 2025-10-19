@@ -10,10 +10,12 @@ export const signupInputSchema = z.object({
     .regex(nickNameRegex),
   password: z.string().min(8).max(20).regex(passwordRegex),
   confirmPassword: z.string().min(8).max(20).regex(passwordRegex),
+  type: z.string(),
 });
 export const signinInputSchema = z.object({
   email: z.email(),
   password: z.string().min(8).max(20).regex(passwordRegex),
+  type: z.string(),
 });
 export const signinResponseSchema = z.object({
   accessToken: z.string(),

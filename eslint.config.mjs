@@ -64,6 +64,7 @@ const eslintConfig = [
       'unicorn/prefer-type-error': 'off',
       'no-restricted-syntax/noClasses': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
+      'no-fallthrough': 'off',
     },
   },
 ];
