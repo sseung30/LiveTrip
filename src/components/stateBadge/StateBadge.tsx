@@ -29,7 +29,7 @@ function isValidState(state: string): state is keyof typeof STATE_CONFIG {
 
 export default function StateBadge({ state, className = '' }: StateBadgeProps) {
   if (!isValidState(state)) {
-    console.warn(`Invalid state: ${state}`);
+    console.log(`Invalid state: ${state}`);
 
     return null;
   }
