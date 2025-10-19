@@ -17,6 +17,7 @@ export async function apiFetch<T>(
 ): Promise<T> {
   const { body, headers: customHeaders } = options;
   const token = await getAuth();
+
   const isFormData =
     typeof FormData !== 'undefined' && body instanceof FormData;
 
@@ -24,7 +25,7 @@ export async function apiFetch<T>(
     ...options,
     credentials: 'include',
     headers: {
-      ...(token && { Authorization: `Bearer ${token}` }),
+      ...(token && { Authorization: `Bearer ${token.accessToken}` }),
       ...(isFormData
         ? customHeaders // FormData일 경우 Content-Type 자동
         : {
