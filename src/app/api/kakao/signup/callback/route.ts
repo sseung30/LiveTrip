@@ -15,7 +15,7 @@ export async function GET(request: Request) {
     console.error('카카오 회원가입 에러:', error, errorDescription);
 
     return NextResponse.redirect(
-      new URL('/auth/signin?error=kakao_oauth_failed', request.url)
+      new URL('/auth/signup?error=카카오 회원가입 실패', request.url)
     );
   }
 
