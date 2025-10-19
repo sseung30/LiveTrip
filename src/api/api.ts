@@ -1,4 +1,4 @@
-import { auth } from '@/app/api/auth/[...nextauth]/route';
+import { getAuth } from '@/utils/getAuth';
 
 const BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}`;
 
@@ -14,8 +14,10 @@ class ApiError extends Error {
 async function getToken() {
   const session = await auth();
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-  return session?.accessToken || null;
+  constructor(status: number, message: string) {
+    super(message);
+    this.status = status;
+  }
 }
 export async function apiFetch<T>(path: string, options: RequestInit = {}): Promise<T> {
   const { body, headers: customHeaders } = options; 

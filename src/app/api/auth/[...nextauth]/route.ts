@@ -1,3 +1,4 @@
+/* eslint-disable require-atomic-updates */
 import { jwtDecode } from 'jwt-decode';
 import NextAuth, {
   type AuthValidity,
@@ -9,18 +10,36 @@ import NextAuth, {
 } from 'next-auth';
 import type { JWT } from 'next-auth/jwt';
 import Credentials from 'next-auth/providers/credentials';
-import { mutateSignin, mutateSignup } from '@/domain/auth/api';
+import { ApiError } from '@/api/api';
 import {
-  signinInputSchema,
-  type SignInResponse,
-  signupInputSchema,
-} from '@/domain/auth/type';
+  fetchNewToken,
+  mutateKaKaoSignIn,
+  mutateKaKaoSignUp,
+  mutateSignin,
+  mutateSignup,
+} from '@/domain/auth/api';
+import { signinInputSchema, signupInputSchema } from '@/domain/auth/type';
 
 class InvalidLoginError extends CredentialsSignin {
   code = 'Invalid identifier or password';
   constructor(message: string) {
     super(message);
     this.code = message;
+  }
+}
+// 카카오 회원가입 필요 에러 (403)를 별도 처리
+export class KakaoSigninRequiredError extends CredentialsSignin {
+  code = 'KAKAO_SIGNUP_REQUIRED';
+  constructor() {
+    super('카카오 회원가입이 필요합니다');
+    this.code = 'KAKAO_SIGNUP_REQUIRED';
+  }
+}
+export class KakaoAlreadySignupError extends CredentialsSignin {
+  code = 'KAKAO_SIGNUP_ALREADY_REGISTERED';
+  constructor() {
+    super('이미 등록된 사용자 입니다');
+    this.code = 'KAKAO_SIGNUP_ALREADY_REGISTERED';
   }
 }
 export const {
@@ -35,6 +54,7 @@ export const {
       authorize: async (credentials) => {
         try {
           const res = await _sign(credentials);
+
           const tokens: BackendJWT = {
             access: res.accessToken,
             refresh: res.refreshToken,
@@ -46,6 +66,7 @@ export const {
           const refresh: DecodedJWT = {
             ...jwtDecode(tokens.refresh),
           };
+
           const validity: AuthValidity = {
             validUntil: access.exp,
             refreshUntil: refresh.exp,
@@ -56,19 +77,28 @@ export const {
             email: res.user.email,
             profileImageUrl: res.user.profileImageUrl,
           };
+          const isKakao = user.email.split('@')[1].includes('kakao.com');
+          const type = isKakao ? 'kakao' : 'normal';
 
           return {
             refreshId: refresh.id,
             tokens,
             user,
+            type,
             validity,
           } as User;
         } catch (error) {
+          if (error instanceof KakaoSigninRequiredError) {
+            throw new KakaoSigninRequiredError();
+          }
+          if (error instanceof KakaoAlreadySignupError) {
+            throw new KakaoAlreadySignupError();
+          }
           if (error instanceof Error) {
             return { error: error.message } as User;
           }
 
-          return null;
+          throw new InvalidLoginError('알 수 없는 오류가 발생했습니다');
         }
       },
     }),
@@ -91,8 +121,6 @@ export const {
       const isInitLogin = Boolean(account);
 
       if (isInitLogin) {
-        console.debug('Initial signin');
-
         return {
           ...token,
           data: user,
@@ -104,16 +132,11 @@ export const {
         Date.now() < token.data.validity.refreshUntil * 1000;
 
       if (isAccessTokenValid) {
-        console.debug('Access token is still valid');
-
         return token;
       }
       if (isRefreshTokenValid) {
-        //  console.debug("Access token is being refreshed");
-        // return await refreshAccessToken(token);
+        return await refreshAccessToken(token);
       }
-
-      console.debug('Both tokens have expired');
 
       return { ...token, error: 'RefreshTokenExpired' } as JWT;
     },
@@ -122,6 +145,7 @@ export const {
       session.validity = token.data.validity;
       session.error = token.error;
       session.accessToken = token.data.tokens.access;
+      session.type = token.data.type;
 
       return session;
     },
@@ -129,18 +153,78 @@ export const {
 });
 
 const _sign = async (credentials: Partial<Record<string, unknown>>) => {
-  if ('nickname' in credentials) {
-    const signupRes = await mutateSignup(
-      signupInputSchema.parse({ ...credentials })
-    );
+  switch (credentials.type) {
+    case 'kakao-signup': {
+      try {
+        const res = await mutateKaKaoSignUp({
+          nickname: credentials.nickname as string,
+          token: credentials.token as string,
+        });
 
-    return signupRes as SignInResponse;
+        return res;
+      } catch (error) {
+        if (error instanceof ApiError && error.status === 400) {
+          // 이미 등록된 사용자
+          throw new KakaoAlreadySignupError();
+        }
+      }
+    }
+    case 'kakao-signin': {
+      try {
+        const res = await mutateKaKaoSignIn(credentials.token as string);
+
+        return res;
+      } catch (error) {
+        if (error instanceof ApiError && error.status === 403) {
+          // 카카오 로그인 시 회원가입 필요
+          throw new KakaoSigninRequiredError();
+        }
+      }
+    }
+    case 'signup': {
+      const signupRes = await mutateSignup(
+        signupInputSchema.parse({ ...credentials })
+      );
+
+      return signupRes;
+    }
+    default: {
+      const signinRes = await mutateSignin(
+        signinInputSchema.parse({ ...credentials })
+      );
+
+      return signinRes;
+    }
   }
-  const signinRes = await mutateSignin(
-    signinInputSchema.parse({ ...credentials })
-  );
-
-  return signinRes as SignInResponse;
 };
 
+async function refreshAccessToken(nextAuthJWTCookie: JWT): Promise<JWT> {
+  try {
+    const refreshToken = nextAuthJWTCookie.data.tokens.refresh;
+
+    if (!refreshToken) {
+      throw new Error('Token is required');
+    }
+    const res = await fetchNewToken(nextAuthJWTCookie.data.tokens.refresh);
+
+    const { accessToken: newAccessToken, refreshToken: newRefreshToken } = res;
+    const { exp: newAccessTokenExp }: DecodedJWT = jwtDecode(newAccessToken);
+    const { exp: newRefreshTokenExp }: DecodedJWT = jwtDecode(newRefreshToken);
+
+    // Update the token and validity in the next-auth cookie
+    nextAuthJWTCookie.data.validity.validUntil = newAccessTokenExp;
+    nextAuthJWTCookie.data.validity.refreshUntil = newRefreshTokenExp;
+    nextAuthJWTCookie.data.tokens.access = newAccessToken;
+    nextAuthJWTCookie.data.tokens.refresh = newRefreshToken;
+
+    return { ...nextAuthJWTCookie };
+  } catch (error) {
+    console.debug(error);
+
+    return {
+      ...nextAuthJWTCookie,
+      error: 'RefreshAccessTokenError',
+    };
+  }
+}
 export const { GET, POST } = handlers;

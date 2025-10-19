@@ -1,14 +1,14 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { auth } from '@/app/api/auth/[...nextauth]/route';
 import bellDefault from '@/components/header/asset/bell-default.svg';
 import defaultProfileImg from '@/components/header/asset/default-profile-img.svg';
 import logo from '@/components/header/asset/logo.svg';
 import logoSymbol from '@/components/header/asset/logo-symbol.svg';
 import LogoutForm from '@/components/header/LogoutForm';
+import { getAuth } from '@/utils/getAuth';
 
 export default async function Header() {
-  const session = await auth();
+  const session = await getAuth();
 
   return (
     <header className='flex h-12 items-center justify-between border-b border-gray-100 bg-white px-6 md:h-20 md:px-8 xl:px-50'>
@@ -61,7 +61,7 @@ export default async function Header() {
               </Link>
             </div>
             {/* Server Action을 이용한 로그아웃 폼 */}
-            <LogoutForm />
+            <LogoutForm sessionType={session.type} />
           </div>
         ) : (
           // ⭐️ 로그아웃 상태: 로그인 및 회원가입 링크
