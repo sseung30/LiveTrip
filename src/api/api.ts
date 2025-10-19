@@ -2,7 +2,7 @@ import { getAuth } from '@/utils/getAuth';
 
 const BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}`;
 
-class ApiError extends Error {
+export class ApiError extends Error {
   status: number;
 
   constructor(status: number, message: string) {
@@ -11,18 +11,14 @@ class ApiError extends Error {
   }
 }
 
-async function getToken() {
-  const session = await auth();
-
-  constructor(status: number, message: string) {
-    super(message);
-    this.status = status;
-  }
-}
-export async function apiFetch<T>(path: string, options: RequestInit = {}): Promise<T> {
-  const { body, headers: customHeaders } = options; 
-  const token = await getToken();
-  const isFormData = typeof FormData !== "undefined" && body instanceof FormData;
+export async function apiFetch<T>(
+  path: string,
+  options: RequestInit = {}
+): Promise<T> {
+  const { body, headers: customHeaders } = options;
+  const token = await getAuth();
+  const isFormData =
+    typeof FormData !== 'undefined' && body instanceof FormData;
 
   const res = await fetch(`${BASE_URL}${path}`, {
     ...options,
@@ -40,20 +36,31 @@ export async function apiFetch<T>(path: string, options: RequestInit = {}): Prom
 
   if (!res.ok) {
     const rawMessage = await res.text();
-    let message = "서버 오류가 발생했습니다.";
+    let message = '서버 오류가 발생했습니다.';
 
     switch (res.status) {
-      case 400: { message = "입력값이 올바르지 않습니다."; break;
+      case 400: {
+        message = '입력값이 올바르지 않습니다.';
+        break;
       }
-      case 401: { message = "로그인이 필요합니다."; break;
+      case 401: {
+        message = '로그인이 필요합니다.';
+        break;
       }
-      case 403: { message = "접근 권한이 없습니다."; break;
+      case 403: {
+        message = '접근 권한이 없습니다.';
+        break;
       }
-      case 404: { message = "요청한 리소스를 찾을 수 없습니다."; break;
+      case 404: {
+        message = '요청한 리소스를 찾을 수 없습니다.';
+        break;
       }
-      case 500: { message = "서버에서 오류가 발생했습니다."; break;
+      case 500: {
+        message = '서버에서 오류가 발생했습니다.';
+        break;
       }
-      default: { message = rawMessage || message;
+      default: {
+        message = rawMessage || message;
       }
     }
 
