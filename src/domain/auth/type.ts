@@ -49,4 +49,5 @@ export type SignUpResponse = UserInfo;
 
 export interface KaKaoAuthButtonProps {
   text: string;
+  kakaoUri: string;
 }

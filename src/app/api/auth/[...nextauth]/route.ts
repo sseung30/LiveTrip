@@ -1,5 +1,6 @@
 /* eslint-disable require-atomic-updates */
 import { jwtDecode } from 'jwt-decode';
+import { redirect } from 'next/navigation';
 import NextAuth, {
   type AuthValidity,
   type BackendJWT,
@@ -10,8 +11,16 @@ import NextAuth, {
 } from 'next-auth';
 import type { JWT } from 'next-auth/jwt';
 import Credentials from 'next-auth/providers/credentials';
-import { fetchNewToken, mutateSignin, mutateSignup } from '@/domain/auth/api';
+import { ApiError } from '@/api/api';
+import {
+  fetchNewToken,
+  mutateKaKaoSignIn,
+  mutateKaKaoSignUp,
+  mutateSignin,
+  mutateSignup,
+} from '@/domain/auth/api';
 import { signinInputSchema, signupInputSchema } from '@/domain/auth/type';
+import { getKaKaoAuthroizeURL, KAKAO_SIGNUP_URI } from '@/domain/auth/util';
 
 class InvalidLoginError extends CredentialsSignin {
   code = 'Invalid identifier or password';
@@ -20,7 +29,21 @@ class InvalidLoginError extends CredentialsSignin {
     this.code = message;
   }
 }
-
+// 카카오 회원가입 필요 에러 (403)를 별도 처리
+export class KakaoSigninRequiredError extends CredentialsSignin {
+  code = 'KAKAO_SIGNUP_REQUIRED';
+  constructor() {
+    super('카카오 회원가입이 필요합니다');
+    this.code = 'KAKAO_SIGNUP_REQUIRED';
+  }
+}
+export class KakaoAlreadySignupError extends CredentialsSignin {
+  code = 'KAKAO_SIGNUP_ALREADY_REGISTERED';
+  constructor() {
+    super('이미 등록된 사용자 입니다');
+    this.code = 'KAKAO_SIGNUP_ALREADY_REGISTERED';
+  }
+}
 export const {
   handlers,
   signIn,
@@ -33,6 +56,7 @@ export const {
       authorize: async (credentials) => {
         try {
           const res = await _sign(credentials);
+
           const tokens: BackendJWT = {
             access: res.accessToken,
             refresh: res.refreshToken,
@@ -63,11 +87,17 @@ export const {
             validity,
           } as User;
         } catch (error) {
+          if (error instanceof KakaoSigninRequiredError) {
+            throw new KakaoSigninRequiredError();
+          }
+          if (error instanceof KakaoAlreadySignupError) {
+            throw new KakaoAlreadySignupError();
+          }
           if (error instanceof Error) {
             return { error: error.message } as User;
           }
 
-          return null;
+          throw new InvalidLoginError('알 수 없는 오류가 발생했습니다');
         }
       },
     }),
@@ -121,6 +151,34 @@ export const {
 });
 
 const _sign = async (credentials: Partial<Record<string, unknown>>) => {
+  if (credentials.type === 'kakao-signup') {
+    try {
+      const res = await mutateKaKaoSignUp({
+        nickname: credentials.nickname as string,
+        token: credentials.token as string,
+      });
+
+      return res;
+    } catch (error) {
+      if (error instanceof ApiError && error.status === 400) {
+        // 이미 등록된 사용자
+        throw new KakaoAlreadySignupError();
+      }
+    }
+  }
+  if (credentials.type === 'kakao-signin') {
+    try {
+      const res = await mutateKaKaoSignIn(credentials.token as string);
+
+      return res;
+    } catch (error) {
+      if (error instanceof ApiError && error.status === 403) {
+        // 카카오 로그인 시 회원가입 필요
+        throw new KakaoSigninRequiredError();
+      }
+    }
+  }
+
   if ('nickname' in credentials) {
     const signupRes = await mutateSignup(
       signupInputSchema.parse({ ...credentials })

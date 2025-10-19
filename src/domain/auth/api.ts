@@ -1,4 +1,4 @@
-import { apiFetch } from '@/api/api';
+import { ApiError, apiFetch } from '@/api/api';
 import {
   type NewTokenResponse,
   newTokenResponseSchema,
@@ -8,10 +8,15 @@ import {
   type SignupInputs,
   type SignUpResponse,
 } from '@/domain/auth/type';
-
-const SIGNIN_ENDPOINT = '/auth/login';
-const SIGNUP_ENDPOINT = '/users';
-const NEW_TOKEN_ENDPOINT = '/auth/tokens';
+import {
+  getAuth,
+  KAKAO_LOGOUT_URI,
+  KAKAO_SIGNIN_URI,
+  KAKAO_SIGNUP_URI,
+  NEW_TOKEN_ENDPOINT,
+  SIGNIN_ENDPOINT,
+  SIGNUP_ENDPOINT,
+} from '@/domain/auth/util';
 
 export async function fetchNewToken(
   refreshToken: string
@@ -66,3 +71,69 @@ export const mutateSignup = async (
 
   return res;
 };
+export const mutateKaKaoSignIn = async (
+  token: string
+): Promise<SignInResponse> => {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/oauth/sign-in/kakao`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        redirectUri: KAKAO_SIGNIN_URI,
+        token,
+      }),
+    }
+  );
+
+  if (!res.ok && res.status === 403) {
+    throw new ApiError(403, '카카오 로그인: 회원 정보가 없습니다');
+  }
+
+  const json = res.json() as Promise<SignInResponse>;
+
+  return json;
+};
+export const mutateKaKaoSignUp = async ({
+  nickname,
+  token,
+}: {
+  nickname: string;
+  token: string;
+}): Promise<SignInResponse> => {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/oauth/sign-up/kakao`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        nickname,
+        redirectUri: KAKAO_SIGNUP_URI,
+        token,
+      }),
+    }
+  );
+
+  if (!res.ok && res.status === 400) {
+    throw new ApiError(400, '카카오 회원가입: 이미 등록된 사용자입니다');
+  }
+  const json = await res.json();
+
+  return json as Promise<SignInResponse>;
+};
+
+// export const mutateKaKaoLogout = async ({}) => {
+//   const auth = await getAuth();
+//   const res = await fetch(KAKAO_LOGOUT_URI, {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json',
+//       Authorization: `Bearer ${auth?.accessToken}`,
+//     },
+//     body: JSON.stringify({}),
+//   });
+// };

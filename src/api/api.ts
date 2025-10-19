@@ -1,15 +1,16 @@
-import { getSession } from 'next-auth/react';
-import { auth } from '@/app/api/auth/[...nextauth]/route';
+import { getAuth } from '@/domain/auth/util';
 
 const BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}`;
 
-async function getAuth() {
-  if (typeof window === 'undefined') {
-    return await auth();
-  }
+export class ApiError extends Error {
+  status: number;
 
-  return await getSession();
+  constructor(status: number, message: string) {
+    super(message);
+    this.status = status;
+  }
 }
+
 /**
  *공용 fetch 함수
  */

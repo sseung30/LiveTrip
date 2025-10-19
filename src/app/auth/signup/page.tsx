@@ -2,6 +2,7 @@ import Link from 'next/link';
 import KaKaoAuthButton from '@/domain/auth/components/KaKaoAuthButton';
 import Logo from '@/domain/auth/components/Logo';
 import SignUpForm from '@/domain/auth/components/SignUpForm';
+import { KAKAO_SIGNUP_URI } from '@/domain/auth/util';
 
 export default function SignUpPage() {
   return (
@@ -15,7 +16,7 @@ export default function SignUpPage() {
             <div>SNS 계정으로 회원가입하기</div>
             <div className='h-[1px] grow bg-gray-100' />
           </div>
-          <KaKaoAuthButton text='카카오 회원가입' />
+          <KaKaoAuthButton text='카카오 회원가입' kakaoUri={KAKAO_SIGNUP_URI} />
           <div className='flex-center gap-1 font-medium text-gray-400'>
             <span>회원이신가요?</span>
             <Link
