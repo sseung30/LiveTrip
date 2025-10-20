@@ -1,10 +1,8 @@
-import { apiFetch } from '@/api/api';
-import type { UserInfo } from '@/domain/auth/type';
+import { auth } from '@/app/api/auth/[...nextauth]/route';
 import ProfileEditForm from '@/domain/profile/components/ProfileEditForm';
 
 export default async function ProfilePage() {
-  const user = await apiFetch<UserInfo>('/users/me');
-  const { email, nickname } = user;
+  const session = await auth();
 
   return (
     <>
@@ -15,7 +13,11 @@ export default async function ProfilePage() {
             닉네임과 비밀번호를 수정하실 수 있습니다.
           </div>
         </div>
-        <ProfileEditForm nickname={nickname} email={email} />
+        <ProfileEditForm
+          nickname={session?.user.nickname || ''}
+          email={session?.user.email || ''}
+          sessionType={session?.type || 'normal'}
+        />
       </main>
     </>
   );

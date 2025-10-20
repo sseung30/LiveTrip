@@ -1,3 +1,5 @@
+import type { SessionType } from 'next-auth';
+
 export interface ProfileEditFormInputs {
   email: string;
   nickname: string;
@@ -7,4 +9,5 @@ export interface ProfileEditFormInputs {
 export interface ProfileEditFormProps {
   nickname: string;
   email: string;
+  sessionType: SessionType;
 }
