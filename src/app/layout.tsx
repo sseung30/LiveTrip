@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import { Noto_Sans } from 'next/font/google';
 import localFont from 'next/font/local';
 import Script from 'next/script';
+import { SessionProvider } from 'next-auth/react';
 import QueryProvider from '@/app/QueryProvider';
 import { ToastContainer } from '@/components/toast/ToastContainer';
 
@@ -36,10 +37,12 @@ export default function RootLayout({
         />
         {/* ✅ React Query Provider로 children 감싸기 */}
         <QueryProvider>
-          <div>
-            {children}
-            <ToastContainer />
-          </div>
+          <SessionProvider>
+            <div>
+              {children}
+              <ToastContainer />
+            </div>
+          </SessionProvider>
         </QueryProvider>
       </body>
     </html>

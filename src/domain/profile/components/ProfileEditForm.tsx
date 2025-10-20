@@ -11,6 +11,7 @@ import { SignUpFormRegisterKey as profileFormRegisterKey } from '@/form/auth/reg
 export default function ProfileEditForm({
   nickname,
   email,
+  sessionType,
 }: ProfileEditFormProps) {
   const {
     register,
@@ -23,6 +24,7 @@ export default function ProfileEditForm({
       email,
     },
   });
+  const isKakaoAccount = sessionType === 'kakao';
 
   return (
     <form
@@ -43,6 +45,7 @@ export default function ProfileEditForm({
         placeholder={'이메일을 입력해 주세요'}
         className='w-full'
         error={errors.email?.message}
+        disabled={isKakaoAccount}
         {...register('email', profileFormRegisterKey.email())}
       />
       <Input

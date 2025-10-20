@@ -56,7 +56,7 @@ export default function Input({
           type={getInputType()}
           placeholder={placeholder}
           autoComplete={autoComplete}
-          className={`h-[54px] w-full rounded-xl border px-4 ${isPassword ? 'pr-12' : ''} text-gray-950 transition-colors placeholder:text-gray-400 focus:outline-none ${getBorderColor()}`}
+          className={`h-[54px] w-full rounded-xl border px-4 ${isPassword ? 'pr-12' : ''} text-gray-950 transition-colors placeholder:text-gray-400 focus:outline-none ${getBorderColor()} disabled:bg-gray-25`}
           onFocus={() => {
             setIsFocused(true);
           }}
