@@ -12,8 +12,8 @@ export const AuthRegisterKey = {
         message: '4자 이상 입력하세요',
       },
       maxLength: {
-        value: 12,
-        message: '12자 이하로 입력하세요',
+        value: 10,
+        message: '10자 이하로 입력하세요',
       },
       pattern: {
         value: nickNameRegex,

@@ -1,11 +1,15 @@
 'use client';
-import { useForm } from 'react-hook-form';
+import { useSession } from 'next-auth/react';
+import { type SubmitHandler, useForm, useWatch } from 'react-hook-form';
+import { ApiError } from '@/api/api';
 import Button from '@/components/button/Button';
+import { toast } from '@/components/toast';
 import Input from '@/components/ui/Input/Input';
+import { mutateProfileEdit } from '@/domain/profile/api';
 import type {
   ProfileEditFormInputs,
   ProfileEditFormProps,
-} from '@/domain/profile/components/type';
+} from '@/domain/profile/type';
 import { SignUpFormRegisterKey as profileFormRegisterKey } from '@/form/auth/register-key';
 
 export default function ProfileEditForm({
@@ -24,14 +28,40 @@ export default function ProfileEditForm({
       email,
     },
   });
+  const { update } = useSession();
   const isKakaoAccount = sessionType === 'kakao';
+  const onSubmit: SubmitHandler<ProfileEditFormInputs> = async (
+    profileEditInputs
+  ) => {
+    try {
+      const { nickname, password, email } = profileEditInputs;
+      const profileImageUrl = null;
+
+      await mutateProfileEdit({
+        nickname,
+        profileImageUrl,
+        newPassword: password,
+      });
+      update({ nickname, profileImageUrl, email });
+      toast({
+        message: '프로필 정보가 변경 되었습니다',
+        eventType: 'success',
+      });
+    } catch (error) {
+      if (error instanceof ApiError) {
+        if (error.status === 400) {
+          toast({ message: error.message, eventType: 'error' });
+        } else {
+          toast({ message: '서버 에러가 발생했습니다', eventType: 'error' });
+        }
+      }
+    }
+  };
 
   return (
     <form
       className='mb:gap-6 flex w-full flex-col gap-5'
-      onSubmit={handleSubmit(() => {
-        console.log('form');
-      })}
+      onSubmit={handleSubmit(onSubmit)}
     >
       <Input
         label='닉네임'
@@ -69,6 +99,7 @@ export default function ProfileEditForm({
           profileFormRegisterKey.confirmPassword(watch('password'))
         )}
       />
+
       <Button variant='primary' classNames='w-[7.5rem] self-center'>
         저장하기
       </Button>

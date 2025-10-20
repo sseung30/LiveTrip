@@ -44,6 +44,11 @@ declare module 'next-auth' {
     type: SessionType;
     error: 'RefreshTokenExpired' | 'RefreshAccessTokenError';
   }
+  export interface EditSessionRequest {
+    profileImageUrl: string | null;
+    email: string;
+    nickname: string;
+  }
 }
 
 declare module 'next-auth/jwt' {
