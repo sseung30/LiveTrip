@@ -65,6 +65,7 @@ const eslintConfig = [
       'no-restricted-syntax/noClasses': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
       'no-fallthrough': 'off',
+      '@typescript-eslint/no-shadow': 'off',
     },
   },
 ];

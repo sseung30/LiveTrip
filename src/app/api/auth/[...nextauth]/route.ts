@@ -5,6 +5,7 @@ import NextAuth, {
   type BackendJWT,
   CredentialsSignin,
   type DecodedJWT,
+  type EditSessionRequest,
   type Session,
   type User,
 } from 'next-auth';
@@ -117,13 +118,24 @@ export const {
 
       return true;
     },
-    jwt: async ({ token, user, account }) => {
+    jwt: async ({ token, user, account, trigger, session }) => {
       const isInitLogin = Boolean(account);
 
       if (isInitLogin) {
         return {
           ...token,
           data: user,
+        };
+      }
+      if (trigger === 'update' && session) {
+        const { email, profileImageUrl, nickname } =
+          session as EditSessionRequest;
+
+        token.data.user = {
+          ...token.data.user,
+          email,
+          profileImageUrl,
+          nickname,
         };
       }
       const isAccessTokenValid =
@@ -141,13 +153,24 @@ export const {
       return { ...token, error: 'RefreshTokenExpired' } as JWT;
     },
     session: async ({ session, token }: { session: Session; token: JWT }) => {
-      session.user = token.data.user;
-      session.validity = token.data.validity;
-      session.error = token.error;
-      session.accessToken = token.data.tokens.access;
-      session.type = token.data.type;
+      const {
+        user,
+        validity,
+        type,
+        tokens: { access: accessToken },
+      } = token.data;
+      const { error } = token;
 
-      return session;
+      const newSession = {
+        ...session,
+        user,
+        validity,
+        error,
+        type,
+        accessToken,
+      };
+
+      return newSession;
     },
   },
 });
