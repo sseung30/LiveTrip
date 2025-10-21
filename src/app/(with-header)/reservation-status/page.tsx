@@ -5,7 +5,7 @@ import CalendarBadge from '@/components/calendarBadge/CalendarBadge';
 import type { BadgeType } from '@/components/calendarBadge/type';
 import SelectDropdown from '@/components/dropdown/SelectDropdown';
 import ReservationPopup from '@/components/reservationPopup/ReservationPopup';
-import SideMenu from '@/components/sideMenu/SideMenu';
+import SideMenu from '@/components/side-menu';
 import {
   EXPERIENCES,
   MOCK_RESERVATION_DASHBOARD,

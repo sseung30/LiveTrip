@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import SideMenu from '@/components/sideMenu/SideMenu';
+import SideMenu from '@/components/side-menu';
 
 export default function SettingLayout({ children }: { children: ReactNode }) {
   return (

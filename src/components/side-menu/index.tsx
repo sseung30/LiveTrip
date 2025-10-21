@@ -2,11 +2,12 @@
 
 import Image from 'next/image';
 import { useState } from 'react';
+import ProfileImageUploader from '@/components/side-menu/ProfileImageUploader';
 import type {
   MenuItem,
   MenuItemType,
   SideMenuProps,
-} from '@/components/sideMenu/type';
+} from '@/components/side-menu/type';
 
 const MENU_ITEMS: MenuItem[] = [
   {
@@ -31,7 +32,7 @@ const MENU_ITEMS: MenuItem[] = [
   },
 ];
 
-const SIZE_CONFIG = {
+export const SIZE_CONFIG = {
   large: {
     container: { width: '291px', height: '450px' },
     profile: { size: 120, iconSize: 16, editSize: 32 },
@@ -65,9 +66,7 @@ export default function SideMenu({
   activeItem: initialActiveItem = 'reservationHistory',
 }: SideMenuProps) {
   const config = SIZE_CONFIG[size];
-  const [activeItem, setActiveItem] = useState<MenuItemType>(
-    initialActiveItem
-  );
+  const [activeItem, setActiveItem] = useState<MenuItemType>(initialActiveItem);
 
   const handleMenuClick = (itemId: MenuItemType) => {
     setActiveItem(itemId);
@@ -87,32 +86,7 @@ export default function SideMenu({
         height: config.container.height,
       }}
     >
-      {/* 프로필 영역 */}
-      <div className={`flex flex-col items-center ${config.spacing.padding}`}>
-        <div className='relative'>
-          <Image
-            src='/images/default_profile.png'
-            alt='프로필'
-            width={config.profile.size}
-            height={config.profile.size}
-            className='rounded-full'
-          />
-          <div
-            className='absolute -right-1 -bottom-1 flex items-center justify-center rounded-full bg-gray-300'
-            style={{
-              width: config.profile.editSize,
-              height: config.profile.editSize,
-            }}
-          >
-            <Image
-              src='/icons/icon_edit.svg'
-              alt='edit'
-              width={config.profile.iconSize}
-              height={config.profile.iconSize}
-            />
-          </div>
-        </div>
-      </div>
+      <ProfileImageUploader size={size} />
 
       {/* 메뉴 항목들 */}
       <div className={config.spacing.menuPadding}>

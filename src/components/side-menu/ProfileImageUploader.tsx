@@ -6,12 +6,12 @@ import { useForm } from 'react-hook-form';
 import { ApiError } from '@/api/api';
 import { useProfileEditMutate } from '@/api/users/useProfileEditMutate';
 import { useProfileImageCreateMutate } from '@/api/users/useProfileImageCreateMutate';
-import { SIZE_CONFIG } from '@/components/sideMenu';
-import type { ProfileImageProps } from '@/components/sideMenu/type';
+import { SIZE_CONFIG } from '@/components/side-menu';
+import type { ProfileImageProps } from '@/components/side-menu/type';
 import {
   validateFileSizeAndToast,
   validateFileTypeAndToast,
-} from '@/components/sideMenu/validateImageFile';
+} from '@/components/side-menu/validateImageFile';
 import { toast } from '@/components/toast';
 import Spinner from '@/components/ui/Spinner';
 
