@@ -49,6 +49,16 @@ export interface UserInfo {
 
 export type SignUpResponse = UserInfo;
 
+export interface ProfileEditRequest {
+  nickname: string;
+  profileImageUrl: string | null;
+  newPassword: string;
+}
+export type ProfileEditResponse = UserInfo;
+export interface ProfileImageCreateResponse {
+  profileImageUrl: string;
+}
+
 export interface KaKaoAuthButtonProps {
   text: string;
   kakaoUri: string;

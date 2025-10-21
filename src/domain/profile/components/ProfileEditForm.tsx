@@ -2,10 +2,10 @@
 import { useSession } from 'next-auth/react';
 import { type SubmitHandler, useForm } from 'react-hook-form';
 import { ApiError } from '@/api/api';
-import { useProfileEditMutate } from '@/api/users/useProfileEditMutate';
 import Button from '@/components/button/Button';
 import { toast } from '@/components/toast';
 import Input from '@/components/ui/Input/Input';
+import { useProfileEditMutate } from '@/domain/auth/queries/useProfileEditMutate';
 import type {
   ProfileEditFormInputs,
   ProfileEditFormProps,
