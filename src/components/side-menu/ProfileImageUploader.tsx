@@ -103,6 +103,7 @@ export default function ProfileImage({ size }: ProfileImageProps) {
             </div>
           ) : (
             <Image
+              priority
               src={previewImage}
               alt='프로필'
               width={config.profile.size}
@@ -124,6 +125,7 @@ export default function ProfileImage({ size }: ProfileImageProps) {
               <Image
                 src='/icons/icon_edit.svg'
                 alt='edit'
+                className='aspect-1/1'
                 width={config.profile.iconSize}
                 height={config.profile.iconSize}
               />

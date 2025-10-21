@@ -16,7 +16,6 @@ export default async function ProfilePage() {
         <ProfileEditForm
           nickname={session?.user.nickname || ''}
           email={session?.user.email || ''}
-          sessionType={session?.type || 'normal'}
           profileImageUrl={session?.user.profileImageUrl || null}
         />
       </main>
