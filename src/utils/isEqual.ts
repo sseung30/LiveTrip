@@ -1,3 +1,6 @@
+/**
+ * 기본 타입, object, array 타입의 두 값을 깊은 비교하는 함수
+ */
 export const isEqual = (value: unknown, other: unknown): boolean => {
   if (value === other) {
     return true;
