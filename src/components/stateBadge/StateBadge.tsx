@@ -5,7 +5,7 @@ const STATE_CONFIG = {
     text: '예약 취소',
     className: 'bg-gray-100 text-gray-600',
   },
-  pending: {
+  confirmed: {
     text: '예약 완료',
     style: { backgroundColor: '#E9FBE4', color: '#2BA90D' },
   },
@@ -17,7 +17,7 @@ const STATE_CONFIG = {
     text: '체험 완료',
     style: { backgroundColor: '#DAF0FF', color: '#0D6CD1' },
   },
-  confirmed: {
+  pending: {
     text: '예약 승인',
     style: { backgroundColor: '#DDF9F9', color: '#1790A0' },
   },
