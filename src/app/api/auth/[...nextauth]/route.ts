@@ -77,6 +77,7 @@ export const {
             nickname: res.user.nickname,
             email: res.user.email,
             profileImageUrl: res.user.profileImageUrl,
+            password: credentials.password,
           };
           const isKakao = user.email.split('@')[1].includes('kakao.com');
           const type = isKakao ? 'kakao' : 'normal';
@@ -128,14 +129,15 @@ export const {
         };
       }
       if (trigger === 'update' && session) {
-        const { email, profileImageUrl, nickname } =
+        const { email, profileImageUrl, nickname, password } =
           session as EditSessionRequest;
 
         token.data.user = {
           ...token.data.user,
-          email,
-          profileImageUrl,
-          nickname,
+          email: email || token.data.user.email,
+          profileImageUrl: profileImageUrl || token.data.user.profileImageUrl,
+          nickname: nickname || token.data.user.nickname,
+          password: password || token.data.user.password,
         };
       }
       const isAccessTokenValid =

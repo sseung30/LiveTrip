@@ -1,0 +1,136 @@
+'use client';
+import Image from 'next/image';
+import { useSession } from 'next-auth/react';
+import { type ChangeEvent, useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { ApiError } from '@/api/api';
+import { useProfileEditMutate } from '@/api/users/useProfileEditMutate';
+import { useProfileImageCreateMutate } from '@/api/users/useProfileImageCreateMutate';
+import { SIZE_CONFIG } from '@/components/sideMenu';
+import type { ProfileImageProps } from '@/components/sideMenu/type';
+import {
+  validateFileSizeAndToast,
+  validateFileTypeAndToast,
+} from '@/components/sideMenu/validateImageFile';
+import { toast } from '@/components/toast';
+import Spinner from '@/components/ui/Spinner';
+
+export default function ProfileImage({ size }: ProfileImageProps) {
+  const config = SIZE_CONFIG[size];
+  const defaultImage = '/images/default_profile.png';
+
+  const { mutateAsync: profileEditMutateAsync } = useProfileEditMutate();
+  const { mutateAsync: profileImageCreateMutateAsync } =
+    useProfileImageCreateMutate();
+  const [isLoading, setIsLoading] = useState(false);
+  const { data: sessionData, update: updateSession } = useSession();
+  const { register } = useForm();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const previewImage = sessionData?.user.profileImageUrl || defaultImage;
+
+  const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (!file) {
+      return;
+    }
+    if (!validateFileTypeAndToast(file) || !validateFileSizeAndToast(file)) {
+      return;
+    }
+    if (!sessionData) {
+      return;
+    }
+    try {
+      setIsLoading(true);
+      await updateProfileImageAndSession(file);
+      toast({
+        message: '프로필 이미지가 변경되었습니다',
+        eventType: 'success',
+      });
+    } catch (error) {
+      if (error instanceof ApiError) {
+        toast({ message: error.message, eventType: 'error' });
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  const updateProfileImageAndSession = async (file: File) => {
+    if (!sessionData) {
+      return;
+    }
+    const { profileImageUrl } = await profileImageCreateMutateAsync(file);
+    const { nickname, password } = sessionData.user;
+    const editPromise = profileEditMutateAsync({
+      nickname,
+      newPassword: password,
+      profileImageUrl,
+    });
+    const sessionPromise = updateSession({ profileImageUrl });
+
+    await Promise.all([editPromise, sessionPromise]);
+  };
+
+  const { ref, ...rest } = {
+    ...register('image', {
+      onChange: handleImageChange,
+    }),
+  };
+  const handleEditIconClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  return (
+    <div className={`flex flex-col items-center ${config.spacing.padding}`}>
+      <div className='relative'>
+        <input
+          type='file'
+          accept='image/jpg, image/jpeg, image/png, image/gif, image/webp'
+          className='hidden'
+          ref={(e) => {
+            ref(e);
+            fileInputRef.current = e;
+          }}
+          {...rest}
+        />
+        <div className='bg-gray-25 relative h-[4.375rem] w-[4.375rem] rounded-full xl:h-[7.5rem] xl:w-[7.5rem]'>
+          {isLoading ? (
+            <div className='absolute inset-1/2 h-fit w-fit -translate-x-1/2 -translate-y-1/2'>
+              <Spinner size='md' />
+            </div>
+          ) : (
+            <Image
+              src={previewImage}
+              alt='프로필'
+              width={config.profile.size}
+              height={config.profile.size}
+              className='aspect-1/1 cursor-pointer rounded-full object-cover'
+              onClick={handleEditIconClick}
+            />
+          )}
+        </div>
+        <div
+          className='absolute -right-1 -bottom-1 flex items-center justify-center rounded-full bg-gray-300'
+          style={{
+            width: config.profile.editSize,
+            height: config.profile.editSize,
+          }}
+        >
+          <button type='button' onClick={handleEditIconClick}>
+            <div>
+              <Image
+                src='/icons/icon_edit.svg'
+                alt='edit'
+                width={config.profile.iconSize}
+                height={config.profile.iconSize}
+              />
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
