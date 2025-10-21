@@ -4,8 +4,8 @@ import type { Metadata } from 'next';
 import { Noto_Sans } from 'next/font/google';
 import localFont from 'next/font/local';
 import Script from 'next/script';
-import QueryProvider from '@/app/QueryProvider';
 import { ToastContainer } from '@/components/toast/ToastContainer';
+import ReactQueryProvider from '@/utils/react-query/ReactQueryProvider';
 
 export const metadata: Metadata = {
   title: 'LiveTrip',
@@ -34,13 +34,12 @@ export default function RootLayout({
           src={`//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_MAP_API_KEY}&libraries=services&autoload=false`}
           strategy='beforeInteractive'
         />
-        {/* ✅ React Query Provider로 children 감싸기 */}
-        <QueryProvider>
+        <ReactQueryProvider>
           <div>
             {children}
             <ToastContainer />
           </div>
-        </QueryProvider>
+        </ReactQueryProvider>
       </body>
     </html>
   );
