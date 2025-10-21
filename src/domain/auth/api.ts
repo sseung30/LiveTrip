@@ -2,6 +2,9 @@ import { ApiError, apiFetch } from '@/api/api';
 import {
   type NewTokenResponse,
   newTokenResponseSchema,
+  type ProfileEditRequest,
+  type ProfileEditResponse,
+  type ProfileImageCreateResponse,
   type SigninInputs,
   type SignInResponse,
   signinResponseSchema,
@@ -13,6 +16,9 @@ import {
   SIGNIN_ENDPOINT,
   SIGNUP_ENDPOINT,
 } from '@/domain/auth/util';
+
+const _PROFILE_EDIT_ENDPOINT = '/users/me';
+const _PROFILE_IMAGE_CREATE_ENDPOINT = '/users/me/image';
 
 export async function fetchNewToken(
   refreshToken: string
@@ -120,4 +126,33 @@ export const mutateKaKaoSignUp = async ({
   const json = await res.json();
 
   return json as Promise<SignInResponse>;
+};
+
+export const mutateProfileEdit = async (
+  profileEditRequest: ProfileEditRequest
+): Promise<ProfileEditResponse> => {
+  const res = await apiFetch<ProfileEditResponse>(_PROFILE_EDIT_ENDPOINT, {
+    method: 'PATCH',
+    body: JSON.stringify({
+      ...profileEditRequest,
+    }),
+  });
+
+  return res;
+};
+export const mutateProfileImageCreate = async (
+  imageFile: File
+): Promise<ProfileImageCreateResponse> => {
+  const formData = new FormData();
+
+  formData.append('image', imageFile);
+  const res = await apiFetch<ProfileImageCreateResponse>(
+    _PROFILE_IMAGE_CREATE_ENDPOINT,
+    {
+      method: 'POST',
+      body: formData,
+    }
+  );
+
+  return res;
 };

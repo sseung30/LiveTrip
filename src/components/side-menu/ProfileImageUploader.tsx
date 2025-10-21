@@ -4,12 +4,12 @@ import { useSession } from 'next-auth/react';
 import { type ChangeEvent, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { ApiError } from '@/api/api';
-import { useProfileEditMutate } from '@/api/users/useProfileEditMutate';
-import { useProfileImageCreateMutate } from '@/api/users/useProfileImageCreateMutate';
 import { SIZE_CONFIG } from '@/components/side-menu';
 import type { ProfileImageProps } from '@/components/side-menu/type';
 import { toast } from '@/components/toast';
 import Spinner from '@/components/ui/Spinner';
+import { useProfileEditMutate } from '@/domain/auth/queries/useProfileEditMutate';
+import { useProfileImageCreateMutate } from '@/domain/auth/queries/useProfileImageCreateMutate';
 import {
   validateFileSizeAndToast,
   validateFileTypeAndToast,
