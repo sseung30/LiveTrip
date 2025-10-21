@@ -5,8 +5,8 @@ import { useTransition } from 'react';
 import { type SubmitHandler, useForm } from 'react-hook-form';
 import Button from '@/components/button/Button';
 import { toast } from '@/components/toast';
-import ButtonSpinner from '@/components/ui/ButtonSpinner';
 import Input from '@/components/ui/Input/Input';
+import Spinner from '@/components/ui/Spinner';
 import type { SigninInputs } from '@/domain/auth/type';
 import { SignInFormRegisterKey } from '@/form/auth/register-key';
 
@@ -60,7 +60,7 @@ export default function SignInForm() {
         />
       </div>
       <Button variant='primary'>
-        {isSubmitting ? <ButtonSpinner /> : '로그인'}
+        {isSubmitting ? <Spinner size='sm' /> : '로그인'}
       </Button>
     </form>
   );
