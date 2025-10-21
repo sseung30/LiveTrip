@@ -1,4 +1,4 @@
-import type { User } from 'next-auth';
+import NextAuth, { type User } from 'next-auth';
 
 declare module 'next-auth' {
   export interface UserObject {
@@ -58,4 +58,11 @@ declare module 'next-auth/jwt' {
     data: User;
     error: 'RefreshTokenExpired' | 'RefreshAccessTokenError';
   }
+
+declare module 'next-auth' {
+  interface Session {
+    accessToken?: string
+  }
+}
+
 }

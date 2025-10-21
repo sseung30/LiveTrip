@@ -1,5 +1,5 @@
 import { type ChangeEvent, useId } from 'react';
-import type { FormValues, UploadedImage } from '../types';
+import type { FormValues, UploadedImage } from '@/domain/registration/types';
 
 interface ImageUploaderProps {
   title: string;

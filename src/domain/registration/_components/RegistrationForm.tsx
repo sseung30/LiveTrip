@@ -1,14 +1,20 @@
 'use client';
 
-import { useRef, useState } from "react";
-import { FormProvider, type SubmitErrorHandler,type SubmitHandler, useForm } from "react-hook-form";
-import Button from "@/components/button/Button";
-import { BasicInfoFields } from "@/domain/registration/_components/BasicInfoFields";
-import { ImageUploader } from "@/domain/registration/_components/ImageUploader";
+import { useRef, useState } from 'react';
+import {
+  FormProvider,
+  type SubmitErrorHandler,
+  type SubmitHandler,
+  useForm,
+} from 'react-hook-form';
+import Button from '@/components/button/Button';
+import { BasicInfoFields } from '@/domain/registration/_components/BasicInfoFields';
+import { ImageUploader } from '@/domain/registration/_components/ImageUploader';
 import { TimeSlotsField } from '@/domain/registration/_components/TimeSlotsField';
-import { useImageUpload } from "@/domain/registration/_hooks/useImageUpload";
-import { createEmptyTimeSlot, type TimeSlot } from "@/domain/registration/_utils/createEmptyTimeSlot";
-import type { FormValues } from "@/domain/registration/types";
+import { useBannerImageUpload } from '@/domain/registration/_hooks/useBannerImageUpload';
+import { useIntroImageUpload } from '@/domain/registration/_hooks/useIntroImageUpload';
+import { createEmptyTimeSlot, type TimeSlot } from '@/domain/registration/_utils/createEmptyTimeSlot';
+import type { FormValues } from '@/domain/registration/types';
 
 const CATEGORY_OPTIONS = [
   { label: '문화・예술', value: 'culture_or_art' },
@@ -23,17 +29,15 @@ const MAX_IMAGE_COUNT_BANNER = 1;
 const MAX_IMAGE_COUNT_INTRO = 4;
 
 export default function RegistrationForm({ isSubmitting }: any) {
-  const methods = useForm<FormValues>({ 
+  const methods = useForm<FormValues>({
     mode: 'onSubmit',
     defaultValues: {
       bannerImage: '',
       subImageUrls: [],
     },
-
   });
-  const formRef = useRef<HTMLFormElement>(null);
-  const { handleSubmit } = methods;
 
+  const formRef = useRef<HTMLFormElement>(null);
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([createEmptyTimeSlot()]);
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
@@ -48,14 +52,16 @@ export default function RegistrationForm({ isSubmitting }: any) {
   const handleRemoveTimeSlot = (id: string) =>
     { setTimeSlots((prev) => prev.filter((slot) => slot.id !== id)); };
   const handleChangeTimeSlot = (id: string, field: keyof Omit<TimeSlot, 'id'>, value: string) =>
-    { setTimeSlots((prev) => prev.map((slot) => (slot.id === id ? { ...slot, [field]: value } : slot))); };
+    { setTimeSlots((prev) =>
+      prev.map((slot) => (slot.id === id ? { ...slot, [field]: value } : slot))
+    ); };
 
-  // ✅ Provider로 감싸고, 내부 컴포넌트에서 useImageUpload() 호출
   return (
     <FormProvider {...methods}>
       <InnerRegistrationForm
         isSubmitting={isSubmitting}
         formRef={formRef}
+        handleSubmit={methods.handleSubmit}
         timeSlots={timeSlots}
         onSubmit={onSubmit}
         onInvalid={onInvalid}
@@ -67,12 +73,10 @@ export default function RegistrationForm({ isSubmitting }: any) {
   );
 }
 
-/**
- * ✅ 내부 컴포넌트로 분리
- */
 function InnerRegistrationForm({
   isSubmitting,
   formRef,
+  handleSubmit,
   onSubmit,
   onInvalid,
   timeSlots,
@@ -80,31 +84,25 @@ function InnerRegistrationForm({
   onRemoveTimeSlot,
   onChangeTimeSlot,
 }: any) {
+  // ✅ 배너 이미지 훅
   const {
-    images: bannerImages,
-    handleUpload: handleUploadBannerImage,
-    removeImage: handleRemoveBannerImage,
-  } = useImageUpload({
-    formFieldName: 'bannerImage',
-    isMulti: false,
-    maxCount: 1,
-  });
+    image: bannerImage,
+    handleUpload: handleUploadBanner,
+    removeImage: removeBanner,
+  } = useBannerImageUpload();
 
+  // ✅ 소개 이미지 훅
   const {
     images: introImages,
-    handleUpload: handleUploadIntroImage,
-    removeImage: handleRemoveIntroImage,
-  } = useImageUpload({
-    formFieldName: 'subImageUrls',
-    isMulti: true,
-    maxCount: 4,
-  });
+    handleUpload: handleUploadIntro,
+    removeImage: removeIntro,
+  } = useIntroImageUpload(MAX_IMAGE_COUNT_INTRO);
 
   return (
     <form
       ref={formRef}
       className="flex flex-col gap-8"
-      onSubmit={onSubmit}
+      onSubmit={handleSubmit(onSubmit, onInvalid)} // ✅ react-hook-form submit 연결
     >
       <BasicInfoFields categoryOptions={CATEGORY_OPTIONS} />
 
@@ -118,22 +116,24 @@ function InnerRegistrationForm({
         onChange={onChangeTimeSlot}
       />
 
+      {/* ✅ 배너 이미지 */}
       <ImageUploader
         title="배너 이미지 등록"
-        description={`최대 ${MAX_IMAGE_COUNT_BANNER}장까지 등록할 수 있어요.`}
-        images={bannerImages}
+        description="최대 1장까지 등록할 수 있어요."
+        images={bannerImage ? [bannerImage] : []}
         maxCount={MAX_IMAGE_COUNT_BANNER}
-        onUpload={handleUploadBannerImage}
-        onRemove={handleRemoveBannerImage}
+        onUpload={handleUploadBanner}
+        onRemove={() => { removeBanner(); }}
       />
 
+      {/* ✅ 소개 이미지 */}
       <ImageUploader
         title="소개 이미지 등록"
-        description={`최대 ${MAX_IMAGE_COUNT_INTRO}장까지 등록할 수 있어요.`}
+        description="최대 4장까지 등록할 수 있어요."
         images={introImages}
         maxCount={MAX_IMAGE_COUNT_INTRO}
-        onUpload={handleUploadIntroImage}
-        onRemove={handleRemoveIntroImage}
+        onUpload={handleUploadIntro}
+        onRemove={removeIntro}
       />
 
       <div className="mt-8 flex justify-end">
