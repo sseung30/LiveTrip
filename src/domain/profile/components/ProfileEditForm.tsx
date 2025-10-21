@@ -15,7 +15,6 @@ import { SignUpFormRegisterKey as profileFormRegisterKey } from '@/form/auth/reg
 export default function ProfileEditForm({
   nickname,
   email,
-  sessionType,
   profileImageUrl,
 }: ProfileEditFormProps) {
   const {
@@ -31,15 +30,14 @@ export default function ProfileEditForm({
   });
   const { mutateAsync } = useProfileEditMutate();
   const { update } = useSession();
-  const isKakaoAccount = sessionType === 'kakao';
   const onSubmit: SubmitHandler<ProfileEditFormInputs> = async (
     profileEditInputs
   ) => {
     try {
-      const { nickname, password, email } = profileEditInputs;
+      const { nickname, password } = profileEditInputs;
 
       await mutateAsync({ nickname, profileImageUrl, newPassword: password });
-      update({ nickname, profileImageUrl, email, password });
+      update({ nickname, profileImageUrl, password });
       toast({
         message: '프로필 정보가 변경 되었습니다',
         eventType: 'success',
@@ -68,11 +66,10 @@ export default function ProfileEditForm({
         {...register('nickname', profileFormRegisterKey.nickname())}
       />
       <Input
+        disabled
         label='이메일'
-        placeholder={'이메일을 입력해 주세요'}
         className='w-full'
         error={errors.email?.message}
-        disabled={isKakaoAccount}
         {...register('email', profileFormRegisterKey.email())}
       />
       <Input
