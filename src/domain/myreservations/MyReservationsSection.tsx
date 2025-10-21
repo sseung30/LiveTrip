@@ -47,6 +47,9 @@ export default function MyReservationsSection({
 }: MyReservationsSectionProps) {
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
 
+  // #68 후기 모달 컴포넌트 하나만 배치
+  const [reservation, setReservation] = useState<Reservation>();
+
   const cancelDialog = useDialog();
   const [deleteModalState, deleteModalFormAction, deleteModalIsPending] =
     useActionState(deleteAction, {
@@ -73,8 +76,6 @@ export default function MyReservationsSection({
     setInputText('');
   };
 
-  const [reservation, setReservation] = useState<Reservation>();
-
   return (
     <>
       <ModalContainer dialogRef={cancelDialog.dialogRef}>
@@ -88,6 +89,7 @@ export default function MyReservationsSection({
         />
       </ModalContainer>
 
+      {/* #68 후기 모달 컴포넌트 하나만 배치 */}
       <ModalContainer
         dialogRef={reviewDialog.dialogRef}
         onClose={onCloseModalContainer}
@@ -153,7 +155,7 @@ export default function MyReservationsSection({
                     }}
                     onWriteReview={() => {
                       reviewDialog.openDialog();
-                      setReservation(r);
+                      setReservation(r); // #68 후기 모달 컴포넌트 하나만 배치
                     }}
                   />
                 </div>
