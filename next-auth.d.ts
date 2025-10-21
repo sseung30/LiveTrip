@@ -6,6 +6,7 @@ declare module 'next-auth' {
     nickname: string;
     email: string;
     profileImageUrl: string | null;
+    password: string;
   }
 
   export interface BackendAccessJWT {
@@ -48,6 +49,7 @@ declare module 'next-auth' {
     profileImageUrl: string | null;
     email: string;
     nickname: string;
+    password: string;
   }
 }
 

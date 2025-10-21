@@ -15,3 +15,6 @@ export interface SideMenuProps {
   className?: string;
   activeItem?: MenuItemType;
 }
+export interface ProfileImageProps {
+  size: 'large' | 'small';
+}

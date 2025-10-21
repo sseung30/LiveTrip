@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import WarningImage from '@/components/dialog/assets/warning.svg';
 import type { AlertModalContentsProps } from '@/components/dialog/Modal/type';
-import ButtonSpinner from '@/components/ui/ButtonSpinner';
+import Spinner from '@/components/ui/Spinner';
 
 /**
  * 경고 모달의 내용을 렌더링하는 컴포넌트
@@ -41,7 +41,7 @@ export function AlertModalContents({
             className='bg-primary-500 border px-5 py-1 text-white'
             disabled={isPending}
           >
-            {isPending ? <ButtonSpinner /> : confirmButtonText}
+            {isPending ? <Spinner size='sm' /> : confirmButtonText}
           </button>
         </form>
       </div>

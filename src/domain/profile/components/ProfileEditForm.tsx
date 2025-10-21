@@ -1,11 +1,11 @@
 'use client';
 import { useSession } from 'next-auth/react';
-import { type SubmitHandler, useForm, useWatch } from 'react-hook-form';
+import { type SubmitHandler, useForm } from 'react-hook-form';
 import { ApiError } from '@/api/api';
+import { useProfileEditMutate } from '@/api/users/useProfileEditMutate';
 import Button from '@/components/button/Button';
 import { toast } from '@/components/toast';
 import Input from '@/components/ui/Input/Input';
-import { mutateProfileEdit } from '@/domain/profile/api';
 import type {
   ProfileEditFormInputs,
   ProfileEditFormProps,
@@ -16,6 +16,7 @@ export default function ProfileEditForm({
   nickname,
   email,
   sessionType,
+  profileImageUrl,
 }: ProfileEditFormProps) {
   const {
     register,
@@ -28,6 +29,7 @@ export default function ProfileEditForm({
       email,
     },
   });
+  const { mutateAsync } = useProfileEditMutate();
   const { update } = useSession();
   const isKakaoAccount = sessionType === 'kakao';
   const onSubmit: SubmitHandler<ProfileEditFormInputs> = async (
@@ -35,14 +37,9 @@ export default function ProfileEditForm({
   ) => {
     try {
       const { nickname, password, email } = profileEditInputs;
-      const profileImageUrl = null;
 
-      await mutateProfileEdit({
-        nickname,
-        profileImageUrl,
-        newPassword: password,
-      });
-      update({ nickname, profileImageUrl, email });
+      await mutateAsync({ nickname, profileImageUrl, newPassword: password });
+      update({ nickname, profileImageUrl, email, password });
       toast({
         message: '프로필 정보가 변경 되었습니다',
         eventType: 'success',
