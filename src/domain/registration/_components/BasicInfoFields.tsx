@@ -1,5 +1,7 @@
+'use client';
+
 import { useDaumPostcodePopup } from 'react-daum-postcode';
-import { type Control, Controller, type UseFormRegister, type UseFormSetValue } from 'react-hook-form';
+import { type Control, Controller, useFormContext,type UseFormRegister, type UseFormSetValue  } from 'react-hook-form';
 import SelectDropdown from '@/components/dropdown/SelectDropdown';
 import Input from '@/components/ui/Input/Input';
 
@@ -11,13 +13,8 @@ interface FormValues {
   address: string;
 }
 
-interface BasicInfoFieldsProps {
-  control: Control<FormValues>;
-  register: UseFormRegister<FormValues>;
-  setValue: UseFormSetValue<FormValues>;
-  categoryOptions: { label: string; value: string }[];
-}
-export function BasicInfoFields({ control, register, setValue, categoryOptions }: BasicInfoFieldsProps) {
+export function BasicInfoFields( { categoryOptions }: { categoryOptions: { label: string; value: string }[] }) {
+  const { control, register, setValue } = useFormContext();
   const openPostcode = useDaumPostcodePopup();
 
   const handleAddressSelect = (data: unknown) => {
