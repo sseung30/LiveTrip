@@ -8,12 +8,12 @@ import { useProfileEditMutate } from '@/api/users/useProfileEditMutate';
 import { useProfileImageCreateMutate } from '@/api/users/useProfileImageCreateMutate';
 import { SIZE_CONFIG } from '@/components/side-menu';
 import type { ProfileImageProps } from '@/components/side-menu/type';
+import { toast } from '@/components/toast';
+import Spinner from '@/components/ui/Spinner';
 import {
   validateFileSizeAndToast,
   validateFileTypeAndToast,
-} from '@/components/side-menu/validateImageFile';
-import { toast } from '@/components/toast';
-import Spinner from '@/components/ui/Spinner';
+} from '@/form/utils/validateImageFileAndToast';
 
 export default function ProfileImage({ size }: ProfileImageProps) {
   const config = SIZE_CONFIG[size];
