@@ -23,7 +23,6 @@ export async function apiFetch<T>(
 
   const res = await fetch(`${BASE_URL}${path}`, {
     ...options,
-    credentials: 'include',
     headers: {
       ...(token && { Authorization: `Bearer ${token.accessToken}` }),
       ...(isFormData
