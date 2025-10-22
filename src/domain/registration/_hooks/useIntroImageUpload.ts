@@ -14,12 +14,14 @@ export function useIntroImageUpload(maxCount: number) {
   // ✅ RHF 값 감시
   const formFieldUrls = watch(formFieldName)
 
-  // ✅ watch 값이 바뀔 때마다 이미지 상태를 반영
-  useEffect(() => {
-    const urls = Array.isArray(formFieldUrls) ? formFieldUrls : []
-
-    setImages(urls.map((url) => ({ id: url, src: url })))
-  }, [formFieldUrls])
+// images가 바뀔 때마다 RHF 값 동기화
+useEffect(() => {
+  setValue(
+    formFieldName,
+    images.map((img) => img.src),
+    { shouldValidate: true },
+  );
+}, [images, formFieldName, setValue]);
 
   // ✅ 업로드 mutation
   const uploadMutation = useMutation({
@@ -45,17 +47,24 @@ export function useIntroImageUpload(maxCount: number) {
       return data
     },
 
-    onSuccess: (uploadRes, file) => {
-      const newUrl = uploadRes.activityImageUrl
-      const prev = Array.isArray(formFieldUrls) ? formFieldUrls : []
+  /**
+   * 업로드 성공 시 이미지 상태 업데이트
+   */
+  onSuccess: (uploadRes) => {
+  setImages((prev) => {
+    const updated = [...prev];
+    const blobIndex = updated.findIndex((img) => img.src.startsWith('blob:'));
 
-      // ✅ blob URL → 서버 URL 교체
-      const updated = prev.map((url: string) =>
-        url.startsWith('blob:') && url.includes(file.name) ? newUrl : url
-      )
+    if (blobIndex !== -1) {
+      URL.revokeObjectURL(updated[blobIndex].src);
+      updated[blobIndex] = { ...updated[blobIndex], src: uploadRes.activityImageUrl };
+    } else {
+      updated.push({ id: uploadRes.activityImageUrl, src: uploadRes.activityImageUrl });
+    }
 
-      setValue(formFieldName, updated, { shouldValidate: true })
-    },
+    return updated;
+  });
+},
   })
 
   /**
@@ -77,9 +86,17 @@ export function useIntroImageUpload(maxCount: number) {
     }
 
     // ✅ blob 미리보기 즉시 반영
-    const previewUrls = filesToUpload.map((file) => URL.createObjectURL(file))
+    const previewUrls = filesToUpload.map((file) => { return {
+    id: URL.createObjectURL(file),
+    src: URL.createObjectURL(file),
+  } });
 
-    setValue(formFieldName, [...current, ...previewUrls], { shouldValidate: true })
+   setImages((prev) => [...prev, ...previewUrls]);
+  setValue(
+    formFieldName,
+    [...images, ...previewUrls].map((img) => img.src),
+    { shouldValidate: true },
+  );
 
     // ✅ 서버 업로드 비동기 진행
     for (const file of filesToUpload) {

@@ -7,22 +7,24 @@ import {
   type SubmitHandler,
   useForm,
 } from 'react-hook-form';
+import { apiFetch } from '@/api/api';
 import Button from '@/components/button/Button';
 import { BasicInfoFields } from '@/domain/registration/_components/BasicInfoFields';
 import { ImageUploader } from '@/domain/registration/_components/ImageUploader';
 import { TimeSlotsField } from '@/domain/registration/_components/TimeSlotsField';
 import { useBannerImageUpload } from '@/domain/registration/_hooks/useBannerImageUpload';
 import { useIntroImageUpload } from '@/domain/registration/_hooks/useIntroImageUpload';
+import { buildRegistrationPayload } from '@/domain/registration/_utils/buildRegistrationPayload';
 import { createEmptyTimeSlot, type TimeSlot } from '@/domain/registration/_utils/createEmptyTimeSlot';
 import type { FormValues } from '@/domain/registration/types';
 
 const CATEGORY_OPTIONS = [
-  { label: '문화・예술', value: 'culture_or_art' },
-  { label: '식음료', value: 'food_and_beverage' },
-  { label: '스포츠', value: 'sport' },
-  { label: '투어', value: 'tour' },
-  { label: '관광', value: 'sightseeing' },
-  { label: '웰빙', value: 'wellbeing' },
+  { label: '문화 · 예술', value: '문화 · 예술' },
+  { label: '식음료', value: '식음료' },
+  { label: '스포츠', value: '스포츠' },
+  { label: '투어', value: '투어' },
+  { label: '관광', value: '관광' },
+  { label: '웰빙', value: '웰빙' },
 ];
 
 const MAX_IMAGE_COUNT_BANNER = 1;
@@ -32,17 +34,49 @@ export default function RegistrationForm({ isSubmitting }: any) {
   const methods = useForm<FormValues>({
     mode: 'onSubmit',
     defaultValues: {
-      bannerImage: '',
-      subImageUrls: [],
+      title: '',
+    category: '',
+    description: '',
+    address: '',
+    price: '',
+    bannerImage: '',
+    subImageUrls: [],
+    timeSlots: [createEmptyTimeSlot()],
     },
-  });
+  }); 
 
   const formRef = useRef<HTMLFormElement>(null);
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([createEmptyTimeSlot()]);
 
-  const onSubmit: SubmitHandler<FormValues> = (data) => {
-    console.log('✅ Submitted:', data);
-  };
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+   const payload = buildRegistrationPayload({
+  formData: {
+    title: data.title,
+    description: data.description,
+    category: data.category,
+    price: data.price,
+    address: data.address,
+  },
+  bannerImageUrl: data.bannerImage,
+  introImages: data.subImageUrls.map((url) => ({ src: url })), // 여기서 변환
+  timeSlots,
+});
+
+console.log('payload', payload); 
+
+  try {
+    const result = await apiFetch('/activities', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    })
+
+    console.log('✅ 등록 성공:', result)
+    alert('체험이 등록되었습니다!')
+  } catch (error) {
+    console.error('❌ 등록 실패:', error)
+    alert('등록 중 오류가 발생했습니다.')
+  }
+}
 
   const onInvalid: SubmitErrorHandler<FormValues> = (errors) => {
     console.error('❌ Validation errors:', errors);
@@ -85,11 +119,11 @@ function InnerRegistrationForm({
   onChangeTimeSlot,
 }: any) {
   // ✅ 배너 이미지 훅
-  const {
-    image: bannerImage,
-    handleUpload: handleUploadBanner,
-    removeImage: removeBanner,
-  } = useBannerImageUpload();
+ const {
+  image: bannerImage,
+  handleUploadBanner,
+  removeImage: removeBanner,
+} = useBannerImageUpload();
 
   // ✅ 소개 이미지 훅
   const {

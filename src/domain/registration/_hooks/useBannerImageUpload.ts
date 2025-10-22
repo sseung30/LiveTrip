@@ -4,6 +4,8 @@ import { getSession } from 'next-auth/react'
 import { type ChangeEvent, useEffect, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { useMutation } from '@tanstack/react-query'
+import { apiFetch } from '@/api/api'
+import { uploadImageAction } from '@/domain/registration/actions/uploadImage'
 import type { FormValues, UploadedImage } from '@/domain/registration/types'
 
 export function useBannerImageUpload() {
@@ -47,15 +49,22 @@ export function useBannerImageUpload() {
       return data
     },
 
-    onSuccess: (uploadRes) => {
-      setValue(formFieldName, uploadRes.activityImageUrl, { shouldValidate: true })
-    },
+   onSuccess: (uploadRes) => {
+  const newUrl = uploadRes.activityImageUrl;
+  const prevValue = watch(formFieldName);
+
+  if (typeof prevValue === 'string' && prevValue.startsWith('blob:')) {
+    URL.revokeObjectURL(prevValue);
+  }
+
+  setValue(formFieldName, newUrl, { shouldValidate: true });
+},
   })
 
   /**
    * ✅ 파일 업로드 핸들러
    */
-  const handleUpload = async (event: ChangeEvent<HTMLInputElement>) => {
+  const handleUploadBanner = async (event: ChangeEvent<HTMLInputElement>) => {
     const input = event.target;
     const { files } = event.target
 
@@ -97,7 +106,7 @@ export function useBannerImageUpload() {
 
   return {
     image,
-    handleUpload,
+    handleUploadBanner,
     removeImage,
     isUploading: uploadMutation.isPending,
     uploadError: uploadMutation.error,

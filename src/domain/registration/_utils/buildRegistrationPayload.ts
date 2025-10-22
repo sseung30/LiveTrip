@@ -28,16 +28,11 @@ export function buildRegistrationPayload({
     price: Number(formData.price),
     address: formData.address.trim(),
     bannerImageUrl,
-    subImages: introImages.map((img) => ({ imageUrl: img.src, id: 0 })),
+    subImageUrls: introImages.map((img) => img.src),
     schedules: timeSlots.map((slot) => { return {
       date: slot.date,
-      times: [
-        {
-          startTime: slot.startTime,
-          endTime: slot.endTime,
-          id: 0,
-        },
-      ],
-    } }),
+      startTime: slot.startTime,
+      endTime: slot.endTime,
+  } }),
   };
 }
