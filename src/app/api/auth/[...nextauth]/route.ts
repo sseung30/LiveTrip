@@ -12,7 +12,7 @@ import type { JWT } from 'next-auth/jwt';
 import Credentials from 'next-auth/providers/credentials';
 import { ApiError } from '@/api/api';
 import {
-  fetchNewToken,
+  getNewToken,
   mutateKaKaoSignIn,
   mutateKaKaoSignUp,
   mutateSignin,
@@ -205,7 +205,7 @@ async function refreshAccessToken(nextAuthJWTCookie: JWT): Promise<JWT> {
     if (!refreshToken) {
       throw new Error('Token is required');
     }
-    const res = await fetchNewToken(nextAuthJWTCookie.data.tokens.refresh);
+    const res = await getNewToken(nextAuthJWTCookie.data.tokens.refresh);
 
     const { accessToken: newAccessToken, refreshToken: newRefreshToken } = res;
     const { exp: newAccessTokenExp }: DecodedJWT = jwtDecode(newAccessToken);

@@ -7,14 +7,19 @@ import {
   signinResponseSchema,
   type SignupInputs,
   type SignUpResponse,
+  type UserInfo,
 } from '@/domain/auth/type';
 import {
   NEW_TOKEN_ENDPOINT,
   SIGNIN_ENDPOINT,
   SIGNUP_ENDPOINT,
+  USER_INFO_ENDPINT,
 } from '@/domain/auth/util';
 
-export async function fetchNewToken(
+export async function getUserInfo(): Promise<UserInfo> {
+  return await apiFetch(USER_INFO_ENDPINT);
+}
+export async function getNewToken(
   refreshToken: string
 ): Promise<NewTokenResponse> {
   const res = await fetch(
