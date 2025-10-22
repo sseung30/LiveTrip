@@ -44,7 +44,7 @@ export function useImageUpload({
   const uploadMutation = useMutation({
     mutationFn: async (file: File): Promise<{ activityImageUrl: string }> => {
       const session = await getSession()
-      const token = (session as { accessToken?: string })?.accessToken
+      const token = (session as { accessToken?: string } | null)?.accessToken;
 
       if (!token) {throw new Error('로그인이 필요합니다.')}
 
