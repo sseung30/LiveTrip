@@ -1,7 +1,5 @@
-// Registration/components/ImageUploader.tsx
-
 import { type ChangeEvent, useId } from 'react';
-import type { UploadedImage } from '@/domain/registration/_hooks/useImageUpload';
+import type { FormValues, UploadedImage } from '@/domain/registration/types';
 
 interface ImageUploaderProps {
   title: string;
