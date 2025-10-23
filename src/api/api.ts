@@ -36,36 +36,13 @@ export async function apiFetch<T>(
 
   if (!res.ok) {
     const rawMessage = await res.text();
-    let message = '서버 오류가 발생했습니다.';
+    const message =
+    res.status === 500
+      ? '서버에서 오류가 발생했습니다.'
+      : rawMessage || '오류가 발생했습니다.';
 
-    switch (res.status) {
-      case 400: {
-        message = '입력값이 올바르지 않습니다.';
-        break;
-      }
-      case 401: {
-        message = '로그인이 필요합니다.';
-        break;
-      }
-      case 403: {
-        message = '접근 권한이 없습니다.';
-        break;
-      }
-      case 404: {
-        message = '요청한 리소스를 찾을 수 없습니다.';
-        break;
-      }
-      case 500: {
-        message = '서버에서 오류가 발생했습니다.';
-        break;
-      }
-      default: {
-        message = rawMessage || message;
-      }
-    }
-
-    throw new ApiError(res.status, message);
-  }
+  throw new ApiError(res.status, message);
+}
 
   return res.json() as Promise<T>;
 }
