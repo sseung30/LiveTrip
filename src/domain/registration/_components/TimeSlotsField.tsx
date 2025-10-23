@@ -34,10 +34,10 @@ export function TimeSlotsField({
             <div className="w-full md:flex-1 md:basis-0">
               <DatePickerField
                 value={slot.date}
-                onChange={(value) => onChange(slot.id, 'date', value)}
                 placeholder="yyyy/mm/dd"
                 label={index === 0 ? '날짜' : undefined}
                 className="w-full"
+                onChange={(value) => { onChange(slot.id, 'date', value); }}
               />
             </div>
 
