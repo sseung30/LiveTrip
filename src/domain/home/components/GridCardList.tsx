@@ -24,7 +24,7 @@ export default function GridCardList({ activities }: GridCardListProps) {
         return (
           <Card
             src={activity.bannerImageUrl}
-            alt={activity.title}
+            title={activity.title}
             key={crypto.randomUUID()}
             imageClassNames='aspect-1/1'
           />
