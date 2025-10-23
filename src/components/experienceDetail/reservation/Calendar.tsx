@@ -4,6 +4,8 @@ import { useState } from 'react';
 interface CalendarProps {
   selectedDate: Date | null;
   onDateChange: (date: Date | null) => void;
+  availableDates?: string[];
+  onMonthChange?: (year: number, month: number) => void;
 }
 
 const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토'];
@@ -12,6 +14,8 @@ const TOTAL_CALENDAR_CELLS = 42;
 export default function Calendar({
   selectedDate,
   onDateChange,
+  availableDates = [],
+  onMonthChange,
 }: CalendarProps) {
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
@@ -56,29 +60,60 @@ export default function Calendar({
     );
   };
 
+  const isAvailable = (day: number) => {
+    const dateString = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+
+    return availableDates.includes(dateString);
+  };
+
+  const isPastDate = (day: number) => {
+    const today = new Date();
+    const targetDate = new Date(year, month, day);
+
+    today.setHours(0, 0, 0, 0);
+    targetDate.setHours(0, 0, 0, 0);
+
+    return targetDate < today;
+  };
+
   const navigateMonth = (direction: 'prev' | 'next') => {
     setCurrentMonth((prev) => {
       const newMonth = new Date(prev);
 
       newMonth.setMonth(prev.getMonth() + (direction === 'prev' ? -1 : 1));
 
+      if (onMonthChange) {
+        onMonthChange(newMonth.getFullYear(), newMonth.getMonth() + 1);
+      }
+
       return newMonth;
     });
   };
 
   const handleDateClick = (day: number) => {
+    if (!isAvailable(day) || isPastDate(day)) {
+      return;
+    }
+
     onDateChange(new Date(year, month, day));
   };
 
   const getDateClassName = (day: number) => {
-    if (isSelected(day)) {
-      return 'bg-primary-500 rounded-full font-bold text-white';
-    }
-    if (isToday(day)) {
-      return 'bg-primary-100 text-primary-700 rounded-full font-bold';
+    const available = isAvailable(day);
+    const past = isPastDate(day);
+
+    if (past || !available) {
+      return 'rounded-full text-gray-300 cursor-not-allowed';
     }
 
-    return 'rounded-full text-gray-700 hover:bg-gray-100';
+    if (isSelected(day)) {
+      return 'bg-primary-500 rounded-full font-bold text-white cursor-pointer';
+    }
+    if (isToday(day)) {
+      return 'bg-primary-100 text-primary-700 rounded-full font-bold cursor-pointer hover:bg-primary-200';
+    }
+
+    return 'rounded-full text-gray-700 hover:bg-gray-100 cursor-pointer';
   };
 
   return (

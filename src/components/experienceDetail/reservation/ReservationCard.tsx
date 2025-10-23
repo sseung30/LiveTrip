@@ -1,12 +1,21 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import ExperienceHeader from '@/components/experienceDetail/experience/ExperienceHeader';
 import Calendar from '@/components/experienceDetail/reservation/Calendar';
 import MobileReservationBar from '@/components/experienceDetail/reservation/MobileReservationBar';
 import ParticipantCounter from '@/components/experienceDetail/reservation/ParticipantCounter';
 import TimeSelector from '@/components/experienceDetail/reservation/TimeSelector';
-import type { ReservationCardProps } from '@/components/experienceDetail/type';
+import type {
+  AvailableSchedule,
+  ReservationCardProps,
+  Schedule,
+} from '@/components/experienceDetail/type';
 import { toast } from '@/components/toast';
+import {
+  createReservation,
+  fetchAvailableSchedule,
+} from '@/domain/experienceDetail/api';
 
 const VALIDATION_MESSAGES = {
   NO_DATE: '날짜를 선택해주세요.',
@@ -24,6 +33,60 @@ export default function ReservationCard({
   onTimeChange,
   onParticipantChange,
 }: ReservationCardProps) {
+  const [availableSchedules, setAvailableSchedules] = useState<
+    AvailableSchedule[]
+  >([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1);
+
+  useEffect(() => {
+    const loadAvailableSchedules = async () => {
+      try {
+        const year = currentYear.toString();
+        const month = currentMonth.toString().padStart(2, '0');
+        const schedules = await fetchAvailableSchedule(
+          experience.id,
+          year,
+          month
+        );
+
+        setAvailableSchedules(schedules);
+      } catch (error) {
+        console.error('예약 가능 일정 조회 실패:', error);
+      }
+    };
+
+    loadAvailableSchedules();
+  }, [experience.id, currentYear, currentMonth]);
+
+  const handleMonthChange = (year: number, month: number) => {
+    setCurrentYear(year);
+    setCurrentMonth(month);
+  };
+
+  const availableDates = availableSchedules.map((schedule) => schedule.date);
+
+  const getFilteredSchedules = (): Schedule[] => {
+    if (!selectedDate) {
+      return [];
+    }
+
+    const dateString = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`;
+    const daySchedule = availableSchedules.find((s) => s.date === dateString);
+
+    if (!daySchedule) {
+      return [];
+    }
+
+    return daySchedule.times.map((time) => { return {
+      id: time.id,
+      date: dateString,
+      startTime: time.startTime,
+      endTime: time.endTime,
+    } });
+  };
+
   const validateReservation = () => {
     if (!selectedDate) {
       toast({ message: VALIDATION_MESSAGES.NO_DATE, eventType: 'error' });
@@ -49,16 +112,45 @@ export default function ReservationCard({
     return true;
   };
 
-  const handleReservation = () => {
+  const handleReservation = async () => {
     if (!validateReservation()) {
       return;
     }
 
-    toast({ message: VALIDATION_MESSAGES.SUCCESS, eventType: 'success' });
-    // TODO: 예약 로직 구현
+    setIsLoading(true);
+
+    try {
+      const schedules = getFilteredSchedules();
+      const selectedSchedule = schedules.find(
+        (schedule) => `${schedule.startTime}-${schedule.endTime}` === selectedTime
+      );
+
+      if (!selectedSchedule) {
+        toast({ message: '선택한 시간을 찾을 수 없습니다.', eventType: 'error' });
+
+        return;
+      }
+
+      await createReservation(experience.id, {
+        scheduleId: selectedSchedule.id,
+        headCount: participantCount,
+      });
+
+      toast({ message: VALIDATION_MESSAGES.SUCCESS, eventType: 'success' });
+
+      onDateChange(null);
+      onTimeChange(null);
+      onParticipantChange(1);
+    } catch (error) {
+      console.error('예약 실패:', error);
+      toast({ message: '예약에 실패했습니다.', eventType: 'error' });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const totalPrice = experience.price * participantCount;
+  const filteredSchedules = getFilteredSchedules();
 
   return (
     <>
@@ -81,7 +173,12 @@ export default function ReservationCard({
             </div>
 
             {/* 날짜 선택 */}
-            <Calendar selectedDate={selectedDate} onDateChange={onDateChange} />
+            <Calendar
+              selectedDate={selectedDate}
+              availableDates={availableDates}
+              onDateChange={onDateChange}
+              onMonthChange={handleMonthChange}
+            />
 
             {/* 참여 인원 수 */}
             <ParticipantCounter
@@ -92,7 +189,7 @@ export default function ReservationCard({
             {/* 예약 가능한 시간 */}
             {selectedDate ? (
               <TimeSelector
-                schedules={experience.schedules}
+                schedules={filteredSchedules}
                 selectedTime={selectedTime}
                 onTimeChange={onTimeChange}
               />
@@ -121,10 +218,11 @@ export default function ReservationCard({
 
                 {/* 예약하기 버튼 */}
                 <button
-                  className='bg-primary-500 hover:bg-primary-600 rounded-lg px-6 py-3 font-semibold text-white transition-colors'
+                  disabled={isLoading}
+                  className='bg-primary-500 hover:bg-primary-600 rounded-lg px-6 py-3 font-semibold text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50'
                   onClick={handleReservation}
                 >
-                  예약하기
+                  {isLoading ? '예약 중...' : '예약하기'}
                 </button>
               </div>
             </div>
@@ -138,9 +236,14 @@ export default function ReservationCard({
         participantCount={participantCount}
         selectedDate={selectedDate}
         selectedTime={selectedTime}
+        availableDates={availableDates}
+        filteredSchedules={filteredSchedules}
+        isLoading={isLoading}
         onDateChange={onDateChange}
         onParticipantChange={onParticipantChange}
         onTimeChange={onTimeChange}
+        onReservation={handleReservation}
+        onMonthChange={handleMonthChange}
       />
     </>
   );

@@ -1,5 +1,11 @@
+'use client';
+
+import { useActionState, useEffect } from 'react';
 import type { ReservationStatusType } from '@/components/reservationPopup/type';
 import StateBadge from '@/components/stateBadge/StateBadge';
+import { toast } from '@/components/toast';
+import { approveReservationAction } from '@/form/reservation/approve-reservation.action';
+import { rejectReservationAction } from '@/form/reservation/reject-reservation.action';
 
 interface ReservationCardProps {
   reservation: {
@@ -8,16 +14,40 @@ interface ReservationCardProps {
     headCount: number;
   };
   activeTab: ReservationStatusType;
-  onApprove?: (id: number) => void;
-  onReject?: (id: number) => void;
+  activityId: number;
 }
 
 export default function ReservationCard({
   reservation,
   activeTab,
-  onApprove,
-  onReject,
+  activityId,
 }: ReservationCardProps) {
+  const [approveState, approveFormAction, isApprovePending] = useActionState(
+    approveReservationAction,
+    { status: 'idle' as const }
+  );
+
+  const [rejectState, rejectFormAction, isRejectPending] = useActionState(
+    rejectReservationAction,
+    { status: 'idle' as const }
+  );
+
+  useEffect(() => {
+    if (approveState.status === 'success') {
+      toast({ message: approveState.message || '', eventType: 'success' });
+    } else if (approveState.status === 'error') {
+      toast({ message: approveState.message || '', eventType: 'error' });
+    }
+  }, [approveState]);
+
+  useEffect(() => {
+    if (rejectState.status === 'success') {
+      toast({ message: rejectState.message || '', eventType: 'success' });
+    } else if (rejectState.status === 'error') {
+      toast({ message: rejectState.message || '', eventType: 'error' });
+    }
+  }, [rejectState]);
+
   return (
     <div className='rounded-2xl border border-gray-100 bg-white p-4'>
       <div className='flex items-center justify-between'>
@@ -38,24 +68,36 @@ export default function ReservationCard({
 
         {activeTab === 'pending' && (
           <div className='flex flex-col gap-1.5'>
-            <button
-              type='button'
-              className='w-full rounded-md border border-gray-50 px-3 py-1 text-xs font-medium text-gray-600'
-              onClick={() => {
-                onApprove?.(reservation.id);
-              }}
-            >
-              승인하기
-            </button>
-            <button
-              type='button'
-              className='w-full rounded-md border border-gray-50 bg-gray-50 px-3 py-1 text-xs font-medium text-gray-600'
-              onClick={() => {
-                onReject?.(reservation.id);
-              }}
-            >
-              거절하기
-            </button>
+            <form action={approveFormAction}>
+              <input type='hidden' name='activityId' value={activityId} />
+              <input
+                type='hidden'
+                name='reservationId'
+                value={reservation.id}
+              />
+              <button
+                type='submit'
+                disabled={isApprovePending || isRejectPending}
+                className='w-full rounded-md border border-gray-50 px-3 py-1 text-xs font-medium text-gray-600 disabled:cursor-not-allowed disabled:opacity-50'
+              >
+                {isApprovePending ? '처리 중...' : '승인하기'}
+              </button>
+            </form>
+            <form action={rejectFormAction}>
+              <input type='hidden' name='activityId' value={activityId} />
+              <input
+                type='hidden'
+                name='reservationId'
+                value={reservation.id}
+              />
+              <button
+                type='submit'
+                disabled={isApprovePending || isRejectPending}
+                className='w-full rounded-md border border-gray-50 bg-gray-50 px-3 py-1 text-xs font-medium text-gray-600 disabled:cursor-not-allowed disabled:opacity-50'
+              >
+                {isRejectPending ? '처리 중...' : '거절하기'}
+              </button>
+            </form>
           </div>
         )}
 

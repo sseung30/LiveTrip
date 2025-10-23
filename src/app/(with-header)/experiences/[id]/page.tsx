@@ -1,47 +1,65 @@
-'use client';
-
-import { useState } from 'react';
+import ExperienceDetailClient from '@/app/(with-header)/experiences/[id]/ExperienceDetailClient';
 import ExperienceInfo from '@/components/experienceDetail/experience/ExperienceInfo';
 import ExperienceReviews from '@/components/experienceDetail/experience/ExperienceReviews';
 import ImageGallery from '@/components/experienceDetail/experience/ImageGallery';
 import MobileExperienceHeader from '@/components/experienceDetail/experience/MobileExperienceHeader';
-import ReservationCard from '@/components/experienceDetail/reservation/ReservationCard';
+import type {
+  ExperienceDetail,
+  ReviewResponse,
+} from '@/components/experienceDetail/type';
+import {
+  fetchExperienceDetail,
+  fetchReviews,
+} from '@/domain/experienceDetail/api';
 import {
   MOCK_EXPERIENCE_DETAIL,
   MOCK_REVIEWS,
 } from '@/mocks/experienceDetailMock';
 
-/**
- * 타입 안전한 이미지 배열 생성 함수
- */
-const createImageArray = (
-  experience: typeof MOCK_EXPERIENCE_DETAIL
-): string[] => {
-  const { subImages } = experience as {
-    subImages: { id: number; imageUrl: string }[];
-  };
+interface PageProps {
+  params: Promise<{ id: string }>;
+}
 
-  return [experience.bannerImageUrl, ...subImages.map((img) => img.imageUrl)];
-};
+function createImageArray(experience: ExperienceDetail): string[] {
+  return [
+    experience.bannerImageUrl,
+    ...experience.subImages.map((img) => img.imageUrl),
+  ];
+}
 
-/**
- * 타입 안전한 리뷰 데이터 추출 함수
- */
-const extractReviewData = (reviews: typeof MOCK_REVIEWS) => {
+function extractReviewData(reviewResponse: ReviewResponse) {
   return {
-    reviews: (reviews as { reviews: any[] }).reviews,
-    totalCount: (reviews as { totalCount: number }).totalCount,
-    averageRating: (reviews as { averageRating: number }).averageRating,
+    reviews: reviewResponse.reviews,
+    totalCount: reviewResponse.totalCount,
+    averageRating: reviewResponse.averageRating,
   };
-};
+}
 
-export default function ExperienceDetailPage() {
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [selectedTime, setSelectedTime] = useState<string | null>(null);
-  const [participantCount, setParticipantCount] = useState(1);
+export default async function ExperienceDetailPage({ params }: PageProps) {
+  const { id } = await params;
+  const activityId = Number(id);
 
-  const imageArray = createImageArray(MOCK_EXPERIENCE_DETAIL);
-  const reviewData = extractReviewData(MOCK_REVIEWS);
+  let experience: ExperienceDetail;
+  let reviews: ReviewResponse;
+
+  try {
+    [experience, reviews] = await Promise.all([
+      fetchExperienceDetail(activityId),
+      fetchReviews(activityId, 1, 10),
+    ]);
+  } catch (error) {
+    console.warn(
+      `API에서 체험 ID ${activityId}를 찾을 수 없어 Mock 데이터를 사용합니다.`
+    );
+    experience = MOCK_EXPERIENCE_DETAIL;
+    reviews = MOCK_REVIEWS;
+  }
+
+  const imageArray = createImageArray(experience);
+  const reviewData = extractReviewData(reviews);
+
+  const currentUserId = 999;
+  const isMyExperience = experience.userId === currentUserId;
 
   return (
     <div className='min-h-screen'>
@@ -55,13 +73,13 @@ export default function ExperienceDetailPage() {
 
             {/* 모바일/태블릿 버전 체험 간략 설명 */}
             <div className='lg:hidden'>
-              <MobileExperienceHeader experience={MOCK_EXPERIENCE_DETAIL} />
+              <MobileExperienceHeader experience={experience} />
             </div>
 
             {/* 체험 정보 */}
             <ExperienceInfo
-              description={MOCK_EXPERIENCE_DETAIL.description}
-              address={MOCK_EXPERIENCE_DETAIL.address}
+              description={experience.description}
+              address={experience.address}
             />
 
             {/* 체험 후기 */}
@@ -69,21 +87,15 @@ export default function ExperienceDetailPage() {
               reviews={reviewData.reviews}
               totalReviews={reviewData.totalCount}
               averageRating={reviewData.averageRating}
+              activityId={activityId}
             />
           </div>
 
-          {/* 우측 예약 카드 */}
-          <div className='lg:col-span-1'>
-            <ReservationCard
-              experience={MOCK_EXPERIENCE_DETAIL}
-              selectedDate={selectedDate}
-              selectedTime={selectedTime}
-              participantCount={participantCount}
-              onDateChange={setSelectedDate}
-              onTimeChange={setSelectedTime}
-              onParticipantChange={setParticipantCount}
-            />
-          </div>
+          {/* 우측 예약 카드 - 내 체험이 아닐 때만 표시 */}
+          <ExperienceDetailClient
+            experience={experience}
+            isMyExperience={isMyExperience}
+          />
         </div>
       </div>
     </div>

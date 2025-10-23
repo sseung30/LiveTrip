@@ -1,0 +1,128 @@
+[1mdiff --git a/src/components/experienceDetail/experience/ExperienceReviews.tsx b/src/components/experienceDetail/experience/ExperienceReviews.tsx[m
+[1mindex b04607b..01e54a9 100644[m
+[1m--- a/src/components/experienceDetail/experience/ExperienceReviews.tsx[m
+[1m+++ b/src/components/experienceDetail/experience/ExperienceReviews.tsx[m
+[36m@@ -2,8 +2,12 @@[m
+ [m
+ import Image from 'next/image';[m
+ import { useState } from 'react';[m
+[31m-import type { ExperienceReviewsProps } from '@/components/experienceDetail/type';[m
+[32m+[m[32mimport type {[m
+[32m+[m[32m  ExperienceReviewsProps,[m
+[32m+[m[32m  Review,[m
+[32m+[m[32m} from '@/components/experienceDetail/type';[m
+ import Pagination from '@/components/pagination/Pagination';[m
+[32m+[m[32mimport { fetchReviews } from '@/domain/experienceDetail/api';[m
+ [m
+ const REVIEWS_PER_PAGE = 3;[m
+ const STAR_COUNT = 5;[m
+[36m@@ -23,17 +27,15 @@[m [mconst getSatisfactionLevel = (rating: number): string => {[m
+ };[m
+ [m
+ export default function ExperienceReviews({[m
+[31m-  reviews,[m
+[32m+[m[32m  reviews: initialReviews,[m
+   totalReviews,[m
+   averageRating,[m
+[32m+[m[32m  activityId,[m
+ }: ExperienceReviewsProps) {[m
+   const [currentPage, setCurrentPage] = useState(1);[m
+[31m-[m
+[31m-  // TODO: 이후 API 연동 시 데이터 받아오도록[m
+[31m-  const currentReviews = reviews.slice([m
+[31m-    (currentPage - 1) * REVIEWS_PER_PAGE,[m
+[31m-    currentPage * REVIEWS_PER_PAGE[m
+[31m-  );[m
+[32m+[m[32m  const [currentReviews, setCurrentReviews] =[m
+[32m+[m[32m    useState<Review[]>(initialReviews);[m
+[32m+[m[32m  const [isLoading, setIsLoading] = useState(false);[m
+ [m
+   const renderStars = (rating: number) => {[m
+     return Array.from({ length: STAR_COUNT }, (_, index) => {[m
+[36m@@ -57,8 +59,23 @@[m [mexport default function ExperienceReviews({[m
+     });[m
+   };[m
+ [m
+[31m-  const handlePageChange = (page: number) => {[m
+[32m+[m[32m  const handlePageChange = async (page: number) => {[m
+[32m+[m[32m    setIsLoading(true);[m
+     setCurrentPage(page);[m
+[32m+[m
+[32m+[m[32m    try {[m
+[32m+[m[32m      const data = await fetchReviews([m
+[32m+[m[32m        Number(activityId),[m
+[32m+[m[32m        page,[m
+[32m+[m[32m        REVIEWS_PER_PAGE[m
+[32m+[m[32m      );[m
+[32m+[m
+[32m+[m[32m      setCurrentReviews(data.reviews);[m
+[32m+[m[32m    } catch (error) {[m
+[32m+[m[32m      console.error('리뷰 로딩 실패:', error);[m
+[32m+[m[32m    } finally {[m
+[32m+[m[32m      setIsLoading(false);[m
+[32m+[m[32m    }[m
+   };[m
+ [m
+   return ([m
+[36m@@ -91,26 +108,43 @@[m [mexport default function ExperienceReviews({[m
+ [m
+       {/* 후기 목록 */}[m
+       <div className='space-y-6'>[m
+[31m-        {currentReviews.map((review) => {[m
+[31m-          return ([m
+[31m-            <div key={review.id} className='rounded-2xl bg-white p-6 shadow-lg'>[m
+[31m-              <div className='mb-3'>[m
+[31m-                <div className='mb-2 flex items-center gap-3'>[m
+[31m-                  <span className='font-bold text-gray-950'>[m
+[31m-                    {review.user.nickname}[m
+[31m-                  </span>[m
+[31m-                  <span className='text-sm text-gray-400'>[m
+[31m-                    {new Date(review.createdAt).toLocaleDateString('ko-KR')}[m
+[31m-                  </span>[m
+[31m-                </div>[m
+[31m-                <div className='flex items-center gap-1'>[m
+[31m-                  {renderStars(review.rating)}[m
+[32m+[m[32m        {isLoading && ([m
+[32m+[m[32m          <div className='flex items-center justify-center py-12'>[m
+[32m+[m[32m            <div className='text-gray-500'>리뷰를 불러오는 중...</div>[m
+[32m+[m[32m          </div>[m
+[32m+[m[32m        )}[m
+[32m+[m[32m        {!isLoading && currentReviews.length === 0 && ([m
+[32m+[m[32m          <div className='flex items-center justify-center py-12'>[m
+[32m+[m[32m            <div className='text-gray-500'>아직 리뷰가 없습니다.</div>[m
+[32m+[m[32m          </div>[m
+[32m+[m[32m        )}[m
+[32m+[m[32m        {!isLoading &&[m
+[32m+[m[32m          currentReviews.length > 0 &&[m
+[32m+[m[32m          currentReviews.map((review) => {[m
+[32m+[m[32m            return ([m
+[32m+[m[32m              <div[m
+[32m+[m[32m                key={review.id}[m
+[32m+[m[32m                className='rounded-2xl bg-white p-6 shadow-lg'[m
+[32m+[m[32m              >[m
+[32m+[m[32m                <div className='mb-3'>[m
+[32m+[m[32m                  <div className='mb-2 flex items-center gap-3'>[m
+[32m+[m[32m                    <span className='font-bold text-gray-950'>[m
+[32m+[m[32m                      {review.user.nickname}[m
+[32m+[m[32m                    </span>[m
+[32m+[m[32m                    <span className='text-sm text-gray-400'>[m
+[32m+[m[32m                      {new Date(review.createdAt).toLocaleDateString('ko-KR')}[m
+[32m+[m[32m                    </span>[m
+[32m+[m[32m                  </div>[m
+[32m+[m[32m                  <div className='flex items-center gap-1'>[m
+[32m+[m[32m                    {renderStars(review.rating)}[m
+[32m+[m[32m                  </div>[m
+                 </div>[m
+[32m+[m[32m                <p className='leading-relaxed text-gray-950'>[m
+[32m+[m[32m                  {review.content}[m
+[32m+[m[32m                </p>[m
+               </div>[m
+[31m-              <p className='leading-relaxed text-gray-950'>{review.content}</p>[m
+[31m-            </div>[m
+[31m-          );[m
+[31m-        })}[m
+[32m+[m[32m            );[m
+[32m+[m[32m          })}[m
+       </div>[m
+ [m
+       {/* 페이지네이션 */}[m
