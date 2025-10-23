@@ -171,7 +171,7 @@ function InnerRegistrationForm({
       />
 
       <div className="mt-8 flex justify-center">
-        <Button variant="primary" classNames="w-[120px] text-14 font-bold md:text-14">
+        <Button variant="primary" classNames="w-[120px] !text-white text-14 font-bold md:text-14">
           {isSubmitting ? '등록 중...' : '등록하기'}
         </Button>
       </div>
