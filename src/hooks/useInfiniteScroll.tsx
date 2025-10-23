@@ -1,8 +1,11 @@
+'use client';
+
 import {
   type InfiniteData,
   type QueryKey,
   useInfiniteQuery,
 } from '@tanstack/react-query';
+import { apiFetch } from '@/api/api';
 
 export interface UseInfiniteOptions<TPage, TItem> {
   /**
@@ -61,15 +64,10 @@ export function useInfiniteByCursor<TPage, TItem>({
   >({
     queryKey,
     initialPageParam: initialCursor,
-    queryFn: async ({ pageParam, signal }) => {
+    queryFn: async ({ pageParam }) => {
       const url = buildUrl(pageParam);
-      const res = await fetch(url, { signal });
 
-      if (!res.ok) {
-        throw new Error(`HTTP ${res.status}`);
-      }
-
-      return (await res.json()) as TPage;
+      return (await apiFetch<TPage>(url)) as TPage;
     },
     getNextPageParam: (lastPage) => {
       // 사용자가 제공한 계산기가 있으면 그걸 우선 사용

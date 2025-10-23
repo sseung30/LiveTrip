@@ -4,6 +4,9 @@ interface useInfiniteScrollProps {
   loading: boolean;
   hasMore: boolean;
   setPage: (callback: (prevPage: number) => number) => void;
+  rootRef?: React.RefObject<Element | null>;
+  rootMargin?: string;
+  threshold?: number;
 }
 
 /**
@@ -15,6 +18,9 @@ export default function useIntersectionObserver({
   loading,
   hasMore,
   setPage,
+  rootRef,
+  rootMargin = '0px 0px 200px 0px',
+  threshold = 0,
 }: useInfiniteScrollProps) {
   // 실제로 화면 스크롤 상태를 관찰하는 IntersectionObserver 인스턴스
   const observer = useRef<IntersectionObserver | null>(null);
@@ -41,8 +47,9 @@ export default function useIntersectionObserver({
         });
       },
       {
-        rootMargin: '200px',
-        threshold: 0,
+        root: rootRef?.current ?? null,
+        rootMargin,
+        threshold,
       }
     );
 
@@ -56,7 +63,7 @@ export default function useIntersectionObserver({
         observer.current.disconnect();
       }
     };
-  }, [loading, hasMore, setPage]);
+  }, [loading, hasMore, setPage, rootRef, rootMargin, threshold]);
 
   // loader ref를 받아 <div ref={loader} />등에 연결할 수 있도록 반환
   return { loader };
