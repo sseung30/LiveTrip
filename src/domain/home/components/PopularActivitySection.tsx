@@ -1,8 +1,14 @@
+import { getAllActivitiesWithCache } from '@/domain/activities/api';
+import type { getAllActivitiesParams } from '@/domain/activities/type';
 import Card from '@/domain/home/components/Card';
-import { getActivityList } from '@/domain/home/mock';
 
-export default function PopularActivitySection() {
-  const { activities } = getActivityList();
+export default async function PopularActivitySection() {
+  const { activities } = await getAllActivitiesWithCache({
+    sort: 'most_reviewed',
+    page: 1,
+    size: 4,
+    method: 'cursor',
+  } as getAllActivitiesParams);
 
   return (
     <section className='w-full'>

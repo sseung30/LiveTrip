@@ -1,26 +1,24 @@
 'use client';
 import { cx } from 'class-variance-authority';
+import Image from 'next/image';
+import { categoryTabs } from '@/domain/home/constants/categoryTabs';
 import useCustomSearchParams from '@/hooks/useCustomSearchParams';
 
 interface ActivityTabsProps {
   categoryIndex: number;
 }
-export const categoryTabs = [
-  { icon: <></>, title: '문화 · 예술', emojiTitle: '🎨 문화 · 예술' },
-  { icon: <></>, title: '식음료', emojiTitle: '🥗 식음료' },
-  { icon: <></>, title: '투어', emojiTitle: '🏕️ 투어' },
-  { icon: <></>, title: '관광', emojiTitle: '✈️ 관광' },
-  { icon: <></>, title: '웰빙', emojiTitle: '🧘‍♀️ 웰빙' },
-];
 
 export function ActivityTabs({ categoryIndex }: ActivityTabsProps) {
   const { setSearchParams } = useCustomSearchParams();
 
-  const handleClick = (index: number) => {
+  const handleTabClick = (index: number) => {
     if (categoryIndex === index) {
       return;
     }
     setSearchParams({ categoryIndex: String(index) });
+  };
+  const handleDeleteClick = () => {
+    setSearchParams({ categoryIndex: String(-1) });
   };
 
   return (
@@ -35,7 +33,7 @@ export function ActivityTabs({ categoryIndex }: ActivityTabsProps) {
                 'bg-gray-900 text-white hover:bg-gray-900'
             )}
             onClick={() => {
-              handleClick(index);
+              handleTabClick(index);
             }}
           >
             {tab.icon}
@@ -43,6 +41,17 @@ export function ActivityTabs({ categoryIndex }: ActivityTabsProps) {
           </button>
         );
       })}
+      <button
+        className='border-gray-150 hover:bg-gray-25 min-w-fit cursor-pointer rounded-[100px] border-1 px-4 py-2.5 active:bg-gray-900'
+        onClick={handleDeleteClick}
+      >
+        <Image
+          src={'/icons/delete.svg'}
+          alt='카테고리 제거'
+          width={28}
+          height={28}
+        />
+      </button>
     </div>
   );
 }

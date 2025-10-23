@@ -4,26 +4,27 @@ import AllActivitySection from '@/domain/home/components/AllActivitySection';
 import PopularActivitySection from '@/domain/home/components/PopularActivitySection';
 import ToastLayer from '@/domain/home/components/ToastLayer';
 import type { homeSearchParams } from '@/domain/home/type';
-import { stringToBoolean } from '@/utils/string-to-boolean';
+import { paramsStringToProps } from '@/domain/home/utils/params-string-to-props';
 
 export default async function Home({
   searchParams,
 }: {
   searchParams: Promise<homeSearchParams>;
 }) {
-  const { page, sort, categoryIndex, descending } = await searchParams;
-  const isDescending = stringToBoolean(descending || 'true');
+  const params = await searchParams;
+  const props = paramsStringToProps(params);
+  const { page, sort, categoryIndex } = props;
+  const suspenseKey = `${page}-${sort}-${categoryIndex}`;
 
   return (
     <>
       <div className='flex-center w-full flex-col gap-20'>
         <PopularActivitySection />
-        <Suspense fallback={<Spinner size='md' key={categoryIndex} />}>
+        <Suspense fallback={<Spinner size='md' />} key={suspenseKey}>
           <AllActivitySection
-            page={Number(page)}
+            page={page}
             sort={sort}
-            categoryIndex={Number(categoryIndex)}
-            isDescending={isDescending}
+            categoryIndex={categoryIndex}
           />
         </Suspense>
       </div>

@@ -29,6 +29,7 @@ export interface getAllActivitiesParams {
   sort?: sortType;
   page?: number;
   size?: number;
+  method: 'cursor' | 'offset';
 }
 export interface getAllActivitiesResponse {
   cursorId: number | null;
