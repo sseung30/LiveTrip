@@ -65,7 +65,7 @@ export function TimeSlotsField({
                 />
               </div>
 
-              <div className="ml-auto shrink-0 self-end flex items-center h-[54px]">
+              <div className="ml-4 shrink-0 self-end flex items-center h-[54px]">
                 {index === 0 ? (
                   <RoundIconButton ariaLabel="시간대 추가" onClick={onAdd}>
                     <PlusIcon />
