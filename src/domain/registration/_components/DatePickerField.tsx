@@ -1,11 +1,10 @@
 'use client';
 
-import { forwardRef, useMemo } from 'react';
-import DatePicker from 'react-datepicker';
-import { format, parseISO, isDate } from 'date-fns';
-import { cx } from '@/utils/cx';
-
 import 'react-datepicker/dist/react-datepicker.css';
+import { format, isDate,parseISO } from 'date-fns';
+import { forwardRef, useMemo } from 'react';
+import ReactDatePicker from 'react-datepicker';
+import { cx } from '@/utils/cx';
 
 interface DatePickerFieldProps {
   value: string;
@@ -25,24 +24,24 @@ interface CustomInputProps {
 }
 
 const DatePickerTrigger = forwardRef<HTMLButtonElement, CustomInputProps>(
-  ({ value, onClick, placeholder = 'yyyy/mm/dd', className, disabled }, ref) => (
-    <button
+  ({ value, onClick, placeholder = 'yyyy/mm/dd', className, disabled }, ref) => 
+    { return <button
       ref={ref}
       type="button"
-      onClick={onClick}
       disabled={disabled}
       className={cx(
         'flex h-[54px] w-full items-center justify-between rounded-xl border px-4 text-left text-gray-950 transition-colors placeholder:text-gray-400 focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-25',
         disabled ? 'border-gray-100' : 'border-gray-100 hover:border-primary-500',
         className,
       )}
+      onClick={onClick}
     >
       <span className={value ? 'text-gray-900' : 'text-gray-400'}>
         {value || placeholder}
       </span>
       <CalendarIcon />
-    </button>
-  ),
+    </button> }
+  ,
 );
 
 DatePickerTrigger.displayName = 'DatePickerTrigger';
@@ -74,8 +73,21 @@ export default function DatePickerField({
       {label ? (
         <label className="mb-2 text-sm font-medium text-gray-900">{label}</label>
       ) : null}
-      <DatePicker
+      <ReactDatePicker
         selected={selectedDate}
+        dateFormat="yyyy/MM/dd"
+        placeholderText={placeholder}
+        disabled={disabled}
+        popperPlacement="bottom-start"
+        showPopperArrow={false}
+        customInput={
+          <DatePickerTrigger
+            value={selectedDate ? format(selectedDate, 'yyyy/MM/dd') : ''}
+            placeholder={placeholder}
+            className={className}
+            disabled={disabled}
+          />
+        }
         onChange={(date) => {
           if (!date) {
             onChange('');
@@ -85,19 +97,6 @@ export default function DatePickerField({
 
           onChange(format(date, 'yyyy-MM-dd'));
         }}
-        dateFormat="yyyy/MM/dd"
-        placeholderText={placeholder}
-        disabled={disabled}
-        customInput={
-          <DatePickerTrigger
-            value={selectedDate ? format(selectedDate, 'yyyy/MM/dd') : ''}
-            placeholder={placeholder}
-            className={className}
-            disabled={disabled}
-          />
-        }
-        popperPlacement="bottom-start"
-        showPopperArrow={false}
       />
     </div>
   );

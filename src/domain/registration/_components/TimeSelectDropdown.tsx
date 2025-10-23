@@ -22,10 +22,10 @@ export function TimeSelectDropdown({
 }: TimeSelectDropdownProps) {
   const dropdownOptions = useMemo(
     () =>
-      options.map((option) => ({
+      { return options.map((option) => { return {
         label: option,
         value: option,
-      })),
+      } }) },
     [options],
   );
 

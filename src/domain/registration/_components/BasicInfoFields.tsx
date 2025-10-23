@@ -119,7 +119,7 @@ const handleAddressSelect = useCallback((data: Address) => {
             <input
             {...field}
             readOnly
-            className="flex-1 h-[54px] rounded-xl border px-4 bg-gray-50"
+            className="flex-1 h-[54px] rounded-xl px-4 bg-gray-50"
             placeholder="주소를 검색해 주세요"
             ref={(el) => {
             field.ref(el);        // RHF의 ref 유지
