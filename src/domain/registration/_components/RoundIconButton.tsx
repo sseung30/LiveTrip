@@ -16,11 +16,11 @@ export function RoundIconButton({
   variant = 'primary',
 }: RoundIconButtonProps) {
   const baseClass =
-    'inline-flex h-10 w-10 items-center justify-center rounded-full border transition';
+    'inline-flex h-10 w-10 items-center justify-center rounded-full transition';
   const variantClass =
     variant === 'primary'
-      ? 'border-primary-100 bg-white text-primary-500 hover:bg-primary-100'
-      : 'border-gray-200 bg-white text-gray-500 hover:bg-gray-50';
+      ? 'bg-primary-500 text-white hover:bg-primary-600'
+      : 'bg-gray-50 text-black hover:bg-gray-100';
 
   return (
     <button
