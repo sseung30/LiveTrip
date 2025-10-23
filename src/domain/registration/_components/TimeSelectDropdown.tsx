@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import SelectDropdown from '@/components/dropdown/SelectDropdown';
 
 interface TimeSelectDropdownProps {
+  label?: string;
   value: string;
   options: string[];
   placeholder: string;
@@ -12,11 +13,12 @@ interface TimeSelectDropdownProps {
 }
 
 export function TimeSelectDropdown({
+  label,
   value,
   options,
   placeholder,
   onSelect,
-  width = 184,
+  width,
 }: TimeSelectDropdownProps) {
   const dropdownOptions = useMemo(
     () =>
@@ -28,12 +30,17 @@ export function TimeSelectDropdown({
   );
 
   return (
-    <SelectDropdown
-      width={width}
-      options={dropdownOptions}
-      placeholder={placeholder}
-      defaultValue={value || undefined}
-      onSelect={onSelect}
-    />
+    <div>
+      {label ? (
+        <label className="hidden md:block mb-2 text-sm text-black">{label}</label>
+      ) : null}
+      <SelectDropdown
+        width={width}
+        options={dropdownOptions}
+        placeholder={placeholder}
+        defaultValue={value || undefined}
+        onSelect={onSelect}
+      />
+    </div>
   );
 }

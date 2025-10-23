@@ -22,44 +22,50 @@ export function TimeSlotsField({
     <div className="flex flex-col gap-5">
       <div className="flex flex-col gap-2">
         <h2 className="text-lg font-semibold text-gray-900">예약 가능한 시간대</h2>
-        <p className="text-sm text-gray-500">날짜</p>
       </div>
 
       <div className="flex flex-col gap-4">
         {timeSlots.map((slot, index) => 
           { return <div
             key={slot.id}
-            className="flex flex-col gap-4 rounded-2xl p-4 md:flex-row md:items-center md:gap-4"
+            className="flex flex-col gap-4 rounded-2xl md:flex-row md:items-center md:gap-4"
           >
-            <DatePickerField
-              value={slot.date}
-              onChange={(value) => onChange(slot.id, 'date', value)}
-              placeholder="yyyy/mm/dd"
-              className="w-full md:w-48"
-            />
+            {/* 날짜: 데스크탑에서는 남은 공간을 꽉 채움 (basis-0로 잔여폭 모두 차지) */}
+            <div className="w-full md:flex-1 md:basis-0">
+              <DatePickerField
+                value={slot.date}
+                onChange={(value) => onChange(slot.id, 'date', value)}
+                placeholder="yyyy/mm/dd"
+                label="날짜"
+                className="w-full"
+              />
+            </div>
 
-            <div className="flex w-full flex-wrap items-center gap-2">
-              <div className="flex-1 min-w-[150px]">
+            {/* 시간 + 버튼: 한 줄 정렬, 데스크탑에서는 내용폭만 차지 */}
+            <div className="flex w-full items-end gap-2 md:flex-none md:w-auto md:flex-nowrap">
+              <div className="flex-1 md:w-44 md:flex-none">
                 <TimeSelectDropdown
+                  label="시작 시간"
                   value={slot.startTime}
                   options={timeOptions}
-                  placeholder="시작 시간"
+                  placeholder="0:00"
                   onSelect={(value) => { onChange(slot.id, 'startTime', value); }}
                 />
               </div>
 
-              <span className="flex h-12 w-6 items-center justify-center text-gray-300">-</span>
+              <span className="self-end flex h-[54px] w-6 items-center justify-center text-gray-300">-</span>
 
-              <div className="flex-1 min-w-[150px]">
+              <div className="flex-1 md:w-44 md:flex-none">
                 <TimeSelectDropdown
+                  label="종료 시간"
                   value={slot.endTime}
                   options={timeOptions}
-                  placeholder="종료 시간"
+                  placeholder="0:00"
                   onSelect={(value) => { onChange(slot.id, 'endTime', value); }}
                 />
               </div>
 
-              <div className="ml-auto flex justify-end">
+              <div className="ml-auto shrink-0 self-end flex items-center h-[54px]">
                 {index === 0 ? (
                   <RoundIconButton ariaLabel="시간대 추가" onClick={onAdd}>
                     <PlusIcon />
