@@ -1,6 +1,7 @@
 'use client';
 
-import { useDaumPostcodePopup } from 'react-daum-postcode';
+import { useCallback, useRef,useState } from 'react';
+import { type Address,useDaumPostcodePopup } from 'react-daum-postcode';
 import { type Control, Controller, useFormContext,type UseFormRegister, type UseFormSetValue  } from 'react-hook-form';
 import SelectDropdown from '@/components/dropdown/SelectDropdown';
 import Input from '@/components/ui/Input/Input';
@@ -16,13 +17,31 @@ interface FormValues {
 export function BasicInfoFields( { categoryOptions }: { categoryOptions: { label: string; value: string }[] }) {
   const { control, register, setValue } = useFormContext();
   const openPostcode = useDaumPostcodePopup();
+  const [isPostcodeOpen, setIsPostcodeOpen] = useState(false);
+  const addressInputRef = useRef<HTMLInputElement>(null);
 
-  const handleAddressSelect = (data: unknown) => {
-    const d = data as { roadAddress?: string; jibunAddress?: string };
-    const fullAddress = d.roadAddress || d.jibunAddress || "";
 
-    setValue("address", fullAddress, { shouldValidate: true });
-  };
+
+const handleAddressSelect = useCallback((data: Address) => {
+  const { roadAddress, jibunAddress } = data;
+  const fullAddress = roadAddress || jibunAddress || '';
+
+
+  setValue('address', fullAddress, { shouldValidate: true });
+  addressInputRef.current?.blur();
+  setIsPostcodeOpen(false);
+}, [setValue]);
+
+
+  const handleOpenPostcode = useCallback(() => {
+    if (isPostcodeOpen) {return;}          // 이미 열려 있으면 아무것도 하지 않음
+
+    setIsPostcodeOpen(true);
+    openPostcode({
+      onComplete: handleAddressSelect,
+      onClose: () => { setIsPostcodeOpen(false); },
+    });
+  }, [isPostcodeOpen, openPostcode]);
 
   return (
     <>
@@ -102,6 +121,12 @@ export function BasicInfoFields( { categoryOptions }: { categoryOptions: { label
             readOnly
             className="flex-1 h-[54px] rounded-xl border px-4 bg-gray-50"
             placeholder="주소를 검색해 주세요"
+            ref={(el) => {
+            field.ref(el);        // RHF의 ref 유지
+            addressInputRef.current = el;
+          }}
+            onFocus={handleOpenPostcode}
+            onClick={handleOpenPostcode}
             />
             <button
             type="button"
