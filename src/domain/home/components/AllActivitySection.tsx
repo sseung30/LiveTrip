@@ -1,42 +1,32 @@
-'use client';
-import { useState } from 'react';
-import { ActivityTabs, tabs } from '@/domain/home/components/ActivityTabs';
+import {
+  ActivityTabs,
+  categoryTabs,
+} from '@/domain/home/components/ActivityTabs';
 import DropdownTabs from '@/domain/home/components/DropdownTabs';
 import GridCardList from '@/domain/home/components/GridCardList';
 import { getActivityList } from '@/domain/home/mock';
+import type { AllActivitySectionProps } from '@/domain/home/type';
 
-export default function AllActivitySection() {
+export default function AllActivitySection({
+  page = 1,
+  sort = 'latest',
+  categoryIndex = -1,
+  isDescending = true,
+}: AllActivitySectionProps) {
   const { activities } = getActivityList();
-  const [selectedTabIndex, setSelectedTabIndex] = useState(-1);
-  const [selectedDropdownOption, setSelectedDropdownOption] =
-    useState('인기순');
-  const [isDescending, setIsDescending] = useState(true);
 
-  const isTabSelected = selectedTabIndex !== -1;
-  const sectionTitle = '🛼 모든 체험';
-  const title = isTabSelected
-    ? tabs[selectedTabIndex].emojiTitle
-    : sectionTitle;
-
-  const onDropdownSelect = (value: string) => {
-    setSelectedDropdownOption(value);
-  };
+  console.log(categoryIndex);
+  console.log(categoryTabs[categoryIndex]);
+  const sectionTitle =
+    categoryIndex === -1 ? '🛼 모든 체험' : categoryTabs[categoryIndex]?.title;
 
   return (
     <section className='relative w-full'>
       <div className='mb-2.5 flex items-center justify-between md:mb-4'>
-        <h2 className='text-18 md:text-24 font-bold'>{title}</h2>
-        <DropdownTabs
-          selectedDropdownOption={selectedDropdownOption}
-          isDescending={isDescending}
-          setIsDescending={setIsDescending}
-          onDropdownSelect={onDropdownSelect}
-        />
+        <h2 className='text-18 md:text-24 font-bold'>{sectionTitle}</h2>
+        <DropdownTabs sortOption={sort} isDescending={isDescending} />
       </div>
-      <ActivityTabs
-        selectedTabIndex={selectedTabIndex}
-        setSelectedTabIndex={setSelectedTabIndex}
-      />
+      <ActivityTabs categoryIndex={categoryIndex} />
       <GridCardList activities={activities} />
     </section>
   );

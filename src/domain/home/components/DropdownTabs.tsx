@@ -1,23 +1,35 @@
+'use client';
 import Image from 'next/image';
-import type { Dispatch, SetStateAction } from 'react';
 import Dropdown from '@/components/dropdown/Dropdown';
+import type { sortType } from '@/domain/activities/type';
 import descendingIcon from '@/domain/home/assets/sort-amount-down.svg';
 import ascendingIcon from '@/domain/home/assets/sort-amount-up.svg';
+import useCustomSearchParams from '@/hooks/useCustomSearchParams';
 
 interface DropdownTabsProps {
-  selectedDropdownOption: string;
-  onDropdownSelect: (value: string) => void;
+  sortOption: sortType;
   isDescending: boolean;
-  setIsDescending: Dispatch<SetStateAction<boolean>>;
 }
+const sortOptionMapping = {
+  most_reviewed: '리뷰',
+  price_desc: '가격',
+  price_asc: '가격',
+  latest: '최신',
+} as Record<sortType, string>;
+
 export default function DropdownTabs({
-  selectedDropdownOption,
-  onDropdownSelect,
+  sortOption,
   isDescending,
-  setIsDescending,
 }: DropdownTabsProps) {
-  const handleSortClick = () => {
-    setIsDescending((prev) => !prev);
+  const { setSearchParams } = useCustomSearchParams();
+  const selectedDropdownOption = sortOptionMapping[sortOption];
+
+  const handleDescendingButton = () => {
+    setSearchParams({ descending: `${!isDescending}` });
+  };
+
+  const handleDropdownSelectButton = (value: string) => {
+    setSearchParams({ sort: value });
   };
 
   return (
@@ -25,7 +37,7 @@ export default function DropdownTabs({
       <div className='flex-center gap-5'>
         <button
           className='hover:bg-gray-25 border-gray-150 rounded-2xl border-1 px-4 py-2.5'
-          onClick={handleSortClick}
+          onClick={handleDescendingButton}
         >
           {isDescending ? (
             <Image
@@ -44,16 +56,30 @@ export default function DropdownTabs({
           )}
         </button>
         <Dropdown width={110}>
-          <Dropdown.Trigger>{selectedDropdownOption}</Dropdown.Trigger>
+          <Dropdown.Trigger variant='mainPage'>
+            {selectedDropdownOption}
+          </Dropdown.Trigger>
           <Dropdown.Menu>
-            <Dropdown.Items value='가격순' onSelect={onDropdownSelect}>
-              가격순
+            <Dropdown.Items
+              variant='mainPage'
+              value='price_desc'
+              onSelect={handleDropdownSelectButton}
+            >
+              가격
             </Dropdown.Items>
-            <Dropdown.Items value='인기순' onSelect={onDropdownSelect}>
-              인기순
+            <Dropdown.Items
+              variant='mainPage'
+              value='most_reviewed'
+              onSelect={handleDropdownSelectButton}
+            >
+              리뷰
             </Dropdown.Items>
-            <Dropdown.Items value='날짜순' onSelect={onDropdownSelect}>
-              날짜순
+            <Dropdown.Items
+              variant='mainPage'
+              value='latest'
+              onSelect={handleDropdownSelectButton}
+            >
+              날짜
             </Dropdown.Items>
           </Dropdown.Menu>
         </Dropdown>
