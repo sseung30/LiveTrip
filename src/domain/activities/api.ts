@@ -5,7 +5,7 @@ import type {
   getAllActivitiesResponse,
 } from '@/domain/activities/type';
 
-export const getAllActivities = async (
+export const getAllActivitiesWithCache = async (
   params: getAllActivitiesParams
 ): Promise<getAllActivitiesResponse> => {
   const endpoint = '/activities?';
@@ -15,7 +15,7 @@ export const getAllActivities = async (
 
   queryString.append('method', 'cursor');
 
-  return apiFetch(`${endpoint}${queryString}`);
+  return apiFetch(`${endpoint}${queryString}`, { next: { revalidate: 3 } });
 };
 export const getDetailActivity = () => {};
 export const getActivitiyAvailableSchedule = () => {};

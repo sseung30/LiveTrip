@@ -1,10 +1,8 @@
 import {
   getActivitiyAvailableSchedule,
   getActivitiyReviews,
-  getAllActivities,
   getDetailActivity,
 } from '@/domain/activities/api';
-import type { getAllActivitiesParams } from '@/domain/activities/type';
 
 const queryKeys = {
   all: ['activities'] as const,
@@ -17,12 +15,6 @@ const queryKeys = {
 };
 
 const queryOptions = {
-  all: (params: getAllActivitiesParams) => {
-    return {
-      queryKey: queryKeys.all,
-      queryFn: () => getAllActivities(params),
-    };
-  },
   detail: (activityId: number) => {
     return {
       queryKey: queryKeys.detail(activityId),
