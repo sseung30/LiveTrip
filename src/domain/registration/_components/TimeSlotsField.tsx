@@ -28,7 +28,7 @@ export function TimeSlotsField({
         {timeSlots.map((slot, index) => 
           { return <div
             key={slot.id}
-            className="flex flex-col gap-4 rounded-2xl md:flex-row md:items-center md:gap-4"
+            className={`flex flex-col gap-4 md:flex-row md:items-center md:gap-4 ${index === 0 && timeSlots.length > 1 ? 'border-b border-gray-100 pb-4' : ''}`}
           >
             {/* 날짜: 데스크탑에서는 남은 공간을 꽉 채움 (basis-0로 잔여폭 모두 차지) */}
             <div className="w-full md:flex-1 md:basis-0">
@@ -36,7 +36,7 @@ export function TimeSlotsField({
                 value={slot.date}
                 onChange={(value) => onChange(slot.id, 'date', value)}
                 placeholder="yyyy/mm/dd"
-                label="날짜"
+                label={index === 0 ? '날짜' : undefined}
                 className="w-full"
               />
             </div>
@@ -45,7 +45,7 @@ export function TimeSlotsField({
             <div className="flex w-full items-end gap-2 md:flex-none md:w-auto md:flex-nowrap">
               <div className="flex-1 md:w-44 md:flex-none">
                 <TimeSelectDropdown
-                  label="시작 시간"
+                  label={index === 0 ? '시작 시간' : undefined}
                   value={slot.startTime}
                   options={timeOptions}
                   placeholder="0:00"
@@ -57,7 +57,7 @@ export function TimeSlotsField({
 
               <div className="flex-1 md:w-44 md:flex-none">
                 <TimeSelectDropdown
-                  label="종료 시간"
+                  label={index === 0 ? '종료 시간' : undefined}
                   value={slot.endTime}
                   options={timeOptions}
                   placeholder="0:00"
