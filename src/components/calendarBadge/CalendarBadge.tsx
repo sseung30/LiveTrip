@@ -1,23 +1,29 @@
 import type { BadgeProps, BadgeStyleMap } from '@/components/calendarBadge/type';
 
 const BADGE_STYLES: BadgeStyleMap = {
-  // 예약 
+  // 예약
   reservation: {
     text: '예약',
-    bgColor: 'bg-primary-100',     
-    textColor: 'text-primary-500', 
+    bgColor: 'bg-primary-100',
+    textColor: 'text-primary-500',
   },
-  // 승인 
+  // 승인
   approval: {
     text: '승인',
-    bgColor: 'bg-orange-100',    
-    textColor: 'text-orange-400', 
+    bgColor: 'bg-orange-100',
+    textColor: 'text-orange-400',
   },
-  // 완료 
+  // 완료
   completed: {
     text: '완료',
-    bgColor: 'bg-gray-50',     
-    textColor: 'text-gray-500', 
+    bgColor: 'bg-gray-50',
+    textColor: 'text-gray-500',
+  },
+  // 거절
+  declined: {
+    text: '거절',
+    bgColor: 'bg-red-100',
+    textColor: 'text-red-500',
   },
 };
 

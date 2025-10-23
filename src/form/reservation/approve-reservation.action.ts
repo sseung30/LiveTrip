@@ -1,7 +1,7 @@
 'use server';
 
-import { approveReservation } from '@/domain/reservationStatus/api';
 import { revalidatePath } from 'next/cache';
+import { approveReservation } from '@/domain/reservationStatus/api';
 
 interface ApproveState {
   status: 'idle' | 'success' | 'error';
@@ -31,7 +31,7 @@ export async function approveReservationAction(
       status: 'success',
       message: '예약이 승인되었습니다.',
     };
-  } catch (error) {
+  } catch {
     return {
       status: 'error',
       message: '예약 승인에 실패했습니다.',

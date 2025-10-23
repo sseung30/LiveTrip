@@ -47,7 +47,7 @@ export default async function ExperienceDetailPage({ params }: PageProps) {
       fetchExperienceDetail(activityId),
       fetchReviews(activityId, 1, 10),
     ]);
-  } catch (error) {
+  } catch {
     console.warn(
       `API에서 체험 ID ${activityId}를 찾을 수 없어 Mock 데이터를 사용합니다.`
     );

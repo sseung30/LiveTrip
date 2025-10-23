@@ -1,17 +1,21 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import CalendarBadge from '@/components/calendarBadge/CalendarBadge';
 import type { BadgeType } from '@/components/calendarBadge/type';
 import SelectDropdown from '@/components/dropdown/SelectDropdown';
 import ReservationPopup from '@/components/reservationPopup/ReservationPopup';
 import SideMenu from '@/components/side-menu';
+import { toast } from '@/components/toast';
 import {
-  EXPERIENCES,
-  MOCK_RESERVATION_DASHBOARD,
-  MOCK_RESERVATIONS_RESPONSE,
-  MOCK_RESERVED_SCHEDULE,
-} from '@/mocks/reservationStatusMock';
+  type ActivityReservation,
+  fetchActivityReservations,
+  fetchMyActivities,
+  fetchReservationDashboard,
+  fetchReservedSchedule,
+  type ReservationDashboard,
+  type ReservedSchedule,
+} from '@/domain/reservationStatus/api';
 
 /**
  * 요일 헤더
@@ -25,17 +29,19 @@ function CalendarCell({
   date,
   isCurrentMonth,
   isLastRow,
+  dashboardData,
   onClick,
 }: {
   date: Date;
   isCurrentMonth: boolean;
   isLastRow: boolean;
+  dashboardData: ReservationDashboard[];
   onClick: (date: Date, element: HTMLDivElement) => void;
 }) {
   const cellRef = useRef<HTMLDivElement>(null);
 
   const dateString = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-  const dayData = MOCK_RESERVATION_DASHBOARD.find((d) => d.date === dateString);
+  const dayData = dashboardData.find((d) => d.date === dateString);
 
   const badges: { type: BadgeType; count: number }[] = [];
 
@@ -50,6 +56,10 @@ function CalendarCell({
 
     if (dayData.reservations.pending > 0) {
       badges.push({ type: 'reservation', count: dayData.reservations.pending });
+    }
+
+    if (dayData.reservations.declined && dayData.reservations.declined > 0) {
+      badges.push({ type: 'declined', count: dayData.reservations.declined });
     }
   }
 
@@ -94,7 +104,7 @@ function CalendarCell({
       </div>
 
       <div className='mt-1 flex flex-col gap-0.5 sm:mt-2 sm:gap-1'>
-        {badges.map((badge, index) => {
+        {badges.map((badge) => {
           return (
             <CalendarBadge
               key={`${dateString}-${badge.type}`}
@@ -109,30 +119,46 @@ function CalendarCell({
 }
 
 /**
- * 달력의 날짜 배열 생성
+ * 달력 날짜 생성 함수
  */
-function getCalendarDates(year: number, month: number): Date[] {
-  const firstDay = new Date(year, month, 1);
-  const startDate = new Date(firstDay);
-
-  startDate.setDate(startDate.getDate() - startDate.getDay());
+const getCalendarDates = (year: number, month: number): Date[] => {
+  const firstDayOfMonth = new Date(year, month, 1);
+  const lastDayOfMonth = new Date(year, month + 1, 0);
+  const startDayOfWeek = firstDayOfMonth.getDay();
 
   const dates: Date[] = [];
-  const current = new Date(startDate);
 
-  while (dates.length < 35) {
-    dates.push(new Date(current));
-    current.setDate(current.getDate() + 1);
+  const daysInPrevMonth = new Date(year, month, 0).getDate();
+
+  for (let i = startDayOfWeek; i > 0; i = i - 1) {
+    dates.push(new Date(year, month - 1, daysInPrevMonth - i + 1));
+  }
+
+  for (let i = 1; i <= lastDayOfMonth.getDate(); i = i + 1) {
+    dates.push(new Date(year, month, i));
+  }
+
+  const remainingCells = 42 - dates.length;
+
+  for (let i = 1; i <= remainingCells; i = i + 1) {
+    dates.push(new Date(year, month + 1, i));
   }
 
   return dates;
-}
+};
 
 export default function ReservationStatusPage() {
-  const [selectedExperience, setSelectedExperience] = useState<string>(
-    EXPERIENCES[0].value
+  const [activities, setActivities] = useState<
+    { value: string; label: string }[]
+  >([]);
+  const [selectedExperience, setSelectedExperience] = useState<string>('');
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [dashboardData, setDashboardData] = useState<ReservationDashboard[]>(
+    []
   );
-  const [currentDate, setCurrentDate] = useState(new Date(2023, 1, 1));
+  const [schedules, setSchedules] = useState<ReservedSchedule[]>([]);
+  const [reservations, setReservations] = useState<ActivityReservation[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [popupState, setPopupState] = useState<{
     isOpen: boolean;
     selectedDate: Date | null;
@@ -142,6 +168,63 @@ export default function ReservationStatusPage() {
     selectedDate: null,
     position: { top: 0, right: 0 },
   });
+
+  useEffect(() => {
+    const loadActivities = async () => {
+      try {
+        const data = await fetchMyActivities(100);
+
+        const activityOptions = data.activities.map((a) => {
+          return {
+            value: a.id.toString(),
+            label: a.title,
+          };
+        });
+
+        setActivities(activityOptions);
+
+        if (activityOptions.length > 0) {
+          setSelectedExperience(activityOptions[0].value);
+        }
+      } catch {
+        toast({
+          message: '체험 목록을 불러올 수 없습니다.',
+          eventType: 'error',
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadActivities();
+  }, []);
+
+  useEffect(() => {
+    if (!selectedExperience) {
+      return;
+    }
+
+    const loadDashboard = async () => {
+      try {
+        const yearStr = currentDate.getFullYear().toString();
+        const monthStr = (currentDate.getMonth() + 1)
+          .toString()
+          .padStart(2, '0');
+
+        const data = await fetchReservationDashboard(
+          Number(selectedExperience),
+          yearStr,
+          monthStr
+        );
+
+        setDashboardData(data);
+      } catch {
+        // 조회 실패 시 빈 데이터로 유지
+      }
+    };
+
+    loadDashboard();
+  }, [selectedExperience, currentDate]);
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -155,7 +238,7 @@ export default function ReservationStatusPage() {
     setCurrentDate(new Date(year, month + 1, 1));
   };
 
-  const handleDateClick = (date: Date, element: HTMLDivElement) => {
+  const handleDateClick = async (date: Date, element: HTMLDivElement) => {
     const rect = element.getBoundingClientRect();
     const calendarContainer = element.closest('.rounded-xl');
     const containerRect = calendarContainer?.getBoundingClientRect();
@@ -173,15 +256,65 @@ export default function ReservationStatusPage() {
       return;
     }
 
-    const top = rect.top - (containerRect?.top || 0) + rect.height + 8;
-    const right =
-      (containerRect?.right || 0) - rect.right + rect.width / 2 - 350 / 2;
+    const dateString = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 
-    setPopupState({
-      isOpen: true,
-      selectedDate: date,
-      position: { top, right },
-    });
+    try {
+      const schedulesData = await fetchReservedSchedule(
+        Number(selectedExperience),
+        dateString
+      ).catch(() => []);
+
+      if (schedulesData.length === 0) {
+        setSchedules([]);
+        setReservations([]);
+      } else {
+        const allReservations: ActivityReservation[] = [];
+
+        for (const schedule of schedulesData) {
+          const statuses: ('pending' | 'confirmed' | 'declined')[] = [
+            'pending',
+            'confirmed',
+            'declined',
+          ];
+
+          for (const status of statuses) {
+            if (schedule.count[status] === 0) {
+              continue;
+            }
+
+            try {
+              const reservationsData = await fetchActivityReservations(
+                Number(selectedExperience),
+                schedule.scheduleId,
+                status
+              );
+
+              allReservations.push(...reservationsData.reservations);
+            } catch {
+              // 조회 실패 시 스킵
+            }
+          }
+        }
+
+        setSchedules(schedulesData);
+        setReservations(allReservations);
+      }
+
+      const top = rect.top - (containerRect?.top || 0) + rect.height + 8;
+      const right =
+        (containerRect?.right || 0) - rect.right + rect.width / 2 - 350 / 2;
+
+      setPopupState({
+        isOpen: true,
+        selectedDate: date,
+        position: { top, right },
+      });
+    } catch {
+      toast({
+        message: '예약 정보를 불러올 수 없습니다.',
+        eventType: 'error',
+      });
+    }
   };
 
   const handleClosePopup = () => {
@@ -192,14 +325,6 @@ export default function ReservationStatusPage() {
     });
   };
 
-  const handleApprove = (id: number) => {
-    console.log('승인:', id);
-  };
-
-  const handleReject = (id: number) => {
-    console.log('거절:', id);
-  };
-
   return (
     <div className='mx-auto flex max-w-[1200px] gap-4 px-4 py-4 sm:gap-6 sm:px-6 sm:py-6 md:gap-8 md:px-12 md:py-8'>
       {/* 왼쪽: SideMenu (모바일에서만 숨김) */}
@@ -208,106 +333,113 @@ export default function ReservationStatusPage() {
       </aside>
 
       {/* 오른쪽: 메인 콘텐츠 */}
-      <main className='w-full md:flex-1 lg:max-w-[720px]'>
-        {/* 헤더 */}
-        <div className='mb-4 sm:mb-6'>
-          <h1 className='mb-2 text-xl font-bold text-gray-900 sm:text-2xl'>
-            예약 현황
-          </h1>
-          <p className='text-xs text-gray-600 sm:text-sm'>
-            내 체험의 예약 내역을 월 단위로 확인할 수 있습니다.
-          </p>
-        </div>
-
-        {/* 체험 선택 드롭다운 */}
-        <div className='relative z-10 mb-4 w-full sm:mb-6'>
-          <SelectDropdown
-            options={EXPERIENCES}
-            defaultValue={selectedExperience}
-            placeholder='체험을 선택하세요'
-            onSelect={setSelectedExperience}
-          />
-        </div>
-
-        {/* 달력 */}
-        <div className='relative overflow-visible rounded-xl bg-white p-3 shadow-lg sm:p-4 md:p-6'>
-          {/* 달력 헤더 */}
-          <div className='mb-4 flex items-center justify-center gap-3 sm:mb-6 sm:gap-4'>
-            <button
-              type='button'
-              className='flex h-7 w-7 items-center justify-center rounded hover:bg-gray-100 sm:h-8 sm:w-8'
-              onClick={goToPreviousMonth}
-            >
-              ◀
-            </button>
-            <h2 className='text-base font-semibold text-gray-900 sm:text-lg'>
-              {year}년 {month + 1}월
-            </h2>
-            <button
-              type='button'
-              className='flex h-7 w-7 items-center justify-center rounded hover:bg-gray-100 sm:h-8 sm:w-8'
-              onClick={goToNextMonth}
-            >
-              ▶
-            </button>
-          </div>
-
-          {/* 달력 그리드 */}
-          <div className='overflow-visible rounded-lg'>
-            {/* 요일 헤더 */}
-            <div className='grid grid-cols-7 border-b border-gray-200 bg-white'>
-              {WEEKDAYS.map((day) => {
-                return (
-                  <div
-                    key={day}
-                    className='py-2 text-center text-xs font-semibold text-gray-900 sm:py-3 sm:text-sm'
-                  >
-                    {day}
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* 날짜 그리드 */}
-            <div className='grid grid-cols-7'>
-              {calendarDates.map((date, index) => {
-                const isLastRow = index >= 28;
-
-                return (
-                  <CalendarCell
-                    key={date.toISOString()}
-                    date={date}
-                    isCurrentMonth={date.getMonth() === month}
-                    isLastRow={isLastRow}
-                    onClick={handleDateClick}
-                  />
-                );
-              })}
+      <main className='flex-1'>
+        <section className='pb-30'>
+          <div className='mb-6 flex items-center justify-between md:mb-10'>
+            <h1 className='text-2xl font-bold text-gray-800'>예약 현황</h1>
+            <div className='w-[200px]'>
+              <SelectDropdown
+                options={activities}
+                placeholder='체험을 선택하세요'
+                defaultValue={selectedExperience}
+                onSelect={(value) => {
+                  setSelectedExperience(value);
+                }}
+              />
             </div>
           </div>
 
-          {/* 예약 팝업 */}
-          {popupState.selectedDate && (
-            <ReservationPopup
-              isOpen={popupState.isOpen}
-              position={popupState.position}
-              date={popupState.selectedDate}
-              schedules={MOCK_RESERVED_SCHEDULE}
-              reservations={MOCK_RESERVATIONS_RESPONSE.reservations.map((r) => {
-                return {
-                  id: r.id,
-                  nickname: r.nickname,
-                  headCount: r.headCount,
-                  status: r.status,
-                };
-              })}
-              onClose={handleClosePopup}
-              onApprove={handleApprove}
-              onReject={handleReject}
-            />
+          {isLoading && (
+            <div className='flex items-center justify-center py-12'>
+              <p className='text-gray-500'>체험 목록을 불러오는 중...</p>
+            </div>
           )}
-        </div>
+
+          {!isLoading && activities.length === 0 && (
+            <div className='mt-2.5 flex flex-col'>
+              <p className='mb-4 text-center text-gray-500'>
+                등록된 체험이 없습니다.
+              </p>
+              <button
+                type='button'
+                className='mx-auto w-fit rounded-md bg-primary-500 px-4 py-2 text-white'
+                onClick={() => {
+                  window.location.href = '/registration';
+                }}
+              >
+                체험 등록하기
+              </button>
+            </div>
+          )}
+
+          {!isLoading && activities.length > 0 && (
+            <div className='rounded-xl border border-gray-200 p-4 md:p-6'>
+              <div className='mb-4 flex items-center justify-between'>
+                <button
+                  type='button'
+                  className='text-gray-600 hover:text-gray-800'
+                  onClick={goToPreviousMonth}
+                >
+                  &lt;
+                </button>
+                <h2 className='text-xl font-semibold text-gray-800'>
+                  {year}년 {month + 1}월
+                </h2>
+                <button
+                  type='button'
+                  className='text-gray-600 hover:text-gray-800'
+                  onClick={goToNextMonth}
+                >
+                  &gt;
+                </button>
+              </div>
+              <div className='grid grid-cols-7 gap-2 text-center'>
+                {WEEKDAYS.map((day) => {
+                  return (
+                    <div key={day} className='font-medium text-gray-500'>
+                      {day}
+                    </div>
+                  );
+                })}
+                {calendarDates.map((date, index) => {
+                  const isLastRow = index >= 28;
+
+                  return (
+                    <CalendarCell
+                      key={date.toISOString()}
+                      date={date}
+                      isCurrentMonth={date.getMonth() === month}
+                      isLastRow={isLastRow}
+                      dashboardData={dashboardData}
+                      onClick={handleDateClick}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </section>
       </main>
+
+      {/* 예약 팝업 */}
+      {popupState.selectedDate && selectedExperience && (
+        <ReservationPopup
+          isOpen={popupState.isOpen}
+          position={popupState.position}
+          date={popupState.selectedDate}
+          schedules={schedules}
+          activityId={Number(selectedExperience)}
+          reservations={reservations.map((r) => {
+            return {
+              id: r.id,
+              nickname: r.nickname,
+              headCount: r.headCount,
+              status: r.status,
+            };
+          })}
+          onClose={handleClosePopup}
+        />
+      )}
     </div>
   );
 }

@@ -1,7 +1,7 @@
 'use server';
 
-import { rejectReservation } from '@/domain/reservationStatus/api';
 import { revalidatePath } from 'next/cache';
+import { rejectReservation } from '@/domain/reservationStatus/api';
 
 interface RejectState {
   status: 'idle' | 'success' | 'error';
@@ -31,7 +31,7 @@ export async function rejectReservationAction(
       status: 'success',
       message: '예약이 거절되었습니다.',
     };
-  } catch (error) {
+  } catch {
     return {
       status: 'error',
       message: '예약 거절에 실패했습니다.',

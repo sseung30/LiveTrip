@@ -38,10 +38,10 @@ export async function fetchMyReservations(
   let url = `/my-reservations?size=${size}`;
 
   if (cursorId) {
-    url += `&cursorId=${cursorId}`;
+    url = `${url}&cursorId=${cursorId}`;
   }
   if (status) {
-    url += `&status=${status}`;
+    url = `${url}&status=${status}`;
   }
 
   return apiFetch<MyReservationsResponse>(url);
@@ -50,8 +50,10 @@ export async function fetchMyReservations(
 /**
  * 예약 취소
  */
-export async function cancelReservation(reservationId: number): Promise<void> {
-  return apiFetch<void>(`/my-reservations/${reservationId}`, {
+export async function cancelReservation(
+  reservationId: number
+): Promise<unknown> {
+  return apiFetch<unknown>(`/my-reservations/${reservationId}`, {
     method: 'PATCH',
     body: JSON.stringify({ status: 'canceled' }),
   });
