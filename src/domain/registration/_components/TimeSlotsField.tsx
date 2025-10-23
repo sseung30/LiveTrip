@@ -1,6 +1,5 @@
-// Registration/components/TimeSlotsField.tsx
-
 import { RoundIconButton } from '@/domain/registration/_components/RoundIconButton';
+import { TimeSelectDropdown } from '@/domain/registration/_components/TimeSelectDropdown';
 import type { TimeSlot } from '@/domain/registration/_utils/createEmptyTimeSlot';
 
 interface TimeSlotsFieldProps {
@@ -29,7 +28,7 @@ export function TimeSlotsField({
         {timeSlots.map((slot, index) => 
           { return <div
             key={slot.id}
-            className="flex flex-col gap-3 rounded-2xl p-4 md:flex-row md:items-center md:gap-4"
+            className="flex flex-col gap-4 rounded-2xlㄴ p-4 md:flex-row md:items-center md:gap-4"
           >
             <div className="relative w-full md:w-48">
               <input
@@ -43,50 +42,38 @@ export function TimeSlotsField({
               </span>
             </div>
 
-            <div className="flex w-full flex-col items-stretch gap-3 md:flex-row md:items-center">
-              <select
-                className="w-full rounded-2xl border border-gray-100 bg-white px-4 py-3 text-sm text-gray-900 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-100"
-                value={slot.startTime}
-                onChange={(e) => { onChange(slot.id, 'startTime', e.target.value); }}
-              >
-                <option disabled value="">
-                  시작 시간
-                </option>
-                {timeOptions.map((time) => 
-                  { return <option key={`start-${time}`} value={time}>
-                    {time}
-                  </option> }
+            <div className="flex w-full flex-wrap items-center gap-2">
+              <div className="flex-1 min-w-[150px]">
+                <TimeSelectDropdown
+                  value={slot.startTime}
+                  options={timeOptions}
+                  placeholder="시작 시간"
+                  onSelect={(value) => { onChange(slot.id, 'startTime', value); }}
+                />
+              </div>
+
+              <span className="flex h-12 w-6 items-center justify-center text-gray-300">-</span>
+
+              <div className="flex-1 min-w-[150px]">
+                <TimeSelectDropdown
+                  value={slot.endTime}
+                  options={timeOptions}
+                  placeholder="종료 시간"
+                  onSelect={(value) => { onChange(slot.id, 'endTime', value); }}
+                />
+              </div>
+
+              <div className="ml-auto flex justify-end">
+                {index === 0 ? (
+                  <RoundIconButton ariaLabel="시간대 추가" onClick={onAdd}>
+                    <PlusIcon />
+                  </RoundIconButton>
+                ) : (
+                  <RoundIconButton ariaLabel="시간대 삭제" variant="neutral" onClick={() => { onRemove(slot.id); }}>
+                    <MinusIcon />
+                  </RoundIconButton>
                 )}
-              </select>
-
-              <span className="hidden text-gray-300 md:block">-</span>
-
-              <select
-                className="w-full rounded-2xl border border-gray-100 bg-white px-4 py-3 text-sm text-gray-900 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-100"
-                value={slot.endTime}
-                onChange={(e) => { onChange(slot.id, 'endTime', e.target.value); }}
-              >
-                <option disabled value="">
-                  종료 시간
-                </option>
-                {timeOptions.map((time) => 
-                  { return <option key={`end-${time}`} value={time}>
-                    {time}
-                  </option> }
-                )}
-              </select>
-            </div>
-
-            <div className="flex justify-end md:justify-center">
-              {index === 0 ? (
-                <RoundIconButton ariaLabel="시간대 추가" onClick={onAdd}>
-                  <PlusIcon />
-                </RoundIconButton>
-              ) : (
-                <RoundIconButton ariaLabel="시간대 삭제" variant="neutral" onClick={() => { onRemove(slot.id); }}>
-                  <MinusIcon />
-                </RoundIconButton>
-              )}
+              </div>
             </div>
           </div> }
         )}
