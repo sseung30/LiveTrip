@@ -1,3 +1,4 @@
+import DatePickerField from '@/domain/registration/_components/DatePickerField';
 import { RoundIconButton } from '@/domain/registration/_components/RoundIconButton';
 import { TimeSelectDropdown } from '@/domain/registration/_components/TimeSelectDropdown';
 import type { TimeSlot } from '@/domain/registration/_utils/createEmptyTimeSlot';
@@ -28,19 +29,14 @@ export function TimeSlotsField({
         {timeSlots.map((slot, index) => 
           { return <div
             key={slot.id}
-            className="flex flex-col gap-4 rounded-2xlㄴ p-4 md:flex-row md:items-center md:gap-4"
+            className="flex flex-col gap-4 rounded-2xl p-4 md:flex-row md:items-center md:gap-4"
           >
-            <div className="relative w-full md:w-48">
-              <input
-                type="date"
-                className="w-full rounded-2xl border border-gray-100 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-100 pr-12"
-                value={slot.date}
-                onChange={(e) => { onChange(slot.id, 'date', e.target.value); }}
-              />
-              <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-gray-400">
-                <CalendarIcon />
-              </span>
-            </div>
+            <DatePickerField
+              value={slot.date}
+              onChange={(value) => onChange(slot.id, 'date', value)}
+              placeholder="yyyy/mm/dd"
+              className="w-full md:w-48"
+            />
 
             <div className="flex w-full flex-wrap items-center gap-2">
               <div className="flex-1 min-w-[150px]">
@@ -79,17 +75,6 @@ export function TimeSlotsField({
         )}
       </div>
     </div>
-  );
-}
-
-function CalendarIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-      <rect x="3" y="4" width="14" height="13" rx="2" stroke="#7A7A80" strokeWidth="1.5" />
-      <path d="M3 8H17" stroke="#7A7A80" strokeWidth="1.5" strokeLinecap="round" />
-      <path d="M6.5 2.5V5.5" stroke="#7A7A80" strokeWidth="1.5" strokeLinecap="round" />
-      <path d="M13.5 2.5V5.5" stroke="#7A7A80" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
   );
 }
 
