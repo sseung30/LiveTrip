@@ -1,62 +1,13 @@
 'use client';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
+import NotificationItem from '@/components/notification/NotificationItem';
 import type {
   Notification,
   Notifications,
 } from '@/components/notification/type';
 import { useInfiniteByCursor } from '@/hooks/useInfiniteScroll';
 import useIntersectionObserver from '@/hooks/useIntersectionObserver';
-
-function parseTime(updatedAt: string) {
-  const year = Number(updatedAt.slice(0, 4));
-  const month = Number(updatedAt.slice(5, 7));
-  const day = Number(updatedAt.slice(8, 10));
-  const hour = Number(updatedAt.slice(11, 13));
-  const minutes = Number(updatedAt.slice(14, 16));
-  const seconds = Number(updatedAt.slice(17, 19));
-  const milliseconds = Number(updatedAt.slice(20, 23));
-
-  // 윤달이 있어서 사실상 이게 아주 미세하게 좀 더 정확
-  return new Date(year, month - 1, day, hour, minutes, seconds, milliseconds);
-}
-
-function formattedMilliseconds(ms: number) {
-  if (ms < 1000) {
-    return '방금 전';
-  }
-
-  const units = [
-    { label: '년', ms: 365 * 30 * 24 * 60 * 60 * 1000 },
-    { label: '개월', ms: 30 * 24 * 60 * 60 * 1000 },
-    { label: '일', ms: 24 * 60 * 60 * 1000 },
-    { label: '시간', ms: 60 * 60 * 1000 },
-    { label: '분', ms: 60 * 1000 },
-    { label: '초', ms: 1000 },
-  ];
-
-  for (const unit of units) {
-    if (ms >= unit.ms) {
-      const formattedResult = Math.floor(ms / unit.ms);
-
-      return `${formattedResult}${unit.label} 전`;
-    }
-  }
-}
-
-function formattedContents(content: string) {
-  const title = content.slice(0, content.indexOf('('));
-  const reservedDate = content.slice(
-    content.indexOf('('),
-    content.indexOf(')') + 1
-  );
-  const status = content.slice(
-    content.indexOf(')') + 6,
-    content.indexOf(')') + 8
-  );
-
-  return [title, reservedDate, status];
-}
 
 export default function Notification() {
   const pageSize = 2;
@@ -93,7 +44,18 @@ export default function Notification() {
     pageSize,
   });
 
-  const date = new Date();
+  const [now, setNow] = useState(Date.now());
+
+  // 1분마다 기준 시각 갱신 (UI에 상대시간이 갱신되게)
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setNow(Date.now());
+    }, 60 * 1000);
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, []);
 
   const [page, setPage] = useState(0);
 
@@ -128,48 +90,9 @@ export default function Notification() {
           ref={containerRef}
           className='h-68 overflow-auto pb-2 [&::-webkit-scrollbar]:hidden'
         >
-          {notifications.map((n: Notification) => {
-            const { id, content, updatedAt } = n;
-
-            const ReservationStatus = content.slice(-8, -6);
-            const updatedTime = parseTime(updatedAt);
-
-            const [title, reservedDate, status] = formattedContents(content);
-            const isConfirmed = status === '승인';
-
-            return (
-              <div
-                key={id}
-                className='hover:bg-primary-100 flex w-full flex-col px-5 py-4'
-              >
-                <div className='mb-2 flex justify-between'>
-                  <h3 className='text-14 leading-3.5 font-bold text-gray-950'>
-                    예약 {ReservationStatus}
-                  </h3>
-                  <h3 className='text-12 leading-3 font-medium text-gray-400'>
-                    {formattedMilliseconds(
-                      date.getTime() - 32400000 - updatedTime.getTime()
-                    )}
-                  </h3>
-                </div>
-                <div className='text-14-body font-medium text-gray-800'>
-                  {title}
-                  <br />
-                  {reservedDate}
-                  <br />
-                  예약이{' '}
-                  <span
-                    className={
-                      isConfirmed ? 'text-primary-500' : 'text-red-500'
-                    }
-                  >
-                    {status}
-                  </span>
-                  되었어요.
-                </div>
-              </div>
-            );
-          })}
+          {notifications.map((n: Notification) => (
+            <NotificationItem key={n.id} n={n} now={now} />
+          ))}
           <div ref={loader} />
         </div>
       </div>
