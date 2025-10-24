@@ -1,6 +1,7 @@
 'use client';
 import Dropdown from '@/components/dropdown/Dropdown';
 import type { sortType } from '@/domain/activities/type';
+import SortPriceButton from '@/domain/home/components/SortPriceButton';
 import useCustomSearchParams from '@/hooks/useCustomSearchParams';
 
 interface DropdownTabsProps {
@@ -8,15 +9,16 @@ interface DropdownTabsProps {
 }
 const sortOptionMapping = {
   most_reviewed: '리뷰',
-  price_desc: '가격 내림차순',
-  price_asc: '가격 오름차순',
+  price_desc: '가격',
+  price_asc: '가격',
   latest: '최신',
 } as Record<sortType, string>;
 
 export default function DropdownTabs({ sortOption }: DropdownTabsProps) {
   const { setSearchParams } = useCustomSearchParams();
   const selectedDropdownOption = sortOptionMapping[sortOption];
-
+  const isPriceOption =
+    sortOption === 'price_asc' || sortOption === 'price_desc';
   const handleDropdownSelectButton = (value: string) => {
     setSearchParams({ sort: value });
   };
@@ -24,9 +26,10 @@ export default function DropdownTabs({ sortOption }: DropdownTabsProps) {
   return (
     <>
       <div className='flex-center gap-5'>
-        <Dropdown width={110}>
+        {isPriceOption && <SortPriceButton isPriceOption={isPriceOption} />}
+        <Dropdown>
           <Dropdown.Trigger variant='mainPage'>
-            {selectedDropdownOption}
+            <span className='text-gray-800'>{selectedDropdownOption}</span>
           </Dropdown.Trigger>
           <Dropdown.Menu>
             <Dropdown.Items
@@ -48,7 +51,7 @@ export default function DropdownTabs({ sortOption }: DropdownTabsProps) {
               value='latest'
               onSelect={handleDropdownSelectButton}
             >
-              날짜
+              최신
             </Dropdown.Items>
           </Dropdown.Menu>
         </Dropdown>
