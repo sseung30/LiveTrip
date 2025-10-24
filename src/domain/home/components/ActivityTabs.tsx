@@ -5,35 +5,35 @@ import { categoryTabs } from '@/domain/home/constants/categoryTabs';
 import useCustomSearchParams from '@/hooks/useCustomSearchParams';
 
 interface ActivityTabsProps {
-  categoryIndex: number;
+  category: string | undefined;
 }
 
-export function ActivityTabs({ categoryIndex }: ActivityTabsProps) {
+export function ActivityTabs({ category }: ActivityTabsProps) {
   const { setSearchParams } = useCustomSearchParams();
 
-  const handleTabClick = (index: number) => {
-    if (categoryIndex === index) {
+  const handleTabClick = (title: string) => {
+    if (category === title) {
       return;
     }
-    setSearchParams({ categoryIndex: String(index) });
+    setSearchParams({ category: title });
   };
   const handleDeleteClick = () => {
-    setSearchParams({ categoryIndex: String(-1) });
+    setSearchParams({ category: '' });
   };
 
   return (
     <div className='scrollbar-hide mb-6 flex gap-2 overflow-scroll overflow-y-hidden md:mb-8 md:gap-5'>
-      {categoryTabs.map((tab, index) => {
+      {categoryTabs.map((tab) => {
         return (
           <button
             key={`tab-${crypto.randomUUID()}`}
             className={cx(
               'border-gray-150 hover:bg-gray-25 min-w-fit cursor-pointer rounded-[100px] border-1 px-4 py-2.5',
-              categoryIndex === index &&
+              category === tab.title &&
                 'bg-gray-900 text-white hover:bg-gray-900'
             )}
             onClick={() => {
-              handleTabClick(index);
+              handleTabClick(tab.title);
             }}
           >
             {tab.icon}
