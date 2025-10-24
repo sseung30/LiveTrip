@@ -147,8 +147,7 @@ export default function MyReservationsSection() {
     if (deleteModalState.state !== 'success') {
       return;
     }
-    setVersion((v) => v + 1); // ← 이 한 줄로 refetch 효과
-    // 추가로 토스트/모달 닫기 등 부수효과만 두세요.
+    setVersion((v) => v + 1);
   }, [deleteModalState.state]);
 
   const [page, setPage] = useState(0);
@@ -234,10 +233,6 @@ export default function MyReservationsSection() {
         >
           {hasReservations &&
             reservationList.map((r: Reservation) => {
-              // 여기서 list.map 쓰면 에러남 is not function
-              // 처음에 응답으로 오는 건 배열, 객체 안의,... 객체 형태로...
-              // 객체 안에는, map 이 없음
-
               return (
                 <div key={r.id}>
                   <CardList
