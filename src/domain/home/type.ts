@@ -11,3 +11,4 @@ export interface AllActivitySectionProps {
   sort?: sortType;
   category?: string;
 }
+export type AllActivityCardsProps = AllActivitySectionProps;

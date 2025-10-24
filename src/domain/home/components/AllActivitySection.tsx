@@ -1,8 +1,8 @@
-import { getAllActivitiesWithCache } from '@/domain/activities/api';
-import type { getAllActivitiesParams } from '@/domain/activities/type';
+import { Suspense } from 'react';
+import Spinner from '@/components/ui/Spinner';
 import { ActivityTabs } from '@/domain/home/components/ActivityTabs';
+import AllActivityCards from '@/domain/home/components/AllActivityCards';
 import DropdownTabs from '@/domain/home/components/DropdownTabs';
-import GridCardList from '@/domain/home/components/GridCardList';
 import { tabEmojiMapping } from '@/domain/home/constants/categoryTabs';
 import type { AllActivitySectionProps } from '@/domain/home/type';
 
@@ -12,17 +12,10 @@ export default async function AllActivitySection({
   category,
 }: AllActivitySectionProps) {
   const isCategorySelected = category !== undefined;
-  const { activities } = await getAllActivitiesWithCache({
-    category,
-    sort,
-    page,
-    size: 8,
-    method: 'cursor',
-  } as getAllActivitiesParams);
-
   const sectionTitle = isCategorySelected
     ? `${tabEmojiMapping[category]} ${category}`
     : '🛼 모든 체험';
+  const suspenseKey = `${page}-${sort}-${category}`;
 
   return (
     <section className='relative w-full'>
@@ -33,7 +26,9 @@ export default async function AllActivitySection({
         <DropdownTabs sortOption={sort} />
       </div>
       <ActivityTabs category={category} />
-      <GridCardList activities={activities} />
+      <Suspense fallback={<Spinner size='md' />} key={suspenseKey}>
+        <AllActivityCards category={category} sort={sort} page={page} />
+      </Suspense>
     </section>
   );
 }

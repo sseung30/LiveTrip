@@ -12,15 +12,12 @@ export default async function Home({
 }) {
   const { page, sort, category } = await searchParams;
   const pageProp = page ? Number(page) : 1;
-  const suspenseKey = `${page}-${sort}-${category}`;
 
   return (
     <>
       <div className='flex-center w-full flex-col gap-20'>
         <PopularActivitySection />
-        <Suspense fallback={<Spinner size='md' />} key={suspenseKey}>
-          <AllActivitySection page={pageProp} sort={sort} category={category} />
-        </Suspense>
+        <AllActivitySection page={pageProp} sort={sort} category={category} />
       </div>
       <Suspense>
         <ToastLayer />
