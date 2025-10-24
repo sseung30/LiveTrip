@@ -1,6 +1,6 @@
 'use client';
 import Image from 'next/image';
-import { useActionState, useEffect, useRef, useState } from 'react';
+import { useActionState, useEffect, useMemo, useRef, useState } from 'react';
 import { apiFetch } from '@/api/api';
 import Button from '@/components/button/Button';
 import CardList from '@/components/cardList/CardList';
@@ -27,6 +27,14 @@ const STATUSES = [
   '예약 거절',
   '체험 완료',
 ];
+
+const STATUS_OBJ = {
+  '예약 신청': 'pending',
+  '예약 완료': 'confirmed',
+  '예약 취소': 'canceled',
+  '예약 거절': 'declined',
+  '체험 완료': 'completed',
+};
 
 const deleteAction = async (
   prevState: { state: string },
@@ -148,7 +156,7 @@ export default function MyReservationsSection() {
       return;
     }
     setVersion((v) => v + 1);
-  }, [deleteModalState.state]);
+  }, [deleteModalState]);
 
   const [page, setPage] = useState(0);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -167,6 +175,15 @@ export default function MyReservationsSection() {
       fetchNextPage();
     }
   }, [page, fetchNextPage]);
+
+  const filteredReservations = useMemo(() => {
+    if (!selectedStatus) {
+      return reservationList;
+    }
+    const code = STATUS_OBJ[selectedStatus as keyof typeof STATUS_OBJ];
+
+    return reservationList.filter((r) => r.status === code);
+  }, [reservationList, selectedStatus]);
 
   return (
     <>
@@ -232,7 +249,9 @@ export default function MyReservationsSection() {
           className='flex h-full flex-col gap-6 overflow-y-auto [&::-webkit-scrollbar]:hidden'
         >
           {hasReservations &&
-            reservationList.map((r: Reservation) => {
+            filteredReservations.map((r: Reservation) => {
+              // console.log(selectedStatus); 추후 확인
+
               return (
                 <div key={r.id}>
                   <CardList
