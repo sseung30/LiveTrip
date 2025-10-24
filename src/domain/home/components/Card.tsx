@@ -3,24 +3,25 @@ import { cx } from '@/utils/cx';
 
 interface CardProps {
   src: string;
-  alt: string;
+  title: string;
+  alt?: string;
   imageClassNames?: string;
 }
-export default function Card({ src, alt, imageClassNames }: CardProps) {
+export default function Card({ src, title, alt, imageClassNames }: CardProps) {
   return (
     <div className='relative mb-20 min-w-[8.25rem] md:w-full'>
       <Image
         src={src}
         width={700}
         height={700}
-        alt={alt}
+        alt={alt ?? title}
         className={cx(
           'aspect-3/4 max-w-full rounded-[1.125rem] object-cover md:aspect-1/1 md:rounded-4xl',
           imageClassNames
         )}
       />
       <div className='text-14 absolute -bottom-18 flex w-full flex-col gap-[5px] rounded-[1.125rem] bg-white p-4 text-gray-950 drop-shadow-md md:-bottom-12 md:rounded-4xl md:px-[1.875rem] md:py-5 xl:-bottom-18'>
-        <span className='text-14 md:text-18 font-semibold'> 피오르 체험</span>
+        <span className='text-14 md:text-18 font-semibold'>{title}</span>
         <div className='mb-1 flex items-center gap-[5px]'>
           <Image
             src={'/icons/star.svg'}

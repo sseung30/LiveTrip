@@ -1,8 +1,8 @@
 export const SIGNIN_ENDPOINT = '/auth/login';
+export const USER_INFO_ENDPINT = '/users/me';
 export const SIGNUP_ENDPOINT = '/users';
 export const NEW_TOKEN_ENDPOINT = '/auth/tokens';
 export const KAKAO_LOGOUT_URI = 'https://kauth.kakao.com/oauth/logout';
-
 export const getKaKaoAuthroizeURL = (redirectURI: string) => {
   const _KAKAO_AUTHORIZE_URL = 'https://kauth.kakao.com/oauth/authorize';
 

@@ -13,6 +13,7 @@ export default function PopularActivitySection() {
         {activities.map((activity) => {
           return (
             <Card
+              title={activity.title}
               src={activity.bannerImageUrl}
               alt={activity.title}
               key={crypto.randomUUID()}

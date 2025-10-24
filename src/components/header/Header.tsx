@@ -6,7 +6,7 @@ import SessionNav from '@/components/header/SessionNav';
 
 export default async function Header() {
   return (
-    <header className='flex h-12 items-center justify-between border-b border-gray-100 bg-white px-6 md:h-20 md:px-8 xl:px-50'>
+    <header className='sticky top-0 z-[100] flex h-12 items-center justify-between border-b border-gray-100 bg-white px-6 md:h-20 md:px-8 xl:px-50'>
       {/* 좌측 로고 영역 */}
       <Link href='/'>
         <Image
