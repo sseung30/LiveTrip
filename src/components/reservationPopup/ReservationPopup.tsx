@@ -7,6 +7,7 @@ import { useDialog } from '@/components/dialog/useDialog';
 import SelectDropdown from '@/components/dropdown/SelectDropdown';
 import ReservationCard from '@/components/reservationPopup/ReservationCard';
 import type {
+  ReservationDetail,
   ReservationPopupProps,
   ReservationStatusType,
 } from '@/components/reservationPopup/type';
@@ -69,7 +70,11 @@ export default function ReservationPopup({
 
   const { totalCounts, filteredReservationsBySchedule } = useMemo(() => {
     const counts = { pending: 0, confirmed: 0, declined: 0 };
-    const filtered = { pending: [], confirmed: [], declined: [] };
+    const filtered: { pending: ReservationDetail[]; confirmed: ReservationDetail[]; declined: ReservationDetail[] } = { 
+      pending: [], 
+      confirmed: [], 
+      declined: [] 
+    };
 
     reservations.forEach((reservation) => {
       counts[reservation.status] = counts[reservation.status] + 1;
