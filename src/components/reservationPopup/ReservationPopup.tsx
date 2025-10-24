@@ -59,22 +59,31 @@ export default function ReservationPopup({
     }
   }, [isOpen, isBottomSheet, dialogRef]);
 
-  const reservationsByStatus = useMemo(() => {
-    const pending = reservations.filter((r) => r.status === 'pending');
-    const confirmed = reservations.filter((r) => r.status === 'confirmed');
-    const declined = reservations.filter((r) => r.status === 'declined');
+  // 팝업이 열릴 때 선택된 시간과 탭 초기화
+  useEffect(() => {
+    if (isOpen) {
+      setSelectedScheduleId(null);
+      setActiveTab('pending');
+    }
+  }, [isOpen]);
+
+  const { totalCounts, filteredReservationsBySchedule } = useMemo(() => {
+    const counts = { pending: 0, confirmed: 0, declined: 0 };
+    const filtered = { pending: [], confirmed: [], declined: [] };
+
+    reservations.forEach((reservation) => {
+      counts[reservation.status] = counts[reservation.status] + 1;
+
+      if (selectedScheduleId !== null && reservation.scheduleId === selectedScheduleId) {
+        filtered[reservation.status].push(reservation);
+      }
+    });
 
     return {
-      pending,
-      confirmed,
-      declined,
-      counts: {
-        pending: pending.length,
-        confirmed: confirmed.length,
-        declined: declined.length,
-      },
+      totalCounts: counts,
+      filteredReservationsBySchedule: filtered,
     };
-  }, [reservations]);
+  }, [reservations, selectedScheduleId]);
 
   const scheduleOptions = useMemo(() => {
     return schedules.map((schedule) => {
@@ -85,7 +94,7 @@ export default function ReservationPopup({
     });
   }, [schedules]);
 
-  const filteredReservations = reservationsByStatus[activeTab];
+  const filteredReservations = filteredReservationsBySchedule[activeTab];
 
   useEffect(() => {
     if (!isOpen || isBottomSheet) {
@@ -152,7 +161,7 @@ export default function ReservationPopup({
                   setActiveTab(key);
                 }}
               >
-                {TAB_CONFIG[key].label} {reservationsByStatus.counts[key]}
+                {TAB_CONFIG[key].label} {totalCounts[key]}
                 {activeTab === key && (
                   <div className='bg-primary-500 absolute bottom-0 left-0 h-0.5 w-full' />
                 )}
@@ -196,7 +205,14 @@ export default function ReservationPopup({
             <h3 className='mb-2 text-base font-semibold text-gray-900'>
               예약 내역
             </h3>
-            {filteredReservations.length > 0 && (
+            {selectedScheduleId === null && (
+              <div className='py-4 text-center'>
+                <p className='text-sm text-gray-500'>
+                  예약 시간을 선택해주세요.
+                </p>
+              </div>
+            )}
+            {selectedScheduleId !== null && filteredReservations.length > 0 && (
               <div className='space-y-3'>
                 {filteredReservations.map((reservation) => {
                   return (
@@ -205,9 +221,17 @@ export default function ReservationPopup({
                       reservation={reservation}
                       activeTab={activeTab}
                       activityId={activityId}
+                      onActionSuccess={closeHandler || onClose}
                     />
                   );
                 })}
+              </div>
+            )}
+            {selectedScheduleId !== null && filteredReservations.length === 0 && (
+              <div className='py-4 text-center'>
+                <p className='text-sm text-gray-500'>
+                  예약 내역이 없습니다.
+                </p>
               </div>
             )}
           </div>

@@ -19,14 +19,12 @@ import {
   type ReservedSchedule,
 } from '@/domain/reservationStatus/api';
 
-/**
- * 요일 헤더
- */
 const WEEKDAYS = ['월', '화', '수', '목', '금', '토', '일'];
 
-/**
- * 달력 셀 컴포넌트
- */
+const formatDateString = (date: Date): string => {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+};
+
 function CalendarCell({
   date,
   isCurrentMonth,
@@ -41,27 +39,25 @@ function CalendarCell({
   onClick: (date: Date, element: HTMLDivElement) => void;
 }) {
   const cellRef = useRef<HTMLDivElement>(null);
-
-  const dateString = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  const dateString = formatDateString(date);
   const dayData = dashboardData.find((d) => d.date === dateString);
 
   const badges: { type: BadgeType; count: number }[] = [];
 
-  if (dayData) {
-    if (dayData.reservations.completed > 0) {
-      badges.push({ type: 'completed', count: dayData.reservations.completed });
-    }
+  if (isCurrentMonth && dayData) {
+    const { completed, confirmed, pending, declined } = dayData.reservations;
 
-    if (dayData.reservations.confirmed > 0) {
-      badges.push({ type: 'approval', count: dayData.reservations.confirmed });
+    if (completed > 0) {
+      badges.push({ type: 'completed', count: completed });
     }
-
-    if (dayData.reservations.pending > 0) {
-      badges.push({ type: 'reservation', count: dayData.reservations.pending });
+    if (confirmed > 0) {
+      badges.push({ type: 'approval', count: confirmed });
     }
-
-    if (dayData.reservations.declined && dayData.reservations.declined > 0) {
-      badges.push({ type: 'declined', count: dayData.reservations.declined });
+    if (pending > 0) {
+      badges.push({ type: 'reservation', count: pending });
+    }
+    if (declined && declined > 0) {
+      badges.push({ type: 'declined', count: declined });
     }
   }
 
@@ -120,9 +116,6 @@ function CalendarCell({
   );
 }
 
-/**
- * 달력의 날짜 배열 생성 (원본 로직 유지 - 35일)
- */
 function getCalendarDates(year: number, month: number): Date[] {
   const firstDay = new Date(year, month, 1);
   const startDate = new Date(firstDay);
@@ -142,7 +135,7 @@ function getCalendarDates(year: number, month: number): Date[] {
 
 export default function ReservationStatusPage() {
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const { status } = useSession();
 
   const [activities, setActivities] = useState<
     { value: string; label: string }[]
@@ -165,7 +158,6 @@ export default function ReservationStatusPage() {
     position: { top: 0, right: 0 },
   });
 
-  // 로그인 체크
   useEffect(() => {
     if (status === 'loading') {
       return;
@@ -230,7 +222,7 @@ export default function ReservationStatusPage() {
 
         setDashboardData(data);
       } catch {
-        // 조회 실패 시 빈 데이터로 유지
+        setDashboardData([]);
       }
     };
 
@@ -258,16 +250,12 @@ export default function ReservationStatusPage() {
       popupState.isOpen &&
       popupState.selectedDate?.toDateString() === date.toDateString()
     ) {
-      setPopupState({
-        isOpen: false,
-        selectedDate: null,
-        position: { top: 0, right: 0 },
-      });
+      handleClosePopup();
 
       return;
     }
 
-    const dateString = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+    const dateString = formatDateString(date);
 
     try {
       const schedulesData = await fetchReservedSchedule(
@@ -302,7 +290,7 @@ export default function ReservationStatusPage() {
 
               allReservations.push(...reservationsData.reservations);
             } catch {
-              // 조회 실패 시 스킵
+              continue;
             }
           }
         }
@@ -338,14 +326,11 @@ export default function ReservationStatusPage() {
 
   return (
     <div className='mx-auto flex max-w-[1200px] gap-4 px-4 py-4 sm:gap-6 sm:px-6 sm:py-6 md:gap-8 md:px-12 md:py-8'>
-      {/* 왼쪽: SideMenu (모바일에서만 숨김) */}
       <aside className='hidden md:block lg:w-auto'>
         <SideMenu size='large' />
       </aside>
 
-      {/* 오른쪽: 메인 콘텐츠 */}
       <main className='w-full md:flex-1 lg:max-w-[720px]'>
-        {/* 헤더 */}
         <div className='mb-4 sm:mb-6'>
           <h1 className='mb-2 text-xl font-bold text-gray-900 sm:text-2xl'>
             예약 현황
@@ -355,7 +340,6 @@ export default function ReservationStatusPage() {
           </p>
         </div>
 
-        {/* 체험 선택 드롭다운 */}
         <div className='relative z-10 mb-4 w-full sm:mb-6'>
           {activities.length > 0 && (
             <SelectDropdown
@@ -373,9 +357,7 @@ export default function ReservationStatusPage() {
           )}
         </div>
 
-        {/* 달력 */}
         <div className='relative overflow-visible rounded-xl bg-white p-3 shadow-lg sm:p-4 md:p-6'>
-          {/* 달력 헤더 */}
           <div className='mb-4 flex items-center justify-center gap-3 sm:mb-6 sm:gap-4'>
             <button
               type='button'
@@ -396,9 +378,7 @@ export default function ReservationStatusPage() {
             </button>
           </div>
 
-          {/* 달력 그리드 */}
           <div className='overflow-visible rounded-lg'>
-            {/* 요일 헤더 */}
             <div className='grid grid-cols-7 border-b border-gray-200 bg-white'>
               {WEEKDAYS.map((day) => {
                 return (
@@ -412,7 +392,6 @@ export default function ReservationStatusPage() {
               })}
             </div>
 
-            {/* 날짜 그리드 */}
             <div className='grid grid-cols-7'>
               {calendarDates.map((date, index) => {
                 const isLastRow = index >= 28;
@@ -431,7 +410,6 @@ export default function ReservationStatusPage() {
             </div>
           </div>
 
-          {/* 예약 팝업 */}
           {popupState.selectedDate && selectedExperience && (
             <ReservationPopup
               isOpen={popupState.isOpen}
@@ -445,6 +423,7 @@ export default function ReservationStatusPage() {
                   nickname: r.nickname,
                   headCount: r.headCount,
                   status: r.status,
+                  scheduleId: r.scheduleId,
                 };
               })}
               onClose={handleClosePopup}

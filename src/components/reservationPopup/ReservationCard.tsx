@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useActionState, useEffect } from 'react';
 import type { ReservationStatusType } from '@/components/reservationPopup/type';
 import StateBadge from '@/components/stateBadge/StateBadge';
@@ -15,13 +16,16 @@ interface ReservationCardProps {
   };
   activeTab: ReservationStatusType;
   activityId: number;
+  onActionSuccess?: () => void;
 }
 
 export default function ReservationCard({
   reservation,
   activeTab,
   activityId,
+  onActionSuccess,
 }: ReservationCardProps) {
+  const router = useRouter();
   const [approveState, approveFormAction, isApprovePending] = useActionState(
     approveReservationAction,
     { status: 'idle' as const }
@@ -35,18 +39,24 @@ export default function ReservationCard({
   useEffect(() => {
     if (approveState.status === 'success') {
       toast({ message: approveState.message || '', eventType: 'success' });
+      router.refresh();
+      // eslint-disable-next-line react-you-might-not-need-an-effect/you-might-not-need-an-effect
+      onActionSuccess?.();
     } else if (approveState.status === 'error') {
       toast({ message: approveState.message || '', eventType: 'error' });
     }
-  }, [approveState]);
+  }, [approveState, router, onActionSuccess]);
 
   useEffect(() => {
     if (rejectState.status === 'success') {
       toast({ message: rejectState.message || '', eventType: 'success' });
+      router.refresh();
+      // eslint-disable-next-line react-you-might-not-need-an-effect/you-might-not-need-an-effect
+      onActionSuccess?.();
     } else if (rejectState.status === 'error') {
       toast({ message: rejectState.message || '', eventType: 'error' });
     }
-  }, [rejectState]);
+  }, [rejectState, router, onActionSuccess]);
 
   return (
     <div className='rounded-2xl border border-gray-100 bg-white p-4'>

@@ -5,6 +5,7 @@ export interface ReservationDetail {
   nickname: string;
   headCount: number;
   status: ReservationStatusType;
+  scheduleId: number;
 }
 
 export interface Schedule {
