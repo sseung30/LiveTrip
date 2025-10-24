@@ -9,8 +9,8 @@ import {
   ModalContainer,
   useDialog,
 } from '@/components/dialog';
-import { ReviewModalContents } from '@/components/dialog/Modal/ReviewModalContents';
 import { toast } from '@/components/toast';
+import { ReviewModalContents } from '@/domain/myreservations/components/ReviewModalContents';
 import type { MyReservations, Reservation } from '@/domain/myreservations/type';
 
 interface MyReservationsSectionProps {
@@ -145,6 +145,7 @@ export default function MyReservationsSection({
       >
         {reservation && (
           <ReviewModalContents
+            id={reservation.id}
             title={reservation.activity.title}
             date={reservation.date}
             startTime={reservation.startTime}

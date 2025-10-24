@@ -1,8 +1,11 @@
 import Image from 'next/image';
 import { type ChangeEvent, useState } from 'react';
+import { ApiError, apiFetch } from '@/api/api';
 import Button from '@/components/button/Button';
+import { toast } from '@/components/toast';
 
 export interface ReviewModalContentsProps {
+  id: number;
   title: string;
   date: string;
   startTime: string;
@@ -18,6 +21,7 @@ export interface ReviewModalContentsProps {
 }
 
 export function ReviewModalContents({
+  id,
   title,
   date,
   startTime,
@@ -42,6 +46,63 @@ export function ReviewModalContents({
     hideModal();
     onTextChange('');
     onRatingChange(0);
+  };
+
+  const onClick = async () => {
+    const body = { rating, content: text };
+
+    try {
+      const res = await apiFetch(`/my-reservations/${id}/reviews`, {
+        method: 'POST',
+        body: JSON.stringify(body),
+      });
+
+      toast({ message: '후기가 작성되었습니다.', eventType: 'success' });
+    } catch (error) {
+      // 상태 코드별 처리
+      if (error instanceof ApiError) {
+        switch (error.status) {
+          case 400: {
+            toast({
+              message: 'content는 문자열로 입력해주세요.',
+              eventType: 'error',
+            });
+            break;
+          }
+          case 401: {
+            toast({ message: '로그인이 필요합니다.', eventType: 'error' });
+            // 로그인 화면으로 이동
+            break;
+          }
+          case 403: {
+            toast({
+              message: '본인의 예약만 리뷰를 작성할 수 있습니다.',
+              eventType: 'error',
+            });
+          }
+          case 404: {
+            toast({ message: '존재하지 않는 예약입니다.', eventType: 'error' });
+            break;
+          }
+          case 409: {
+            toast({ message: '이미 처리된 요청입니다.', eventType: 'error' });
+            break;
+          }
+          default: {
+            toast({
+              message: '알 수 없는 오류가 발생했습니다.',
+              eventType: 'error',
+            });
+          }
+        }
+        console.error('후기 작성 실패:', error);
+      } else {
+        // 네트워크 단절·CORS 등 fetch 자체 예외
+        toast({ message: '네트워크 오류가 발생했습니다.', eventType: 'error' });
+        console.error('네트워크 예외:', error);
+      }
+    }
+    onCloseModal();
   };
 
   /**
@@ -111,7 +172,7 @@ export function ReviewModalContents({
           </div>
         </div>
         <div>
-          <Button variant='primary' classNames='w-full'>
+          <Button variant='primary' classNames='w-full' onClick={onClick}>
             작성하기
           </Button>
         </div>
