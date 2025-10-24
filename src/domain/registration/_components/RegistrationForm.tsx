@@ -1,22 +1,28 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
 import {
   FormProvider,
   type SubmitErrorHandler,
   type SubmitHandler,
   useForm,
+  useFormContext,
 } from 'react-hook-form';
 import { apiFetch } from '@/api/api';
 import Button from '@/components/button/Button';
+import ConfirmModal from '@/components/dialog/Modal/ConfirmModal';
+import { ModalContainer } from '@/components/dialog/Modal/ModalContainer';
 import { BasicInfoFields } from '@/domain/registration/_components/BasicInfoFields';
 import { ImageUploader } from '@/domain/registration/_components/ImageUploader';
 import { TimeSlotsField } from '@/domain/registration/_components/TimeSlotsField';
 import { useBannerImageUpload } from '@/domain/registration/_hooks/useBannerImageUpload';
 import { useIntroImageUpload } from '@/domain/registration/_hooks/useIntroImageUpload';
+import { useLeaveGuard } from '@/domain/registration/_hooks/useLeaveGuard';
 import { buildRegistrationPayload } from '@/domain/registration/_utils/buildRegistrationPayload';
 import { createEmptyTimeSlot, type TimeSlot } from '@/domain/registration/_utils/createEmptyTimeSlot';
 import type { FormValues } from '@/domain/registration/types';
+
 
 const CATEGORY_OPTIONS = [
   { label: '문화 · 예술', value: '문화 · 예술' },
@@ -132,6 +138,11 @@ function InnerRegistrationForm({
     removeImage: removeIntro,
   } = useIntroImageUpload(MAX_IMAGE_COUNT_INTRO);
 
+  //모달 훅
+  const router = useRouter();
+  const { formState } = useFormContext();
+  const { guardLeave, dialogRef, onConfirm, onCancel } = useLeaveGuard(formState.isDirty); 
+
   return (
     <form
       ref={formRef}
@@ -175,6 +186,16 @@ function InnerRegistrationForm({
           {isSubmitting ? '등록 중...' : '등록하기'}
         </Button>
       </div>
+
+        <ModalContainer dialogRef={dialogRef} onClose={onCancel}>
+        <ConfirmModal
+          message={'저장되지 않았습니다.\n정말 뒤로 가시겠습니까?'}
+          cancelText="아니오"
+          confirmText="네"
+          onCancel={onCancel}
+          onConfirm={onConfirm}
+        />
+        </ModalContainer>
     </form>
   );
 }
