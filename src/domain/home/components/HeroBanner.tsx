@@ -8,8 +8,8 @@ export default function HeroBanner() {
         <Image
           priority
           className='aspect-[11/6] h-auto w-full max-w-full rounded-3xl object-cover xl:w-[70rem]'
-          src='/images/activities/3-activity.png'
-          alt='농구 코트 위에서 음악을 틀고 춤을 추는 사람'
+          src='/images/activities/unsplash_0yUw1_FEFO0-activity.webp'
+          alt=''
           width={1120}
           height={610}
         />
