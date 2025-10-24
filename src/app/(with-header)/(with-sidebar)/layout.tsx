@@ -6,7 +6,7 @@ export default function SettingLayout({ children }: { children: ReactNode }) {
     <div className='mx-auto flex max-w-[1200px] justify-center gap-8 px-4 py-8 md:px-12'>
       {/* 왼쪽: SideMenu (태블릿 이상에서만 표시) */}
       <aside className='hidden md:block'>
-        <SideMenu size='large' activeItem='reservationStatus' />
+        <SideMenu size='large' />
       </aside>
       {children}
     </div>
