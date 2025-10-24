@@ -18,7 +18,7 @@ const STATE_CONFIG = {
     style: { backgroundColor: '#DAF0FF', color: '#0D6CD1' },
   },
   pending: {
-    text: '예약 승인',
+    text: '예약 신청',
     style: { backgroundColor: '#DDF9F9', color: '#1790A0' },
   },
 };

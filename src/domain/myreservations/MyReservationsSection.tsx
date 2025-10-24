@@ -1,6 +1,7 @@
 'use client';
 import Image from 'next/image';
-import { useActionState, useState } from 'react';
+import { useActionState, useEffect, useState } from 'react';
+import { apiFetch } from '@/api/api';
 import Button from '@/components/button/Button';
 import CardList from '@/components/cardList/CardList';
 import {
@@ -9,7 +10,8 @@ import {
   useDialog,
 } from '@/components/dialog';
 import { ReviewModalContents } from '@/components/dialog/Modal/ReviewModalContents';
-import type { Reservation } from '@/domain/myreservations/type';
+import { toast } from '@/components/toast';
+import type { MyReservations, Reservation } from '@/domain/myreservations/type';
 
 interface MyReservationsSectionProps {
   hasReservations: boolean;
@@ -17,18 +19,35 @@ interface MyReservationsSectionProps {
 }
 
 const STATUSES = [
-  '예약 승인',
+  '예약 신청',
   '예약 완료',
   '예약 취소',
   '예약 거절',
   '체험 완료',
 ];
 
-const deleteAction = async () => {
-  console.log('삭제 실행');
-  await new Promise((resolve) => {
-    setTimeout(resolve, 1500);
-  });
+const deleteAction = async (
+  prevState: { state: string },
+  formData: FormData
+) => {
+  const raw = formData.get('reservationId');
+  const id = Number(raw);
+
+  if (Number.isNaN(id)) {
+    return { state: 'error' };
+  }
+
+  const body = { status: 'canceled' };
+
+  try {
+    await apiFetch(`/my-reservations/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(body),
+    });
+    toast({ message: '예약이 취소되었습니다', eventType: 'success' });
+  } catch (error) {
+    console.error('error', error);
+  }
 
   return { state: 'success' };
 };
@@ -53,7 +72,7 @@ export default function MyReservationsSection({
   const cancelDialog = useDialog();
   const [deleteModalState, deleteModalFormAction, deleteModalIsPending] =
     useActionState(deleteAction, {
-      state: ' ',
+      state: 'idle',
     });
 
   const reviewDialog = useDialog();
@@ -67,8 +86,38 @@ export default function MyReservationsSection({
     console.log('예약 변경');
   };
 
-  const onCancelReservation = () => {
+  const [targetId, setTargetId] = useState<number | null>(null);
+
+  const [list, setList] = useState<Reservation[]>(reservations);
+
+  useEffect(() => {
+    if (deleteModalState.state === 'success') {
+      (async () => {
+        const fresh = await apiFetch<MyReservations>('/my-reservations', {
+          method: 'GET',
+        });
+
+        setList(fresh.reservations);
+        // state 변경
+        deleteModalState.state = 'idle';
+      })();
+    }
+  }, [deleteModalState]);
+
+  const onCancelReservation = (id: number) => {
+    setTargetId(id);
     cancelDialog.openDialog();
+  };
+
+  const handleConfirmCancel = async () => {
+    if (!targetId) {
+      return;
+    }
+    const formData = new FormData();
+
+    formData.set('reservationId', String(targetId));
+    deleteModalFormAction(formData);
+    cancelDialog.hideDialog();
   };
 
   const onCloseModalContainer = () => {
@@ -84,7 +133,7 @@ export default function MyReservationsSection({
           confirmButtonText='취소하기'
           rejectButtonText='아니오'
           hideModal={cancelDialog.hideDialog}
-          confirmAction={deleteModalFormAction}
+          confirmAction={handleConfirmCancel}
           isPending={deleteModalIsPending}
         />
       </ModalContainer>
@@ -136,7 +185,11 @@ export default function MyReservationsSection({
         )}
         <div className='flex h-full flex-col gap-6 overflow-y-auto'>
           {hasReservations &&
-            reservations.map((r: Reservation) => {
+            list.map((r: Reservation) => {
+              // 여기서 list.map 쓰면 에러남 is not function
+              // 처음에 응답으로 오는 건 배열, 객체 안의,... 객체 형태로...
+              // 객체 안에는, map 이 없음
+
               return (
                 <div key={r.id}>
                   <CardList
@@ -151,7 +204,7 @@ export default function MyReservationsSection({
                       onChangeReservation();
                     }}
                     onCancelReservation={() => {
-                      onCancelReservation();
+                      onCancelReservation(r.id);
                     }}
                     onWriteReview={() => {
                       reviewDialog.openDialog();
