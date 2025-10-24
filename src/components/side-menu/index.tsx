@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import ProfileImageUploader from '@/components/side-menu/ProfileImageUploader';
 import type {
@@ -14,21 +15,25 @@ const MENU_ITEMS: MenuItem[] = [
     id: 'myInfo',
     label: '내 정보',
     iconPath: '/icons/icon_user.svg',
+    href: '/profile',
   },
   {
     id: 'reservationHistory',
     label: '예약내역',
     iconPath: '/icons/icon_list.svg',
+    href: '/myreservation',
   },
   {
     id: 'manageExperiences',
     label: '내 체험 관리',
     iconPath: '/icons/icon_setting.svg',
+    href: '/myactivities',
   },
   {
     id: 'reservationStatus',
     label: '예약 현황',
     iconPath: '/icons/icon_calendar.svg',
+    href: '/reservation-status',
   },
 ];
 
@@ -63,18 +68,45 @@ const PRIMARY_FILTER =
 export default function SideMenu({
   size,
   className = '',
-  activeItem: initialActiveItem = 'reservationHistory',
 }: SideMenuProps) {
   const config = SIZE_CONFIG[size];
-  const [activeItem, setActiveItem] = useState<MenuItemType>(initialActiveItem);
+  const router = useRouter();
+  const pathname = usePathname();
 
-  const handleMenuClick = (itemId: MenuItemType) => {
-    setActiveItem(itemId);
+  /**
+   * 현재 경로에 따라 activeItem 자동 결정
+   */
+  const getActiveItem = (): MenuItemType => {
+    if (pathname.includes('/profile')) {
+      return 'myInfo';
+    }
+    if (pathname.includes('/myreservation')) {
+      return 'reservationHistory';
+    }
+    if (pathname.includes('/myactivities')) {
+      return 'manageExperiences';
+    }
+    if (pathname.includes('/reservation-status')) {
+      return 'reservationStatus';
+    }
+
+    return 'reservationHistory';
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent, itemId: MenuItemType) => {
+  const [activeItem, setActiveItem] = useState<MenuItemType>(getActiveItem());
+
+  const handleMenuClick = (itemId: MenuItemType, href: string) => {
+    setActiveItem(itemId);
+    router.push(href);
+  };
+
+  const handleKeyDown = (
+    e: React.KeyboardEvent,
+    itemId: MenuItemType,
+    href: string
+  ) => {
     if (e.key === 'Enter' || e.key === ' ') {
-      handleMenuClick(itemId);
+      handleMenuClick(itemId, href);
     }
   };
 
@@ -103,10 +135,10 @@ export default function SideMenu({
                   isActive ? 'bg-primary-100' : 'hover:bg-gray-50'
                 }`}
                 onClick={() => {
-                  handleMenuClick(item.id);
+                  handleMenuClick(item.id, item.href);
                 }}
                 onKeyDown={(e) => {
-                  handleKeyDown(e, item.id);
+                  handleKeyDown(e, item.id, item.href);
                 }}
               >
                 <Image

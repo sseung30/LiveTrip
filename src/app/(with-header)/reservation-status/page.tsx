@@ -204,7 +204,7 @@ export default function ReservationStatusPage() {
     <div className='mx-auto flex max-w-[1200px] gap-4 px-4 py-4 sm:gap-6 sm:px-6 sm:py-6 md:gap-8 md:px-12 md:py-8'>
       {/* 왼쪽: SideMenu (모바일에서만 숨김) */}
       <aside className='hidden md:block lg:w-auto'>
-        <SideMenu size='large' activeItem='reservationStatus' />
+        <SideMenu size='large' />
       </aside>
 
       {/* 오른쪽: 메인 콘텐츠 */}
