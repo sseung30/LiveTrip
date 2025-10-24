@@ -20,12 +20,14 @@ export default function ConfirmModal({
       </div>
       <div className='flex-center gap-3'>
         <button
+          type='button'
           className='rounded-lg border border-gray-100 px-5 py-1'
           onClick={onCancel}
         >
           {cancelText}
         </button>
         <button
+          type='button'
           className='bg-primary-500 rounded-lg border px-5 py-1 text-white'
           onClick={onConfirm}
         >
