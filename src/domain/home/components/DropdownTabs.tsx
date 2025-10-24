@@ -34,24 +34,24 @@ export default function DropdownTabs({ sortOption }: DropdownTabsProps) {
           <Dropdown.Menu>
             <Dropdown.Items
               variant='mainPage'
+              value='latest'
+              onSelect={handleDropdownSelectButton}
+            >
+              최신순
+            </Dropdown.Items>
+            <Dropdown.Items
+              variant='mainPage'
               value='price_desc'
               onSelect={handleDropdownSelectButton}
             >
-              가격
+              가격순
             </Dropdown.Items>
             <Dropdown.Items
               variant='mainPage'
               value='most_reviewed'
               onSelect={handleDropdownSelectButton}
             >
-              리뷰
-            </Dropdown.Items>
-            <Dropdown.Items
-              variant='mainPage'
-              value='latest'
-              onSelect={handleDropdownSelectButton}
-            >
-              최신
+              리뷰순
             </Dropdown.Items>
           </Dropdown.Menu>
         </Dropdown>
