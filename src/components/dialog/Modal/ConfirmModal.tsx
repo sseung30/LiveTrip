@@ -16,7 +16,7 @@ export default function ConfirmModal({
   return (
     <div className='flex-center w-80 flex-col gap-6 md:w-[25rem]'>
       <div className='flex-center flex-col gap-1'>
-        <h1 className='text-md font-bold'>{message}</h1>
+        <h1 className='text-md font-bold whitespace-pre-line'>{message}</h1>
       </div>
       <div className='flex-center gap-3'>
         <button
