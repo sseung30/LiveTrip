@@ -1,15 +1,12 @@
 import { apiFetch } from '@/api/api';
 import MyReservationsSection from '@/domain/myreservations/MyReservationsSection';
 import type { MyReservations } from '@/domain/myreservations/type';
-// import mockData from '@/mocks/mockReservations.json';
 
 export default async function Page() {
-  // const { reservations, totalCount } = mockData;
+  // const { reservations, totalCount } =
+  //   await apiFetch<MyReservations>('/my-reservations');
 
-  const { reservations, totalCount } =
-    await apiFetch<MyReservations>('/my-reservations');
-
-  const hasReservations = Boolean(totalCount);
+  // const hasReservations = Boolean(totalCount);
 
   return (
     <>
@@ -19,8 +16,8 @@ export default async function Page() {
           <p className='text-gray-500'>예약내역 변경 및 취소할 수 있습니다.</p>
         </div>
         <MyReservationsSection
-          hasReservations={hasReservations}
-          reservations={reservations}
+        // hasReservations={hasReservations}
+        // reservations={reservations}
         />
       </main>
     </>
