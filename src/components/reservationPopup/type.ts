@@ -5,6 +5,7 @@ export interface ReservationDetail {
   nickname: string;
   headCount: number;
   status: ReservationStatusType;
+  scheduleId: number;
 }
 
 export interface Schedule {
@@ -22,7 +23,6 @@ export type { Schedule as ReservedSchedule };
 
 export interface ReservationPopupProps {
   isOpen: boolean;
-  onClose: () => void;
   position: {
     top: number;
     right: number;
@@ -30,6 +30,6 @@ export interface ReservationPopupProps {
   date: Date;
   schedules: Schedule[];
   reservations: ReservationDetail[];
-  onApprove?: (id: number) => void;
-  onReject?: (id: number) => void;
+  activityId: number;
+  onClose: () => void;
 }

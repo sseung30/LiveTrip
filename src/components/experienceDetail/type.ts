@@ -94,6 +94,7 @@ export interface ExperienceReviewsProps {
   reviews: Review[];
   totalReviews: number;
   averageRating: number;
+  activityId: number;
 }
 
 export interface ReservationCardProps {
