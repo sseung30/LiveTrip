@@ -88,7 +88,6 @@ export default function RegistrationForm({ isSubmitting }: any) {
 }
 
   const onInvalid: SubmitErrorHandler<FormValues> = (errors) => {
-    console.error('❌ Validation errors:', errors);
 
     const messages: string[] = [];
     const visit = (obj: unknown) => {
