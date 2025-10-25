@@ -2,7 +2,19 @@
 
 import { useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import dynamic from 'next/dynamic';
+
+// Load Devtools only in development and on the client
+const ReactQueryDevtools =
+  process.env.NODE_ENV === 'development'
+    ? dynamic(
+        () =>
+          import('@tanstack/react-query-devtools').then(
+            (mod) => mod.ReactQueryDevtools,
+          ),
+        { ssr: false },
+      )
+    : null;
 
 export default function ReactQueryProviders({
   children,
@@ -23,7 +35,7 @@ export default function ReactQueryProviders({
   return (
     <QueryClientProvider client={queryClient}>
       {children}
-      <ReactQueryDevtools initialIsOpen={false} />
+      {ReactQueryDevtools ? <ReactQueryDevtools /> : null}
     </QueryClientProvider>
   );
 }

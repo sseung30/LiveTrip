@@ -1,4 +1,5 @@
 import { sheriff } from 'eslint-config-sheriff';
+import nextPlugin from '@next/eslint-plugin-next';
 
 const sheriffOptions = {
   react: true,
@@ -13,6 +14,8 @@ const sheriffOptions = {
 };
 
 const eslintConfig = [
+  // Ensure Next.js plugin is detected by Next.js tooling
+  ...nextPlugin.configs['core-web-vitals'],
   ...sheriff(sheriffOptions),
   {
     languageOptions: {
