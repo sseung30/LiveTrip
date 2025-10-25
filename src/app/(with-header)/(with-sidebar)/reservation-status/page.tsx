@@ -1,8 +1,6 @@
 import { HydrationBoundary, QueryClient, dehydrate } from '@tanstack/react-query';
-
 import { fetchMyActivities } from '@/domain/reservationStatus/api';
-
-import ReservationStatusClient from '@/app/(with-header)/reservation-status/ReservationStatusClient';
+import ReservationStatusClient from '@/app/(with-header)/(with-sidebar)/reservation-status/ReservationStatusClient';
 
 export default async function ReservationStatusPage() {
   const queryClient = new QueryClient();
@@ -14,8 +12,10 @@ export default async function ReservationStatusPage() {
   });
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <ReservationStatusClient />
-    </HydrationBoundary>
+    <>
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <ReservationStatusClient />
+      </HydrationBoundary>
+    </>
   );
 }
