@@ -70,20 +70,15 @@ export default function RegistrationForm({ isSubmitting }: any) {
   timeSlots,
 });
 
-console.log('payload', payload); 
-
   try {
     const result = await apiFetch('/activities', {
       method: 'POST',
       body: JSON.stringify(payload),
     });
-
-    console.log('✅ 등록 성공:', result);
     toast({ message: '체험 등록이 완료되었습니다.', eventType: 'success' });
     // 약간의 지연 후 이동하여 토스트 렌더 보장
     setTimeout(() => { router.push('/myactivities'); }, 100);
   } catch (error) {
-    console.error('❌ 등록 실패:', error);
     const message = error instanceof ApiError
       ? error.message
       : '등록 중 오류가 발생했습니다.';
