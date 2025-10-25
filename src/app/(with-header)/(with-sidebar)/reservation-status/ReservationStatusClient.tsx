@@ -8,7 +8,6 @@ import CalendarBadge from '@/components/calendarBadge/CalendarBadge';
 import type { BadgeType } from '@/components/calendarBadge/type';
 import SelectDropdown from '@/components/dropdown/SelectDropdown';
 import ReservationPopup from '@/components/reservationPopup/ReservationPopup';
-import SideMenu from '@/components/side-menu';
 import { toast } from '@/components/toast';
 import {
   type ActivityReservation,
@@ -294,18 +293,13 @@ export default function ReservationStatusClient() {
   };
 
   return (
-    <div className='mx-auto flex max-w-[1200px] gap-4 px-4 py-4 sm:gap-6 sm:px-6 sm:py-6 md:gap-8 md:px-12 md:py-8'>
-      <aside className='hidden md:block lg:w-auto'>
-        <SideMenu size='large' />
-      </aside>
-
-      <main className='w-full md:flex-1 lg:max-w-[720px]'>
-        <div className='mb-3 md:mb-7.5'>
-          <h2 className='text-18 mb-2.5 font-bold text-gray-950'>예약 현황</h2>
-          <p className='text-gray-500'>
-            내 체험의 예약 내역을 월 단위로 확인할 수 있습니다.
-          </p>
-        </div>
+    <main className='w-full'>
+      <div className='mb-3 md:mb-7.5'>
+        <h2 className='text-18 mb-2.5 font-bold text-gray-950'>예약 현황</h2>
+        <p className='text-gray-500'>
+          내 체험의 예약 내역을 월 단위로 확인할 수 있습니다.
+        </p>
+      </div>
 
         <div className='relative z-10 mb-4 w-full sm:mb-6'>
           {activities.length > 0 && (
@@ -398,6 +392,5 @@ export default function ReservationStatusClient() {
           )}
         </div>
       </main>
-    </div>
   );
 }
