@@ -9,11 +9,12 @@ import {
   useForm,
   useFormContext,
 } from 'react-hook-form';
-import { apiFetch } from '@/api/api';
+import { ApiError, apiFetch } from '@/api/api';
 import Button from '@/components/button/Button';
-import ConfirmModal from '@/components/dialog/Modal/ConfirmModal';
 import { ModalContainer } from '@/components/dialog/Modal/ModalContainer';
+import { toast } from '@/components/toast';
 import { BasicInfoFields } from '@/domain/registration/_components/BasicInfoFields';
+import ClientConfirmModal from '@/domain/registration/_components/ClientConfirmModal';
 import { ImageUploader } from '@/domain/registration/_components/ImageUploader';
 import { TimeSlotsField } from '@/domain/registration/_components/TimeSlotsField';
 import { useBannerImageUpload } from '@/domain/registration/_hooks/useBannerImageUpload';
@@ -37,6 +38,7 @@ const MAX_IMAGE_COUNT_BANNER = 1;
 const MAX_IMAGE_COUNT_INTRO = 4;
 
 export default function RegistrationForm({ isSubmitting }: any) {
+  const router = useRouter();
   const methods = useForm<FormValues>({
     mode: 'onSubmit',
     defaultValues: {
@@ -74,18 +76,47 @@ console.log('payload', payload);
     const result = await apiFetch('/activities', {
       method: 'POST',
       body: JSON.stringify(payload),
-    })
+    });
 
-    console.log('✅ 등록 성공:', result)
-    alert('체험이 등록되었습니다!')
+    console.log('✅ 등록 성공:', result);
+    toast({ message: '체험 등록이 완료되었습니다.', eventType: 'success' });
+    // 약간의 지연 후 이동하여 토스트 렌더 보장
+    setTimeout(() => { router.push('/myactivities'); }, 100);
   } catch (error) {
-    console.error('❌ 등록 실패:', error)
-    alert('등록 중 오류가 발생했습니다.')
+    console.error('❌ 등록 실패:', error);
+    const message = error instanceof ApiError
+      ? error.message
+      : '등록 중 오류가 발생했습니다.';
+
+    toast({ message, eventType: 'error' });
   }
 }
 
   const onInvalid: SubmitErrorHandler<FormValues> = (errors) => {
     console.error('❌ Validation errors:', errors);
+
+    const messages: string[] = [];
+    const visit = (obj: unknown) => {
+      if (!obj) {return;}
+      if (typeof obj === 'object') {
+        // FieldError 형태: { message?: string }
+        const maybeMessage = (obj as { message?: unknown }).message;
+
+        if (typeof maybeMessage === 'string') {
+          messages.push(maybeMessage);
+        }
+        // 중첩 객체/배열 순회
+        for (const val of Object.values(obj as Record<string, unknown>)) {
+          if (val && typeof val === 'object') {visit(val);}
+        }
+      }
+    };
+
+    visit(errors);
+
+    const first = messages.find(Boolean) || '입력값을 확인해 주세요.';
+
+    toast({ message: first, eventType: 'error' });
   };
 
   const handleAddTimeSlot = () => { setTimeSlots((prev) => [...prev, createEmptyTimeSlot()]); };
@@ -188,13 +219,13 @@ function InnerRegistrationForm({
       </div>
 
         <ModalContainer dialogRef={dialogRef} onClose={onCancel}>
-        <ConfirmModal
-          message={'저장되지 않았습니다.\n정말 뒤로 가시겠습니까?'}
-          cancelText="아니오"
-          confirmText="네"
-          onCancel={onCancel}
-          onConfirm={onConfirm}
-        />
+          <ClientConfirmModal
+            message={`저장되지 않았습니다.\n 정말 뒤로 가시겠습니까?`}
+            cancelText="아니오"
+            confirmText="네"
+            onCancel={onCancel}
+            onConfirm={onConfirm}
+          />
         </ModalContainer>
     </form>
   );
