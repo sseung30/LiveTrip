@@ -20,14 +20,14 @@ export function ActivityTabs({ category }: ActivityTabsProps) {
     if (isCategorySelected(title)) {
       return;
     }
-    setSearchParams({ category: title });
+    setSearchParams({ category: title, page: '' });
   };
   const handleDeleteClick = () => {
     setSearchParams({ category: '' });
   };
 
   return (
-    <div className='scrollbar-hide mb-6 flex gap-2 overflow-scroll overflow-y-hidden md:mb-8 md:gap-5'>
+    <div className='scrollbar-hide sticky top-1 z-2 mb-6 flex gap-2 overflow-scroll overflow-y-hidden md:mb-8 md:gap-5'>
       <button
         className={cx(
           _BUTTON_DEFAULT_CLASS_NAME,

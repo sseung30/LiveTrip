@@ -1,13 +1,12 @@
 import { Suspense } from 'react';
 import Spinner from '@/components/ui/Spinner';
 import { ActivityTabs } from '@/domain/home/components/ActivityTabs';
-import AllActivityCards from '@/domain/home/components/AllActivityCards';
+import AllActivityDataWrapper from '@/domain/home/components/AllActivityDataWrapper';
 import DropdownTabs from '@/domain/home/components/DropdownTabs';
 import { tabEmojiMapping } from '@/domain/home/constants/categoryTabs';
 import type { AllActivitySectionProps } from '@/domain/home/type';
 
 export default async function AllActivitySection({
-  page = 1,
   sort = 'latest',
   category,
 }: AllActivitySectionProps) {
@@ -15,7 +14,7 @@ export default async function AllActivitySection({
   const sectionTitle = isCategorySelected
     ? `${tabEmojiMapping[category]} ${category}`
     : '🛼 모든 체험';
-  const suspenseKey = `${page}-${sort}-${category}`;
+  const suspenseKey = `${sort}-${category}`;
 
   return (
     <section className='relative w-full'>
@@ -27,7 +26,7 @@ export default async function AllActivitySection({
       </div>
       <ActivityTabs category={category} />
       <Suspense fallback={<Spinner size='md' />} key={suspenseKey}>
-        <AllActivityCards category={category} sort={sort} page={page} />
+        <AllActivityDataWrapper category={category} sort={sort} />
       </Suspense>
     </section>
   );

@@ -1,5 +1,4 @@
 import { Suspense } from 'react';
-import Spinner from '@/components/ui/Spinner';
 import AllActivitySection from '@/domain/home/components/AllActivitySection';
 import PopularActivitySection from '@/domain/home/components/PopularActivitySection';
 import ToastLayer from '@/domain/home/components/ToastLayer';
@@ -10,14 +9,13 @@ export default async function Home({
 }: {
   searchParams: Promise<homeSearchParams>;
 }) {
-  const { page, sort, category } = await searchParams;
-  const pageProp = page ? Number(page) : 1;
+  const { sort, category } = await searchParams;
 
   return (
     <>
       <div className='flex-center w-full flex-col gap-20'>
         <PopularActivitySection />
-        <AllActivitySection page={pageProp} sort={sort} category={category} />
+        <AllActivitySection sort={sort} category={category} />
       </div>
       <Suspense>
         <ToastLayer />
