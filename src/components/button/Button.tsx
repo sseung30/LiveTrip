@@ -81,6 +81,7 @@ interface BaseProps {
   classNames?: string;
   children?: ReactNode;
   onClick?: (...args: unknown[]) => void;
+  type?: 'button' | 'submit' | 'reset';
 }
 
 export default function Button({
@@ -90,6 +91,7 @@ export default function Button({
   disabled,
   children,
   onClick,
+  type = 'submit',
 }: BaseProps) {
   const dimensions = getDimensions(variant);
 
@@ -103,7 +105,7 @@ export default function Button({
   );
 
   return (
-    <button className={className} disabled={disabled} onClick={onClick}>
+    <button type={type} className={className} disabled={disabled} onClick={onClick}>
       {children}
     </button>
   );

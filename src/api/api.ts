@@ -1,6 +1,6 @@
 import { getAuth } from '@/utils/getAuth';
 
-const BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}`;
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
 export class ApiError extends Error {
   status: number;
@@ -15,6 +15,11 @@ export async function apiFetch<T>(
   path: string,
   options: RequestInit = {}
 ): Promise<T> {
+  if (!BASE_URL) {
+    throw new Error(
+      'API base URL is not configured. Set NEXT_PUBLIC_API_URL in .env.local.'
+    );
+  }
   const { body, headers: customHeaders } = options;
   const token = await getAuth();
 

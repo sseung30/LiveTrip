@@ -8,6 +8,7 @@ interface ImageUploaderProps {
   onUpload: (event: ChangeEvent<HTMLInputElement>) => void | Promise<void>;
   onRemove: (id: string) => void;
   maxCount: number;
+  inputId?: string;
 }
 
 export function ImageUploader({
@@ -17,8 +18,10 @@ export function ImageUploader({
   onUpload,
   onRemove,
   maxCount,
+  inputId: providedId,
 }: ImageUploaderProps) {
-  const inputId = useId(); 
+  const fallbackId = useId();
+  const inputId = providedId ?? fallbackId;
 
   return (
     <section className="flex flex-col gap-4">
