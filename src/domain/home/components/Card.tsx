@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import { cx } from '@/utils/cx';
 
 interface CardProps {
@@ -6,21 +7,30 @@ interface CardProps {
   title: string;
   alt?: string;
   imageClassNames?: string;
+  id: number;
 }
-export default function Card({ src, title, alt, imageClassNames }: CardProps) {
+export default function Card({
+  src,
+  title,
+  alt,
+  imageClassNames,
+  id,
+}: CardProps) {
   return (
     <div className='relative mb-20 min-w-[8.25rem] md:w-full'>
-      <Image
-        src={src}
-        width={700}
-        height={700}
-        alt={alt ?? title}
-        loading='lazy'
-        className={cx(
-          'aspect-3/4 max-w-full rounded-[1.125rem] object-cover md:aspect-1/1 md:rounded-4xl',
-          imageClassNames
-        )}
-      />
+      <Link href={`/experiences/${id}`}>
+        <Image
+          src={src}
+          width={700}
+          height={700}
+          alt={alt ?? title}
+          loading='lazy'
+          className={cx(
+            'aspect-3/4 max-w-full rounded-[1.125rem] object-cover md:aspect-1/1 md:rounded-4xl',
+            imageClassNames
+          )}
+        />
+      </Link>
       <div className='text-14 absolute -bottom-18 flex w-full flex-col gap-[5px] rounded-[1.125rem] bg-white p-4 text-gray-950 drop-shadow-md md:-bottom-12 md:rounded-4xl md:px-[1.875rem] md:py-5 xl:-bottom-18'>
         <span className='text-14 md:text-18 font-semibold'>{title}</span>
         <div className='mb-1 flex items-center gap-[5px]'>

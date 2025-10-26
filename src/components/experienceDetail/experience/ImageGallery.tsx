@@ -2,6 +2,10 @@
 
 import Image from 'next/image';
 import { useCallback, useState } from 'react';
+import {
+  LeftArrowButton,
+  RightArrowButton,
+} from '@/components/button/ArrowButton';
 
 interface ImageGalleryProps {
   images: string[];
@@ -83,47 +87,8 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
 
         {hasMultipleImages && (
           <>
-            <button
-              className='absolute top-1/2 left-4 -translate-y-1/2 rounded-full bg-white/80 p-2 shadow-lg transition-all hover:bg-white'
-              aria-label='이전 이미지'
-              onClick={goToPrev}
-            >
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                fill='none'
-                viewBox='0 0 24 24'
-                strokeWidth={2}
-                stroke='currentColor'
-                className='h-6 w-6'
-              >
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  d='M15.75 19.5L8.25 12l7.5-7.5'
-                />
-              </svg>
-            </button>
-
-            <button
-              className='absolute top-1/2 right-4 -translate-y-1/2 rounded-full bg-white/80 p-2 shadow-lg transition-all hover:bg-white'
-              aria-label='다음 이미지'
-              onClick={goToNext}
-            >
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                fill='none'
-                viewBox='0 0 24 24'
-                strokeWidth={2}
-                stroke='currentColor'
-                className='h-6 w-6'
-              >
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  d='M8.25 4.5l7.5 7.5-7.5 7.5'
-                />
-              </svg>
-            </button>
+            <LeftArrowButton ariaLabel='이전 이미지' onClick={goToPrev} />
+            <RightArrowButton ariaLabel='다음 이미지' onClick={goToNext} />
 
             <div className='absolute right-4 bottom-4 rounded-full bg-black/60 px-3 py-1 text-sm text-white'>
               {currentIndex + 1} / {images.length}

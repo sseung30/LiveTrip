@@ -23,6 +23,7 @@ export default function GridCardList({ activities }: GridCardListProps) {
       {activities.map((activity) => {
         return (
           <Card
+            id={activity.id}
             src={activity.bannerImageUrl}
             title={activity.title}
             key={crypto.randomUUID()}

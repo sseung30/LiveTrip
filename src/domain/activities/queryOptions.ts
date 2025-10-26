@@ -2,6 +2,7 @@ import {
   getActivitiyAvailableSchedule,
   getActivitiyReviews,
   getAllActivities,
+  getAllActivitiesWithCache,
   getDetailActivity,
 } from '@/domain/activities/api';
 import type {
@@ -28,7 +29,8 @@ export const queryOptions = {
 
     return {
       queryKey: queryKeys.all(category, sort || 'latest'),
-      queryFn: () => getAllActivities({ category, sort, size, method }),
+      queryFn: () =>
+        getAllActivitiesWithCache({ category, sort, size, method }),
     };
   },
   detail: (activityId: number) => {
