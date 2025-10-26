@@ -1,8 +1,8 @@
 'use client';
 import { useRef } from 'react';
 import type { Activity } from '@/domain/activities/type';
-import ArrowButtons from '@/domain/home/components/ArrowButtons';
 import Card from '@/domain/home/components/Card';
+import ArrowButtons from '@/domain/home/components/popular-activity-section/ArrowButtons';
 
 export default function PopularActivityCarouselWrapper({
   activities,

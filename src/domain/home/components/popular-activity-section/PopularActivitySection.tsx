@@ -1,5 +1,5 @@
 import type { Activity } from '@/domain/activities/type';
-import PopularActivityCarouselWrapper from '@/domain/home/components/PopularActivityCarouselWrapper';
+import PopularActivityCarouselWrapper from '@/domain/home/components/popular-activity-section/PopularActivityCarouselWrapper';
 
 export default function PopularActivitySection({
   activities,

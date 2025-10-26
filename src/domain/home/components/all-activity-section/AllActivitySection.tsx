@@ -1,8 +1,8 @@
 import { Suspense } from 'react';
 import Spinner from '@/components/ui/Spinner';
-import { ActivityTabs } from '@/domain/home/components/ActivityTabs';
-import AllActivityDataWrapper from '@/domain/home/components/AllActivityDataWrapper';
-import DropdownTabs from '@/domain/home/components/DropdownTabs';
+import { ActivityTabs } from '@/domain/home/components/all-activity-section/ActivityTabs';
+import AllActivityDataWrapper from '@/domain/home/components/all-activity-section/AllActivityDataWrapper';
+import DropdownTabs from '@/domain/home/components/all-activity-section/DropdownTabs';
 import { tabEmojiMapping } from '@/domain/home/constants/categoryTabs';
 import type { AllActivitySectionProps } from '@/domain/home/type';
 

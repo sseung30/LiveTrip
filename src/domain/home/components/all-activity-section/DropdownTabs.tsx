@@ -1,7 +1,7 @@
 'use client';
 import Dropdown from '@/components/dropdown/Dropdown';
 import type { sortType } from '@/domain/activities/type';
-import SortPriceButton from '@/domain/home/components/SortPriceButton';
+import SortPriceButton from '@/domain/home/components/all-activity-section/SortPriceButton';
 import useCustomSearchParams from '@/hooks/useCustomSearchParams';
 
 interface DropdownTabsProps {
