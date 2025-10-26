@@ -6,15 +6,23 @@ import type {
   getAllActivitiesResponse,
 } from '@/domain/activities/type';
 
+const _ALL_ACTIVITIES_ENDPOINT = '/activities?';
+
 export const getAllActivitiesWithCache = async (
   params: getAllActivitiesParams
 ): Promise<getAllActivitiesResponse> => {
-  const endpoint = '/activities?';
   const queryString = createQueryString(params);
 
-  return apiFetch(`${endpoint}${queryString}`, {
+  return apiFetch(`${_ALL_ACTIVITIES_ENDPOINT}${queryString}`, {
     next: { revalidate: 10 },
   });
+};
+export const getAllActivities = async (
+  params: getAllActivitiesParams
+): Promise<getAllActivitiesResponse> => {
+  const queryString = createQueryString(params);
+
+  return apiFetch(`${_ALL_ACTIVITIES_ENDPOINT}${queryString}`);
 };
 export const getDetailActivity = () => {};
 export const getActivitiyAvailableSchedule = () => {};

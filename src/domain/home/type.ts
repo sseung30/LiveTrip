@@ -2,12 +2,11 @@ import type { activityCategory, sortType } from '@/domain/activities/type';
 
 export interface homeSearchParams {
   sort?: sortType;
-  category?: string;
+  category?: activityCategory;
 }
-export type homeCategoryStateType = activityCategory | '';
 export interface AllActivitySectionProps {
   sort?: sortType;
-  category?: string;
+  category?: activityCategory;
 }
 export type AllActivityDataWrapperProps = AllActivitySectionProps;
 export type useInfiniteActivitiesParams = AllActivitySectionProps;

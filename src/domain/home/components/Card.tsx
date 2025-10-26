@@ -15,6 +15,7 @@ export default function Card({ src, title, alt, imageClassNames }: CardProps) {
         width={700}
         height={700}
         alt={alt ?? title}
+        loading='lazy'
         className={cx(
           'aspect-3/4 max-w-full rounded-[1.125rem] object-cover md:aspect-1/1 md:rounded-4xl',
           imageClassNames

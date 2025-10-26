@@ -25,9 +25,9 @@ export default async function AllActivitySection({
         <DropdownTabs sortOption={sort} />
       </div>
       <ActivityTabs category={category} />
-      <Suspense fallback={<Spinner size='md' />} key={suspenseKey}>
-        <AllActivityDataWrapper category={category} sort={sort} />
-      </Suspense>
+      {/* <Suspense fallback={<Spinner size='md' />} key={suspenseKey}> */}
+      <AllActivityDataWrapper category={category} sort={sort} />
+      {/* </Suspense> */}
     </section>
   );
 }
