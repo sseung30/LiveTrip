@@ -2,19 +2,9 @@
 
 import { useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import dynamic from 'next/dynamic';
-
-// Load Devtools only in development and on the client
-const ReactQueryDevtools =
-  process.env.NODE_ENV === 'development'
-    ? dynamic(
-        () =>
-          import('@tanstack/react-query-devtools').then(
-            (mod) => mod.ReactQueryDevtools,
-          ),
-        { ssr: false },
-      )
-    : null;
+// Devtools are optional. Avoid importing the package to prevent build errors
+// when '@tanstack/react-query-devtools' is not installed.
+const ReactQueryDevtools: React.ComponentType | null = null;
 
 export default function ReactQueryProviders({
   children,

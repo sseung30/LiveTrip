@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import ToastOnMount from '@/components/ToastOnMount';
 import { apiFetch } from '@/api/api';
 import Button from '@/components/button/Button';
 import ActivitiyCard from '@/domain/myactivities/components/ActivityCard';
@@ -6,7 +7,11 @@ import RegisterActivity from '@/domain/myactivities/components/RegitsterActivity
 import type { Activity, MyActivities } from '@/domain/myactivities/type';
 // import mockData from '@/mocks/mockMyActivities.json'; // 🗄️ 목 데이터
 
-export default async function Page() {
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
   // 🗄️ 목 데이터
   // const { activities, totalCount } = mockData as MyActivities;
 
@@ -15,9 +20,15 @@ export default async function Page() {
 
   const hasActivities = Boolean(totalCount);
 
+  const sp = await searchParams;
+  const unauthorized = sp?.unauthorized === '1';
+
   return (
     <main className='w-full'>
       <section className='pb-30'>
+        {unauthorized && (
+          <ToastOnMount message='접근 권한이 없습니다.' />
+        )}
         <div className='flex items-center justify-between'>
           <div>
             <h2 className='text-18 mb-2.5 font-bold text-gray-950'>

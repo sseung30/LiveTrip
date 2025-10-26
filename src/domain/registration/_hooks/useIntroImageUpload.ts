@@ -7,21 +7,36 @@ import { useMutation } from '@tanstack/react-query'
 import type { FormValues, UploadedImage } from '@/domain/registration/types'
 
 export function useIntroImageUpload(maxCount: number) {
-  const { setValue, watch } = useFormContext<FormValues>()
+  const { setValue, watch, getValues } = useFormContext<FormValues>()
   const [images, setImages] = useState<UploadedImage[]>([])
   const formFieldName = 'subImageUrls'
 
-  // ✅ RHF 값 감시
+  // ✅ RHF 값 감시 (업로드 중 길이 체크 등에 사용)
   const formFieldUrls = watch(formFieldName)
 
-// images가 바뀔 때마다 RHF 값 동기화
+// RHF 값 -> 로컬 이미지 상태 초기 동기화 (마운트 시 1회)
 useEffect(() => {
-  setValue(
-    formFieldName,
-    images.map((img) => img.src),
-    { shouldValidate: true },
-  );
-}, [images, formFieldName, setValue]);
+  const raw = getValues(formFieldName)
+  const urls = Array.isArray(raw) ? (raw as string[]) : []
+  if (urls.length > 0) {
+    setImages(urls.map((u) => ({ id: u, src: u })))
+  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [])
+
+// 로컬 이미지 상태 -> RHF 값 동기화 (동일하면 미설정)
+useEffect(() => {
+  const next = images.map((img) => img.src)
+  const currentRaw = getValues(formFieldName)
+  const current = Array.isArray(currentRaw) ? (currentRaw as string[]) : []
+
+  const sameLength = current.length === next.length
+  const sameOrder = sameLength && current.every((u, i) => u === next[i])
+  if (sameOrder) return
+
+  setValue(formFieldName, next, { shouldValidate: true })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [images, formFieldName, setValue])
 
   // ✅ 업로드 mutation
   const uploadMutation = useMutation({
