@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
-import ProfileImageUploader from '@/components/side-menu/ProfileImageUploader';
+import ProfileImage from '@/components/side-menu/ProfileImage';
 import type {
   MenuItem,
   MenuItemType,
@@ -40,7 +40,7 @@ const MENU_ITEMS: MenuItem[] = [
 export const SIZE_CONFIG = {
   large: {
     container: { width: '291px', height: '450px' },
-    profile: { size: 120, iconSize: 16, editSize: 32 },
+    profile: { size: 120, iconSize: 16 },
     spacing: {
       padding: 'pt-6 pb-6',
       menuPadding: 'px-[15px]',
@@ -51,7 +51,7 @@ export const SIZE_CONFIG = {
   },
   small: {
     container: { width: '178px', height: '342px' },
-    profile: { size: 70, iconSize: 12, editSize: 24 },
+    profile: { size: 70, iconSize: 12 },
     spacing: {
       padding: 'pt-4 pb-4',
       menuPadding: 'px-[12px]',
@@ -65,10 +65,7 @@ export const SIZE_CONFIG = {
 const PRIMARY_FILTER =
   'brightness(0) saturate(100%) invert(43%) sepia(96%) saturate(1352%) hue-rotate(188deg) brightness(119%) contrast(119%)';
 
-export default function SideMenu({
-  size,
-  className = '',
-}: SideMenuProps) {
+export default function SideMenu({ size, className = '' }: SideMenuProps) {
   const config = SIZE_CONFIG[size];
   const router = useRouter();
   const pathname = usePathname();
@@ -118,7 +115,7 @@ export default function SideMenu({
         height: config.container.height,
       }}
     >
-      <ProfileImageUploader size={size} />
+      <ProfileImage size={size} />
 
       {/* 메뉴 항목들 */}
       <div className={config.spacing.menuPadding}>
