@@ -1,5 +1,4 @@
 'use client';
-import { useSession } from 'next-auth/react';
 import { type SubmitHandler, useForm } from 'react-hook-form';
 import { ApiError } from '@/api/api';
 import Button from '@/components/button/Button';
@@ -12,6 +11,7 @@ import type {
 } from '@/domain/profile/type';
 import { SignUpFormRegisterKey as profileFormRegisterKey } from '@/form/auth/register-key';
 import ProfileImageInput from '@/domain/profile/components/ProfileImageInput';
+import { useProfileImageCreateMutate } from '@/domain/auth/queries/useProfileImageCreateMutate';
 
 export default function ProfileEditForm({
   nickname,
@@ -29,16 +29,36 @@ export default function ProfileEditForm({
       email,
     },
   });
-  const { mutateAsync } = useProfileEditMutate();
-  const { update } = useSession();
+  const { mutateAsync, isPending } = useProfileEditMutate();
+  const {
+    mutateAsync: profileImageCreateMutateAsync,
+    isPending: isImagePending,
+  } = useProfileImageCreateMutate();
+
+  const getProfileImageUrl = async (
+    profileImageFile: FileList | null
+  ): Promise<string | null> => {
+    if (profileImageFile?.[0]) {
+      const { profileImageUrl } = await profileImageCreateMutateAsync(
+        profileImageFile[0]
+      );
+      return profileImageUrl;
+    }
+    return profileImageUrl;
+  };
+
   const onSubmit: SubmitHandler<ProfileEditFormInputs> = async (
     profileEditInputs
   ) => {
     try {
-      const { nickname, password } = profileEditInputs;
-
-      await mutateAsync({ nickname, profileImageUrl, newPassword: password });
-      update({ nickname, profileImageUrl, password });
+      const { nickname, password, profileImageFile } = profileEditInputs;
+      const profileImageUrl = await getProfileImageUrl(profileImageFile);
+      console.log(nickname, password, profileImageUrl);
+      await mutateAsync({
+        nickname,
+        profileImageUrl,
+        newPassword: password,
+      });
       toast({
         message: '프로필 정보가 변경 되었습니다',
         eventType: 'success',
@@ -59,7 +79,11 @@ export default function ProfileEditForm({
       className='mb:gap-6 flex w-full flex-col gap-5'
       onSubmit={handleSubmit(onSubmit)}
     >
-      <ProfileImageInput />
+      <ProfileImageInput
+        isPending={isPending || isImagePending}
+        register={register}
+        profileImageUrl={profileImageUrl}
+      />
       <Input
         label='닉네임'
         placeholder={'닉네임을 입력해 주세요'}

@@ -4,6 +4,7 @@ export interface ProfileEditFormProps {
   profileImageUrl: string | null;
 }
 export interface ProfileEditFormInputs {
+  profileImageFile: FileList | null;
   email: string;
   nickname: string;
   password: string;
