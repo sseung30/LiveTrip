@@ -9,7 +9,7 @@ import type {
 import { useInfiniteByCursor } from '@/hooks/useInfiniteScroll';
 import useIntersectionObserver from '@/hooks/useIntersectionObserver';
 
-export default function Notification() {
+export default function Notification({ onClose }: { onClose?: () => void }) {
   const pageSize = 2;
   const containerRef = useRef<HTMLDivElement | null>(null);
 
@@ -76,13 +76,17 @@ export default function Notification() {
 
   return (
     <>
-      <div className='w-57.5 rounded-[10px] shadow-[0_2px_8px_rgba(0,0,0,0.25)]'>
+      <div className='w-57.5 rounded-[10px] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.25)]'>
         <div className='flex w-full items-center justify-between border-b border-gray-100 px-5 pt-4 pb-3.5'>
           {/* <div className='mb mt-4 mb-3.5 flex w-full items-center justify-between border-b border-gray-100 px-5'> */}
           <h2 className='text-16 leading-4 font-bold text-gray-950'>
             알림 {totalCount}개
           </h2>
-          <button className='relative h-6 w-6'>
+          <button
+            className='relative h-6 w-6'
+            type='button'
+            onClick={onClose}
+          >
             <Image fill src='/icons/delete.svg' alt='close' />
           </button>
         </div>
