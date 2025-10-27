@@ -7,6 +7,9 @@ import {
 } from '@tanstack/react-query';
 import { apiFetch } from '@/api/api';
 
+const DEFAULT_STALE_TIME = 1000 * 60 * 5;
+const DEFAULT_GC_TIME = 1000 * 60 * 30;
+
 export interface UseInfiniteOptions<TPage, TItem> {
   /**
    * React Query key (필터/검색어 등을 포함해 캐시 분리)
@@ -16,7 +19,7 @@ export interface UseInfiniteOptions<TPage, TItem> {
   /**
    * 페이지의 전체 URL
    */
-  initialCursor: number | undefined;
+  initialCursor: number;
 
   buildUrl: (cursor: number) => string;
 
@@ -29,7 +32,7 @@ export interface UseInfiniteOptions<TPage, TItem> {
   /**
    * 다음 페이지의 커서를 반환 (없으면 undefined)
    */
-  selectNextCursor?: (page: TPage) => number | undefined | null;
+  selectNextCursor?: (page: TPage) => number | undefined;
 
   /** 총 아이템 개수 */
   selectTotalCount?: (firstPage: TPage | undefined) => number;
@@ -42,6 +45,8 @@ export interface UseInfiniteOptions<TPage, TItem> {
    * - “마지막 아이템의 커서”를 다음 커서로 사용합니다.
    */
   getItemCursor?: (item: TItem) => number;
+  staleTime?: number;
+  gcTime?: number;
 }
 
 /** URL 자체를 커서로 쓰는 범용 무한 스크롤 훅 */
@@ -54,6 +59,8 @@ export function useInfiniteByCursor<TPage, TItem>({
   selectTotalCount,
   pageSize = 20,
   getItemCursor,
+  staleTime = DEFAULT_STALE_TIME,
+  gcTime = DEFAULT_GC_TIME,
 }: UseInfiniteOptions<TPage, TItem>) {
   const query = useInfiniteQuery<
     TPage,
@@ -63,7 +70,7 @@ export function useInfiniteByCursor<TPage, TItem>({
     number
   >({
     queryKey,
-    initialPageParam: initialCursor as number,
+    initialPageParam: initialCursor,
     queryFn: async ({ pageParam }) => {
       const url = buildUrl(pageParam);
 
@@ -98,5 +105,7 @@ export function useInfiniteByCursor<TPage, TItem>({
     ...query,
     items: pageItemsFlat,
     totalCount,
+    staleTime,
+    gcTime,
   };
 }
