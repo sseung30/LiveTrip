@@ -29,7 +29,8 @@ export default function ProfileEditForm({
       email,
     },
   });
-  const { mutateAsync, isPending } = useProfileEditMutate();
+  const { mutateAsync: profileEditMutateAsync, isPending } =
+    useProfileEditMutate();
   const {
     mutateAsync: profileImageCreateMutateAsync,
     isPending: isImagePending,
@@ -53,8 +54,7 @@ export default function ProfileEditForm({
     try {
       const { nickname, password, profileImageFile } = profileEditInputs;
       const profileImageUrl = await getProfileImageUrl(profileImageFile);
-      console.log(nickname, password, profileImageUrl);
-      await mutateAsync({
+      await profileEditMutateAsync({
         nickname,
         profileImageUrl,
         newPassword: password,

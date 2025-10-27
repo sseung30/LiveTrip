@@ -1,6 +1,10 @@
-import { HydrationBoundary, QueryClient, dehydrate } from '@tanstack/react-query';
+import {
+  HydrationBoundary,
+  QueryClient,
+  dehydrate,
+} from '@tanstack/react-query';
 import { fetchMyActivities } from '@/domain/reservationStatus/api';
-import ReservationStatusClient from '@/app/(with-header)/(with-sidebar)/reservation-status/ReservationStatusClient';
+import ReservationStatusClient from '@/app/(with-header)/(with-sidemenu)/reservation-status/ReservationStatusClient';
 
 export default async function ReservationStatusPage() {
   const queryClient = new QueryClient();
