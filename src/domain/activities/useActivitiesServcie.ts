@@ -40,7 +40,7 @@ export function useInfiniteActivities({
       });
       const endPoint = '/activities/?';
 
-      return `${BASE_URL}${endPoint}${queryString}`;
+      return `${endPoint}${queryString}`;
     },
     selectNextCursor: (page) => page.cursorId,
     selectItems: (page) => page.activities,
