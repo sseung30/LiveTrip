@@ -34,6 +34,8 @@ function formattedContents(content: string) {
 }
 
 function formattedMilliseconds(ms: number) {
+  ms -= 32400000; // +9시간
+
   if (ms < 1000) {
     return '방금 전';
   }
