@@ -1,5 +1,10 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import type { Notification } from '@/components/notification/type';
+
+interface NotificationItemProps {
+  n: Notification;
+  onClick: (id: number) => void;
+}
 
 function parseTime(updatedAt: string) {
   const year = Number(updatedAt.slice(0, 4));
@@ -34,7 +39,7 @@ function formattedMilliseconds(ms: number) {
   }
 
   const units = [
-    { label: '년', ms: 365 * 30 * 24 * 60 * 60 * 1000 },
+    { label: '년', ms: 365 * 24 * 60 * 60 * 1000 },
     { label: '개월', ms: 30 * 24 * 60 * 60 * 1000 },
     { label: '일', ms: 24 * 60 * 60 * 1000 },
     { label: '시간', ms: 60 * 60 * 1000 },
@@ -51,54 +56,83 @@ function formattedMilliseconds(ms: number) {
   }
 }
 
-const NotificationItem = React.memo(
-  ({ n, now }: { n: Notification; now: number }) => {
-    const { id, content, updatedAt } = n;
+function NotificationItem({ n, onClick }: NotificationItemProps) {
+  const handleClick = useCallback(() => {
+    onClick(n.id);
+  }, [onClick, n.id]);
 
-    const parsed = useMemo(() => {
-      const updatedTime = parseTime(updatedAt);
-      const [title, reservedDate, status] = formattedContents(content);
+  const { content, updatedAt } = n;
 
-      return {
-        updatedTime,
-        title,
-        reservedDate,
-        status,
-        isConfirmed: status === '승인',
-      };
-    }, [content, updatedAt]);
+  const [now, setNow] = useState(() => Date.now());
 
-    return (
-      <div
-        key={id}
-        className='hover:bg-primary-100 flex w-full flex-col px-5 py-4'
-      >
-        <div className='mb-2 flex justify-between'>
-          <h3 className='text-14 leading-3.5 font-bold text-gray-950'>
-            예약 {content.slice(-8, -6)}
-          </h3>
-          <h3 className='text-12 leading-3 font-medium text-gray-400'>
-            {formattedMilliseconds(now - parsed.updatedTime.getTime())}
-          </h3>
-        </div>
-        <div className='text-14-body font-medium text-gray-800'>
-          {parsed.title}
-          <br />
-          {parsed.reservedDate}
-          <br />
-          예약이{' '}
-          <span
-            className={parsed.isConfirmed ? 'text-primary-500' : 'text-red-500'}
-          >
-            {parsed.isConfirmed ? '승인' : '거절'}
-          </span>{' '}
-          되었어요.
-        </div>
+  const parsed = useMemo(() => {
+    const updatedTime = parseTime(updatedAt);
+    const [title, reservedDate, status] = formattedContents(content);
+
+    return {
+      updatedTime,
+      title,
+      reservedDate,
+      status,
+      isConfirmed: status === '승인',
+    };
+  }, [content, updatedAt]);
+
+  // 1분마다 기준 시각 갱신 (UI에 상대시간이 갱신되게)
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setNow(Date.now());
+    }, 60 * 1000);
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, []);
+
+  return (
+    <div
+      className='hover:bg-primary-100 flex w-full flex-col px-5 py-4'
+      role='button'
+      tabIndex={0}
+      onClick={handleClick}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          handleClick();
+        }
+      }}
+    >
+      <div className='mb-2 flex justify-between'>
+        <h3 className='text-14 leading-3.5 font-bold text-gray-950'>
+          예약 {content.slice(-8, -6)}
+        </h3>
+        <h3 className='text-12 leading-3 font-medium text-gray-400'>
+          {formattedMilliseconds(now - parsed.updatedTime.getTime())}
+        </h3>
       </div>
-    );
-  }
-);
+      <div className='text-14-body font-medium text-gray-800'>
+        {parsed.title}
+        <br />
+        {parsed.reservedDate}
+        <br />
+        예약이{' '}
+        <span
+          className={parsed.isConfirmed ? 'text-primary-500' : 'text-red-500'}
+        >
+          {parsed.isConfirmed ? '승인' : '거절'}
+        </span>{' '}
+        되었어요.
+      </div>
+    </div>
+  );
+}
+
+export default React.memo(NotificationItem, (prev, next) => {
+  return (
+    prev.n.id === next.n.id &&
+    prev.n.content === next.n.content &&
+    prev.n.updatedAt === next.n.updatedAt &&
+    prev.onClick === next.onClick
+  );
+});
 
 NotificationItem.displayName = 'NotificationItem';
-
-export default NotificationItem;

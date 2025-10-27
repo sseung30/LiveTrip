@@ -1,6 +1,12 @@
 'use client';
 import Image from 'next/image';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  type InfiniteData,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query';
+import { apiFetch } from '@/api/api';
 import NotificationItem from '@/components/notification/NotificationItem';
 import type {
   Notification,
@@ -10,7 +16,7 @@ import { useInfiniteByCursor } from '@/hooks/useInfiniteScroll';
 import useIntersectionObserver from '@/hooks/useIntersectionObserver';
 
 export default function Notification() {
-  const pageSize = 2;
+  const pageSize = 1;
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   const {
@@ -42,20 +48,9 @@ export default function Notification() {
     },
     selectTotalCount: (first) => first?.totalCount ?? 0,
     pageSize,
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 30,
   });
-
-  const [now, setNow] = useState(Date.now());
-
-  // 1분마다 기준 시각 갱신 (UI에 상대시간이 갱신되게)
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setNow(Date.now());
-    }, 60 * 1000);
-
-    return () => {
-      clearInterval(timer);
-    };
-  }, []);
 
   const [page, setPage] = useState(0);
 
@@ -74,6 +69,77 @@ export default function Notification() {
     }
   }, [page, fetchNextPage]);
 
+  // const [targetId, setTargetId] = useState<number | null>(null);
+
+  async function deleteNotification(id: number) {
+    try {
+      await apiFetch(`/my-notifications/${id}`, { method: 'DELETE' });
+    } catch (error) {
+      console.error('delete failed', error);
+    }
+  }
+
+  const queryClient = useQueryClient();
+
+  const deleteNotificationMutation = useMutation({
+    mutationFn: (id: number) => deleteNotification(id),
+    // onSuccess: () => {
+    //   queryClient.invalidateQueries({ queryKey: ['myNotifications'] });
+    /**
+     * },
+     */
+    onMutate: async (id) => {
+      await queryClient.cancelQueries({ queryKey: ['myNotifications'] });
+
+      const previousData = queryClient.getQueryData<
+        InfiniteData<Notifications, number>
+      >(['myNotifications']);
+
+      queryClient.setQueryData(
+        ['myNotifications'],
+        (old?: InfiniteData<Notifications, number>) => {
+          return (
+            old && {
+              ...old,
+              pages: old.pages.map((p, i) => {
+                return {
+                  ...p,
+                  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                  notifications: (p.notifications ?? []).filter(
+                    (n) => n.id !== id
+                  ),
+                  ...(i === 0
+                    ? { totalCount: Math.max(0, p.totalCount - 1) }
+                    : {}),
+                };
+              }),
+            }
+          );
+        }
+      );
+
+      return () => queryClient.setQueryData(['myNotifications'], previousData);
+    },
+    onError: (error, variable, rollback) => {
+      if (rollback) {
+        rollback();
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['myNotifications'] });
+    },
+  });
+
+  /**
+   * 메모이제이션을 통해 불필요한 재렌더 감소
+   */
+  const onDeleteNotification = useCallback(
+    (id: number) => {
+      deleteNotificationMutation.mutate(id);
+    },
+    [deleteNotificationMutation]
+  );
+
   return (
     <>
       <div className='w-57.5 rounded-[10px] shadow-[0_2px_8px_rgba(0,0,0,0.25)]'>
@@ -90,9 +156,17 @@ export default function Notification() {
           ref={containerRef}
           className='h-68 overflow-auto pb-2 [&::-webkit-scrollbar]:hidden'
         >
-          {notifications.map((n: Notification) => (
-            <NotificationItem key={n.id} n={n} now={now} />
-          ))}
+          {notifications.map((n: Notification) => {
+            console.log(n.id);
+
+            return (
+              <NotificationItem
+                key={n.id}
+                n={n}
+                onClick={onDeleteNotification}
+              />
+            );
+          })}
           <div ref={loader} />
         </div>
       </div>
