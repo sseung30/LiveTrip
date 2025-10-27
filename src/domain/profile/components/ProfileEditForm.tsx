@@ -11,6 +11,7 @@ import type {
   ProfileEditFormProps,
 } from '@/domain/profile/type';
 import { SignUpFormRegisterKey as profileFormRegisterKey } from '@/form/auth/register-key';
+import ProfileImageInput from '@/domain/profile/components/ProfileImageInput';
 
 export default function ProfileEditForm({
   nickname,
@@ -58,6 +59,7 @@ export default function ProfileEditForm({
       className='mb:gap-6 flex w-full flex-col gap-5'
       onSubmit={handleSubmit(onSubmit)}
     >
+      <ProfileImageInput />
       <Input
         label='닉네임'
         placeholder={'닉네임을 입력해 주세요'}
