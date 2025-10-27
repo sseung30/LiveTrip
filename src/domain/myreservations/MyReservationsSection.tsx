@@ -84,8 +84,10 @@ export default function MyReservationsSection() {
     });
 
   const reviewDialog = useDialog();
-  const [reviewModalState, reviewModalFormAction, reviewModalIsPending] =
-    useActionState(ReviewModalAction, { state: ' ' });
+  const [, reviewModalFormAction, reviewModalIsPending] = useActionState(
+    ReviewModalAction,
+    { state: ' ' }
+  );
 
   const [rating, setRating] = useState<number>(0);
   const [inputText, setInputText] = useState<string>();
