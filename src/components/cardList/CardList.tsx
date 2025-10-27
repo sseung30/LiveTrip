@@ -24,7 +24,7 @@ export default function CardList({
   onCancelReservation,
   onWriteReview,
 }: CardListProps) {
-  const showActionButtons = state === 'confirmed';
+  const showActionButtons = state === 'pending';
   const showReviewButton = state === 'completed';
   const timeRange = `${startTime} - ${endTime}`;
   const formattedPrice = `₩${price.toLocaleString()}`;

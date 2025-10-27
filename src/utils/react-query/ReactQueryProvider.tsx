@@ -2,7 +2,9 @@
 
 import { useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+// Devtools are optional. Avoid importing the package to prevent build errors
+// when '@tanstack/react-query-devtools' is not installed.
+const ReactQueryDevtools: React.ComponentType | null = null;
 
 export default function ReactQueryProviders({
   children,
@@ -23,7 +25,7 @@ export default function ReactQueryProviders({
   return (
     <QueryClientProvider client={queryClient}>
       {children}
-      <ReactQueryDevtools initialIsOpen={false} />
+      {ReactQueryDevtools ? <ReactQueryDevtools /> : null}
     </QueryClientProvider>
   );
 }

@@ -8,12 +8,12 @@ export interface MenuItem {
   id: MenuItemType;
   label: string;
   iconPath: string;
+  href: string;
 }
 
 export interface SideMenuProps {
   size: 'large' | 'small';
   className?: string;
-  activeItem?: MenuItemType;
 }
 export interface ProfileImageProps {
   size: 'large' | 'small';

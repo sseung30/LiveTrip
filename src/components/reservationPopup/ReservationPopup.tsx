@@ -1,13 +1,13 @@
+/* eslint-disable react-you-might-not-need-an-effect/you-might-not-need-an-effect */
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { BottomSheetContainer } from '@/components/dialog/BottomSheet/BottomSheetContainer';
-import ConfirmModal from '@/components/dialog/Modal/ConfirmModal';
-import { ModalContainer } from '@/components/dialog/Modal/ModalContainer';
 import { useDialog } from '@/components/dialog/useDialog';
 import SelectDropdown from '@/components/dropdown/SelectDropdown';
 import ReservationCard from '@/components/reservationPopup/ReservationCard';
 import type {
+  ReservationDetail,
   ReservationPopupProps,
   ReservationStatusType,
 } from '@/components/reservationPopup/type';
@@ -25,27 +25,16 @@ export default function ReservationPopup({
   date,
   schedules,
   reservations,
-  onApprove,
-  onReject,
+  activityId,
 }: ReservationPopupProps) {
   const [activeTab, setActiveTab] = useState<ReservationStatusType>('pending');
   const [selectedScheduleId, setSelectedScheduleId] = useState<number | null>(
     null
   );
   const [isBottomSheet, setIsBottomSheet] = useState(false);
-  const [confirmAction, setConfirmAction] = useState<{
-    type: 'approve' | 'reject';
-    id: number;
-  } | null>(null);
   const popupRef = useRef<HTMLDivElement>(null);
-   
+
   const { dialogRef, hideDialog } = useDialog();
-  const {
-    dialogRef: confirmDialogRef,
-    openDialog: openConfirmDialog,
-    hideDialog: hideConfirmDialog,
-     
-  } = useDialog();
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(max-width: 1023px)');
@@ -64,90 +53,53 @@ export default function ReservationPopup({
   }, []);
 
   useEffect(() => {
-     
     if (isOpen && isBottomSheet && dialogRef.current) {
-       
       dialogRef.current.showModal();
-       
     } else if (!isOpen && isBottomSheet && dialogRef.current) {
-       
       dialogRef.current.close();
     }
   }, [isOpen, isBottomSheet, dialogRef]);
 
-  const reservationsByStatus = useMemo(() => {
-    const pending = reservations.filter((r) => r.status === 'pending');
-    const confirmed = reservations.filter((r) => r.status === 'confirmed');
-    const declined = reservations.filter((r) => r.status === 'declined');
+  // 팝업이 열릴 때 선택된 시간과 탭 초기화
+  useEffect(() => {
+    if (isOpen) {
+      setSelectedScheduleId(null);
+      setActiveTab('pending');
+    }
+  }, [isOpen]);
+
+  const { totalCounts, filteredReservationsBySchedule } = useMemo(() => {
+    const counts = { pending: 0, confirmed: 0, declined: 0 };
+    const filtered: { pending: ReservationDetail[]; confirmed: ReservationDetail[]; declined: ReservationDetail[] } = { 
+      pending: [], 
+      confirmed: [], 
+      declined: [] 
+    };
+
+    reservations.forEach((reservation) => {
+      counts[reservation.status] = counts[reservation.status] + 1;
+
+      if (selectedScheduleId !== null && reservation.scheduleId === selectedScheduleId) {
+        filtered[reservation.status].push(reservation);
+      }
+    });
 
     return {
-      pending,
-      confirmed,
-      declined,
-      counts: {
-        pending: pending.length,
-        confirmed: confirmed.length,
-        declined: declined.length,
-      },
+      totalCounts: counts,
+      filteredReservationsBySchedule: filtered,
     };
-  }, [reservations]);
+  }, [reservations, selectedScheduleId]);
 
   const scheduleOptions = useMemo(() => {
-     
     return schedules.map((schedule) => {
       return {
-         
         label: `${schedule.startTime} - ${schedule.endTime}`,
-         
         value: String(schedule.scheduleId),
       };
     });
   }, [schedules]);
 
-  const filteredReservations =
-    selectedScheduleId !== null ? reservationsByStatus[activeTab] : [];
-
-  const handleApprove = (id: number) => {
-    setConfirmAction({ type: 'approve', id });
-     
-    openConfirmDialog();
-  };
-
-  const handleReject = (id: number) => {
-    setConfirmAction({ type: 'reject', id });
-     
-    openConfirmDialog();
-  };
-
-  const handleConfirm = () => {
-    if (!confirmAction) {
-      return;
-    }
-
-    if (confirmAction.type === 'approve') {
-      onApprove?.(confirmAction.id);
-    } else {
-      onReject?.(confirmAction.id);
-    }
-
-     
-    hideConfirmDialog();
-    setConfirmAction(null);
-  };
-
-  const handleCancel = () => {
-     
-    hideConfirmDialog();
-    setConfirmAction(null);
-  };
-
-  // eslint-disable-next-line
-  useEffect(() => {
-    if (isOpen) {
-      // eslint-disable-next-line
-      setSelectedScheduleId(null);
-    }
-  }, [isOpen, date]);
+  const filteredReservations = filteredReservationsBySchedule[activeTab];
 
   useEffect(() => {
     if (!isOpen || isBottomSheet) {
@@ -159,7 +111,6 @@ export default function ReservationPopup({
         popupRef.current &&
         !popupRef.current.contains(event.target as Node)
       ) {
-        // eslint-disable-next-line
         onClose();
       }
     };
@@ -215,7 +166,7 @@ export default function ReservationPopup({
                   setActiveTab(key);
                 }}
               >
-                {TAB_CONFIG[key].label} {reservationsByStatus.counts[key]}
+                {TAB_CONFIG[key].label} {totalCounts[key]}
                 {activeTab === key && (
                   <div className='bg-primary-500 absolute bottom-0 left-0 h-0.5 w-full' />
                 )}
@@ -235,9 +186,8 @@ export default function ReservationPopup({
             <h3 className='mb-2 text-base font-semibold text-gray-900'>
               예약 시간
             </h3>
-            { }
             {scheduleOptions.length > 0 && (
-              <div className={isBottomSheet ? 'w-full' : ''}>
+              <div className='w-full'>
                 <SelectDropdown
                   key={selectedScheduleId}
                   width={isBottomSheet ? 450 : 302}
@@ -260,22 +210,33 @@ export default function ReservationPopup({
             <h3 className='mb-2 text-base font-semibold text-gray-900'>
               예약 내역
             </h3>
-            { }
-            {filteredReservations.length > 0 && (
+            {selectedScheduleId === null && (
+              <div className='py-4 text-center'>
+                <p className='text-sm text-gray-500'>
+                  예약 시간을 선택해주세요.
+                </p>
+              </div>
+            )}
+            {selectedScheduleId !== null && filteredReservations.length > 0 && (
               <div className='space-y-3'>
-                { }
                 {filteredReservations.map((reservation) => {
                   return (
                     <ReservationCard
-                       
                       key={reservation.id}
                       reservation={reservation}
                       activeTab={activeTab}
-                      onApprove={handleApprove}
-                      onReject={handleReject}
+                      activityId={activityId}
+                      onActionSuccess={closeHandler || onClose}
                     />
                   );
                 })}
+              </div>
+            )}
+            {selectedScheduleId !== null && filteredReservations.length === 0 && (
+              <div className='py-4 text-center'>
+                <p className='text-sm text-gray-500'>
+                  예약 내역이 없습니다.
+                </p>
               </div>
             )}
           </div>
@@ -286,57 +247,27 @@ export default function ReservationPopup({
 
   if (isBottomSheet) {
     return (
-      <>
-        <BottomSheetContainer
-          isOpen={isOpen}
-          dialogRef={dialogRef}
-          hideDialog={hideDialog}
-          onClose={onClose}
-        >
-          {({ closeDialog }) => renderContent(closeDialog as () => void)}
-        </BottomSheetContainer>
-        <ModalContainer dialogRef={confirmDialogRef}>
-          <ConfirmModal
-            confirmText={confirmAction?.type === 'approve' ? '승인' : '거절'}
-            cancelText='취소'
-            message={
-              confirmAction?.type === 'approve'
-                ? '이 예약을 승인하시겠습니까?'
-                : '이 예약을 거절하시겠습니까?'
-            }
-            onConfirm={handleConfirm}
-            onCancel={handleCancel}
-          />
-        </ModalContainer>
-      </>
+      <BottomSheetContainer
+        isOpen={isOpen}
+        dialogRef={dialogRef}
+        hideDialog={hideDialog}
+        onClose={onClose}
+      >
+        {({ closeDialog }) => renderContent(closeDialog as () => void)}
+      </BottomSheetContainer>
     );
   }
 
   return (
-    <>
-      <div
-        ref={popupRef}
-        className='absolute z-[100] w-[350px] overflow-visible rounded-2xl bg-white p-6 shadow-2xl'
-        style={{
-          top: `${position.top}px`,
-          right: `${position.right}px`,
-        }}
-      >
-        {renderContent()}
-      </div>
-      <ModalContainer dialogRef={confirmDialogRef}>
-        <ConfirmModal
-          confirmText={confirmAction?.type === 'approve' ? '승인' : '거절'}
-          cancelText='취소'
-          message={
-            confirmAction?.type === 'approve'
-              ? '이 예약을 승인하시겠습니까?'
-              : '이 예약을 거절하시겠습니까?'
-          }
-          onConfirm={handleConfirm}
-          onCancel={handleCancel}
-        />
-      </ModalContainer>
-    </>
+    <div
+      ref={popupRef}
+      className='absolute z-[100] w-[350px] overflow-visible rounded-2xl bg-white p-6 shadow-2xl'
+      style={{
+        top: `${position.top}px`,
+        right: `${position.right}px`,
+      }}
+    >
+      {renderContent()}
+    </div>
   );
 }

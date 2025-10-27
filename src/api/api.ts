@@ -15,6 +15,11 @@ export async function apiFetch<T>(
   path: string,
   options: RequestInit = {}
 ): Promise<T> {
+  if (!BASE_URL) {
+    throw new Error(
+      'API base URL is not configured. Set NEXT_PUBLIC_API_URL in .env.local.'
+    );
+  }
   const { body, headers: customHeaders } = options;
   const token = await getAuth();
 
@@ -35,33 +40,49 @@ export async function apiFetch<T>(
   });
 
   if (!res.ok) {
-    const rawMessage = await res.text();
-    let message = '서버 오류가 발생했습니다.';
+    const contentType = res.headers.get('content-type') || '';
+    const resClone = res.clone();
 
-    switch (res.status) {
-      case 400: {
-        message = '입력값이 올바르지 않습니다.';
-        break;
+    let message: string | undefined;
+    if (contentType.includes('application/json')) {
+      try {
+        const data: unknown = await res.json();
+        if (data && typeof data === 'object') {
+          const obj = data as Record<string, unknown>;
+          if (typeof obj.message === 'string') {
+            message = obj.message;
+          } else if (typeof obj.error === 'string') {
+            message = obj.error;
+          } else if (Array.isArray(obj.errors) && obj.errors.length > 0) {
+            const first = obj.errors[0] as Record<string, unknown>;
+            if (typeof first?.message === 'string') message = first.message as string;
+          } else {
+            // 마지막 수단: JSON을 문자열로
+            try {
+              message = JSON.stringify(data);
+            } catch {
+              /* noop */
+            }
+          }
+        }
+      } catch {
+        // JSON 파싱 실패 시 아래에서 텍스트로 재시도
       }
-      case 401: {
-        message = '로그인이 필요합니다.';
-        break;
+    }
+
+    if (!message) {
+      try {
+        message = await resClone.text();
+      } catch {
+        // ignore
       }
-      case 403: {
-        message = '접근 권한이 없습니다.';
-        break;
-      }
-      case 404: {
-        message = '요청한 리소스를 찾을 수 없습니다.';
-        break;
-      }
-      case 500: {
-        message = '서버에서 오류가 발생했습니다.';
-        break;
-      }
-      default: {
-        message = rawMessage || message;
-      }
+    }
+
+    if (res.status === 500) {
+      message = '서버에서 오류가 발생했습니다.';
+    }
+    if (!message) {
+      message = '오류가 발생했습니다.';
     }
 
     throw new ApiError(res.status, message);

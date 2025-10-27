@@ -1,22 +1,32 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
 import {
   FormProvider,
   type SubmitErrorHandler,
   type SubmitHandler,
   useForm,
+  useFormContext,
 } from 'react-hook-form';
-import { apiFetch } from '@/api/api';
+import { ApiError, apiFetch } from '@/api/api';
 import Button from '@/components/button/Button';
+import { ModalContainer } from '@/components/dialog/Modal/ModalContainer';
+import { toast } from '@/components/toast';
 import { BasicInfoFields } from '@/domain/registration/_components/BasicInfoFields';
+import ClientConfirmModal from '@/domain/registration/_components/ClientConfirmModal';
 import { ImageUploader } from '@/domain/registration/_components/ImageUploader';
 import { TimeSlotsField } from '@/domain/registration/_components/TimeSlotsField';
 import { useBannerImageUpload } from '@/domain/registration/_hooks/useBannerImageUpload';
 import { useIntroImageUpload } from '@/domain/registration/_hooks/useIntroImageUpload';
+import { useLeaveGuard } from '@/domain/registration/_hooks/useLeaveGuard';
 import { buildRegistrationPayload } from '@/domain/registration/_utils/buildRegistrationPayload';
+import { buildUpdatePayload } from '@/domain/registration/_utils/buildUpdatePayload';
 import { createEmptyTimeSlot, type TimeSlot } from '@/domain/registration/_utils/createEmptyTimeSlot';
 import type { FormValues } from '@/domain/registration/types';
+import type { ActivityDetail } from '@/domain/activities/api';
+import { updateActivity } from '@/domain/activities/api';
+
 
 const CATEGORY_OPTIONS = [
   { label: '문화 · 예술', value: '문화 · 예술' },
@@ -30,23 +40,50 @@ const CATEGORY_OPTIONS = [
 const MAX_IMAGE_COUNT_BANNER = 1;
 const MAX_IMAGE_COUNT_INTRO = 4;
 
-export default function RegistrationForm({ isSubmitting }: any) {
+type Mode = 'create' | 'edit';
+
+interface RegistrationFormProps {
+  mode: Mode;
+  initialData?: ActivityDetail;
+  isSubmitting?: boolean;
+}
+
+export default function RegistrationForm({ mode, initialData, isSubmitting }: RegistrationFormProps) {
+  const router = useRouter();
+  const normalizeSubImages = (data?: ActivityDetail): string[] => {
+    if (!data) return [];
+    if (Array.isArray(data.subImageUrls)) return data.subImageUrls;
+    if (Array.isArray((data as any).subImages)) {
+      const arr = (data as any).subImages as Array<string | { imageUrl: string }>;
+      return arr.map((item) => (typeof item === 'string' ? item : item.imageUrl)).filter(Boolean);
+    }
+    return [];
+  };
+
+  const defaults: FormValues = {
+    title: initialData?.title ?? '',
+    category: initialData?.category ?? '',
+    description: initialData?.description ?? '',
+    address: initialData?.address ?? '',
+    price: initialData?.price != null ? String(initialData.price) : '',
+    bannerImage: initialData?.bannerImageUrl ?? '',
+    subImageUrls: normalizeSubImages(initialData),
+    timeSlots: Array.isArray(initialData?.schedules)
+      ? initialData!.schedules!.map((s) => ({ date: s.date, startTime: s.startTime, endTime: s.endTime }))
+      : [createEmptyTimeSlot()],
+  };
+
   const methods = useForm<FormValues>({
     mode: 'onSubmit',
-    defaultValues: {
-      title: '',
-    category: '',
-    description: '',
-    address: '',
-    price: '',
-    bannerImage: '',
-    subImageUrls: [],
-    timeSlots: [createEmptyTimeSlot()],
-    },
+    defaultValues: defaults,
   }); 
 
   const formRef = useRef<HTMLFormElement>(null);
-  const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([createEmptyTimeSlot()]);
+  const [timeSlots, setTimeSlots] = useState<TimeSlot[]>(
+    Array.isArray(initialData?.schedules)
+      ? initialData!.schedules!.map((s) => ({ id: `${Date.now()}-${Math.random()}`, date: s.date, startTime: s.startTime, endTime: s.endTime }))
+      : [createEmptyTimeSlot()]
+  );
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
    const payload = buildRegistrationPayload({
@@ -62,24 +99,70 @@ export default function RegistrationForm({ isSubmitting }: any) {
   timeSlots,
 });
 
-console.log('payload', payload); 
-
   try {
-    const result = await apiFetch('/activities', {
-      method: 'POST',
-      body: JSON.stringify(payload),
-    })
-
-    console.log('✅ 등록 성공:', result)
-    alert('체험이 등록되었습니다!')
+    if (mode === 'edit' && initialData?.id != null) {
+      // Build update-diff payload for edit endpoint
+      const updatePayload = buildUpdatePayload(initialData as any, data, timeSlots);
+      await updateActivity(initialData.id, updatePayload);
+      toast({ message: '체험 수정이 완료되었습니다.', eventType: 'success' });
+    } else {
+      await apiFetch('/activities', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      });
+      toast({ message: '체험 등록이 완료되었습니다.', eventType: 'success' });
+    }
+    router.replace('/myactivities');
   } catch (error) {
-    console.error('❌ 등록 실패:', error)
-    alert('등록 중 오류가 발생했습니다.')
+    const message = error instanceof ApiError
+      ? error.message
+      : mode === 'edit' ? '수정 중 오류가 발생했습니다.' : '등록 중 오류가 발생했습니다.';
+
+    toast({ message, eventType: 'error' });
   }
 }
 
   const onInvalid: SubmitErrorHandler<FormValues> = (errors) => {
-    console.error('❌ Validation errors:', errors);
+    const messages: string[] = [];
+    const seen = new WeakSet<object>();
+
+    const isPlainObject = (val: unknown): val is Record<string, unknown> => {
+      if (val === null || typeof val !== 'object') return false;
+      const proto = Object.getPrototypeOf(val);
+      return proto === Object.prototype || proto === null;
+    };
+
+    const visit = (obj: unknown, depth = 0) => {
+      if (!obj || depth > 6) return; // guard depth
+      if (typeof obj !== 'object') return;
+
+      // Avoid circular refs and non-plain objects
+      if (!Array.isArray(obj) && !isPlainObject(obj)) return;
+
+      const key = obj as object;
+      if (seen.has(key)) return;
+      seen.add(key);
+
+      // FieldError 형태: { message?: string }
+      const maybeMessage = (obj as { message?: unknown }).message;
+      if (typeof maybeMessage === 'string') {
+        messages.push(maybeMessage);
+      }
+
+      if (Array.isArray(obj)) {
+        for (const v of obj) visit(v, depth + 1);
+      } else {
+        for (const [k, v] of Object.entries(obj)) {
+          if (k === 'ref') continue; // skip RHF ref
+          visit(v, depth + 1);
+        }
+      }
+    };
+
+    visit(errors);
+
+    const first = messages.find(Boolean) || '입력값을 확인해 주세요.';
+    toast({ message: first, eventType: 'error' });
   };
 
   const handleAddTimeSlot = () => { setTimeSlots((prev) => [...prev, createEmptyTimeSlot()]); };
@@ -96,6 +179,7 @@ console.log('payload', payload);
         isSubmitting={isSubmitting}
         formRef={formRef}
         handleSubmit={methods.handleSubmit}
+        mode={mode}
         timeSlots={timeSlots}
         onSubmit={onSubmit}
         onInvalid={onInvalid}
@@ -113,6 +197,7 @@ function InnerRegistrationForm({
   handleSubmit,
   onSubmit,
   onInvalid,
+  mode,
   timeSlots,
   onAddTimeSlot,
   onRemoveTimeSlot,
@@ -123,6 +208,7 @@ function InnerRegistrationForm({
   image: bannerImage,
   handleUploadBanner,
   removeImage: removeBanner,
+  isUploading: isBannerUploading,
 } = useBannerImageUpload();
 
   // ✅ 소개 이미지 훅
@@ -130,7 +216,15 @@ function InnerRegistrationForm({
     images: introImages,
     handleUpload: handleUploadIntro,
     removeImage: removeIntro,
+    isUploading: isIntroUploading,
   } = useIntroImageUpload(MAX_IMAGE_COUNT_INTRO);
+
+  const isUploadingAny = Boolean(isBannerUploading || isIntroUploading);
+
+  //모달 훅
+  const router = useRouter();
+  const { formState } = useFormContext();
+  const { guardLeave, dialogRef, onConfirm, onCancel } = useLeaveGuard(formState.isDirty); 
 
   return (
     <form
@@ -156,6 +250,7 @@ function InnerRegistrationForm({
         description="최대 1장까지 등록할 수 있어요."
         images={bannerImage ? [bannerImage] : []}
         maxCount={MAX_IMAGE_COUNT_BANNER}
+        inputId="banner-image-upload"
         onUpload={handleUploadBanner}
         onRemove={() => { removeBanner(); }}
       />
@@ -166,15 +261,35 @@ function InnerRegistrationForm({
         description="최대 4장까지 등록할 수 있어요."
         images={introImages}
         maxCount={MAX_IMAGE_COUNT_INTRO}
+        inputId="intro-images-upload"
         onUpload={handleUploadIntro}
         onRemove={removeIntro}
       />
 
-      <div className="mt-8 flex justify-end">
-        <Button variant="primary" classNames="w-full md:w-1/2">
-          {isSubmitting ? '등록 중...' : '체험 등록하기'}
+      <div className="mt-8 flex justify-center">
+        <Button
+          type="submit"
+          variant="primary"
+          disabled={isUploadingAny || isSubmitting}
+          classNames="w-[120px] !text-white text-14 font-bold md:text-14"
+        >
+          {isUploadingAny
+            ? '업로드 중...'
+            : isSubmitting
+            ? (mode === 'edit' ? '수정 중...' : '등록 중...')
+            : (mode === 'edit' ? '수정하기' : '등록하기')}
         </Button>
       </div>
+
+        <ModalContainer dialogRef={dialogRef} onClose={onCancel}>
+          <ClientConfirmModal
+            message={`저장되지 않았습니다.\n 정말 뒤로 가시겠습니까?`}
+            cancelText="아니오"
+            confirmText="네"
+            onCancel={onCancel}
+            onConfirm={onConfirm}
+          />
+        </ModalContainer>
     </form>
   );
 }

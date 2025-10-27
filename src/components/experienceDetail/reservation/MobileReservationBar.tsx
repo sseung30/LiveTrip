@@ -7,7 +7,10 @@ import { useDialog } from '@/components/dialog/useDialog';
 import Calendar from '@/components/experienceDetail/reservation/Calendar';
 import ParticipantCounter from '@/components/experienceDetail/reservation/ParticipantCounter';
 import TimeSelector from '@/components/experienceDetail/reservation/TimeSelector';
-import type { ExperienceDetail } from '@/components/experienceDetail/type';
+import type {
+  ExperienceDetail,
+  Schedule,
+} from '@/components/experienceDetail/type';
 
 interface MobileReservationBarProps {
   experience: ExperienceDetail;
@@ -17,6 +20,11 @@ interface MobileReservationBarProps {
   onDateChange: (date: Date | null) => void;
   onTimeChange: (time: string | null) => void;
   onParticipantChange: (count: number) => void;
+  availableDates: string[];
+  filteredSchedules: Schedule[];
+  onReservation: () => void;
+  isLoading: boolean;
+  onMonthChange: (year: number, month: number) => void;
 }
 
 export default function MobileReservationBar({
@@ -27,6 +35,11 @@ export default function MobileReservationBar({
   onDateChange,
   onTimeChange,
   onParticipantChange,
+  availableDates,
+  filteredSchedules,
+  onReservation,
+  isLoading,
+  onMonthChange,
 }: MobileReservationBarProps) {
   const { dialogRef, openDialog, hideDialog, isOpen } = useDialog();
   const [step, setStep] = useState<'calendar' | 'participant'>('calendar');
@@ -95,14 +108,15 @@ export default function MobileReservationBar({
 
           {/* 예약하기 버튼 */}
           <button
-            className={`w-full rounded-lg py-3 font-semibold text-white transition-colors ${
+            disabled={isLoading}
+            className={`w-full rounded-lg py-3 font-semibold text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
               selectedDate && selectedTime
                 ? 'bg-primary-500 hover:bg-primary-600'
                 : 'bg-gray-400 hover:bg-gray-500'
             }`}
-            onClick={openDialog}
+            onClick={selectedDate && selectedTime ? onReservation : openDialog}
           >
-            예약하기
+            {isLoading ? '예약 중...' : '예약하기'}
           </button>
         </div>
       </div>
@@ -126,14 +140,16 @@ export default function MobileReservationBar({
                       <div className='max-h-[40vh] overflow-y-auto'>
                         <Calendar
                           selectedDate={selectedDate}
+                          availableDates={availableDates}
                           onDateChange={onDateChange}
+                          onMonthChange={onMonthChange}
                         />
                       </div>
 
                       <div className='p-4'>
                         {selectedDate ? (
                           <TimeSelector
-                            schedules={experience.schedules}
+                            schedules={filteredSchedules}
                             selectedTime={selectedTime}
                             onTimeChange={onTimeChange}
                           />
@@ -215,7 +231,9 @@ export default function MobileReservationBar({
                   <div className='max-h-[50vh] flex-1 overflow-y-auto'>
                     <Calendar
                       selectedDate={selectedDate}
+                      availableDates={availableDates}
                       onDateChange={onDateChange}
+                      onMonthChange={onMonthChange}
                     />
                   </div>
 
@@ -224,7 +242,7 @@ export default function MobileReservationBar({
                     <div>
                       {selectedDate ? (
                         <TimeSelector
-                          schedules={experience.schedules}
+                          schedules={filteredSchedules}
                           selectedTime={selectedTime}
                           onTimeChange={onTimeChange}
                         />
