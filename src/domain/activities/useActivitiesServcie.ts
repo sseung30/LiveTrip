@@ -29,7 +29,7 @@ export function useInfiniteActivities({
     Activity
   >({
     queryKey: queryKeys.all(category, sort),
-    initialCursor: undefined,
+    initialCursor: 0,
     buildUrl: (cursorId) => {
       const queryString = createQueryString({
         category,
@@ -42,7 +42,7 @@ export function useInfiniteActivities({
 
       return `${endPoint}${queryString}`;
     },
-    selectNextCursor: (page) => page.cursorId,
+    selectNextCursor: (page) => page.cursorId ?? undefined,
     selectItems: (page) => page.activities,
   });
 
