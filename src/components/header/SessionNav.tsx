@@ -5,25 +5,58 @@ import { useSession } from 'next-auth/react';
 import bellDefault from '@/components/header/asset/bell-default.svg';
 import defaultProfileImg from '@/components/header/asset/default-profile-img.svg';
 import LogoutButton from '@/components/header/LogoutButton';
+import { useEffect, useRef, useState } from 'react';
+import Notification from '@/components/notification/Notification';
 
 export default function SessionNav() {
   const { data, status } = useSession();
   const isAuthenticated = status === 'authenticated';
+
+  const [showNotification, setShowNotification] = useState(false);
+  const bellRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (!showNotification) return;
+      const target = e.target as Node;
+      if (bellRef.current && !bellRef.current.contains(target)) {
+        setShowNotification(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showNotification]);
 
   return (
     <nav className='flex items-center space-x-3 pl-4 text-sm text-gray-950'>
       {isAuthenticated ? (
         // ⭐️ 로그인 상태
         <div className='flex items-center space-x-4'>
-          <button className='items-center focus:outline-none'>
-            <Image
-              src={bellDefault}
-              alt='Notifications'
-              width={24}
-              height={24}
-              className='h-6 w-6'
-            />
-          </button>
+          {/* Bell + Notification popover */}
+          <div ref={bellRef} className='relative'>
+            <button
+              type='button'
+              aria-label='알림 열기'
+              className='items-center focus:outline-none'
+              onClick={() => setShowNotification((v) => !v)}
+            >
+              <Image
+                src={bellDefault}
+                alt='Notifications'
+                width={24}
+                height={24}
+                className='h-6 w-6'
+              />
+            </button>
+            {showNotification && (
+              <div className='absolute right-0 top-full mt-2 z-50'>
+                {/*
+                  Panel is positioned so the bell sits at the panel's top-right.
+                */}
+                <Notification onClose={() => setShowNotification(false)} />
+              </div>
+            )}
+          </div>
           <div className='h-4 w-px bg-gray-100' /> {/* 구분선 */}
           <div
             id='profile'
