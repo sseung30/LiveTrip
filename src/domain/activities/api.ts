@@ -1,22 +1,29 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { apiFetch } from '@/api/api';
+import createQueryString from '@/api/create-query-string';
 import type {
   getAllActivitiesParams,
   getAllActivitiesResponse,
   Activity,
 } from '@/domain/activities/type';
 
+const _ALL_ACTIVITIES_ENDPOINT = '/activities?';
+
+export const getAllActivitiesWithCache = async (
+  params: getAllActivitiesParams
+): Promise<getAllActivitiesResponse> => {
+  const queryString = createQueryString(params);
+
+  return apiFetch(`${_ALL_ACTIVITIES_ENDPOINT}${queryString}`, {
+    next: { revalidate: 10 },
+  });
+};
 export const getAllActivities = async (
   params: getAllActivitiesParams
 ): Promise<getAllActivitiesResponse> => {
-  const endpoint = '/activities?';
-  const queryString = new URLSearchParams(
-    params as unknown as Record<string, string>
-  );
+  const queryString = createQueryString(params);
 
-  queryString.append('method', 'cursor');
-
-  return apiFetch(`${endpoint}${queryString}`);
+  return apiFetch(`${_ALL_ACTIVITIES_ENDPOINT}${queryString}`);
 };
 export const getDetailActivity = () => {};
 export const getActivitiyAvailableSchedule = () => {};

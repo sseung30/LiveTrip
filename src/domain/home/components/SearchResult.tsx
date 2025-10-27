@@ -1,16 +1,18 @@
-'use client';
-
-import { useSearchParams } from 'next/navigation';
+import { getAllActivitiesWithCache } from '@/domain/activities/api';
+import type { getAllActivitiesParams } from '@/domain/activities/type';
 import GridCardList from '@/domain/home/components/GridCardList';
-import { getActivityList } from '@/domain/home/mock';
 
 interface SearchResultProps {
   q: string;
 }
-export default function SearchResult({ q }: SearchResultProps) {
-  const params = useSearchParams();
-  const { activities } = getActivityList();
-  const count = 200;
+export default async function SearchResult({ q }: SearchResultProps) {
+  const { activities, totalCount } = await getAllActivitiesWithCache({
+    sort: 'latest',
+    keyword: q,
+    page: 1,
+    size: 8,
+    method: 'cursor',
+  } as getAllActivitiesParams);
 
   return (
     <>
@@ -21,7 +23,7 @@ export default function SearchResult({ q }: SearchResultProps) {
             (으)로 검색한 결과입니다.
           </h2>
           <span className='text-14 md:text-18 font-medium text-gray-700'>
-            {count}개의 결과
+            {totalCount}개의 결과
           </span>
         </div>
         <GridCardList activities={activities} />

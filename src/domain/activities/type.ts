@@ -1,11 +1,11 @@
-type activityCategory =
+export type activityCategory =
   | '문화 · 예술'
   | '식음료'
   | '스포츠'
   | '투어'
   | '관광'
   | '웰빙';
-type sortType = 'most_reviewed' | 'price_asc' | 'price_desc' | 'latest';
+export type sortType = 'most_reviewed' | 'price_asc' | 'price_desc' | 'latest';
 
 export interface Activity {
   id: number;
@@ -29,6 +29,7 @@ export interface getAllActivitiesParams {
   sort?: sortType;
   page?: number;
   size?: number;
+  method: 'cursor' | 'offset';
 }
 export interface getAllActivitiesResponse {
   cursorId: number | null;

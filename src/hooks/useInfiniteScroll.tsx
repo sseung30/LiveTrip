@@ -16,7 +16,7 @@ export interface UseInfiniteOptions<TPage, TItem> {
   /**
    * 페이지의 전체 URL
    */
-  initialCursor: number;
+  initialCursor: number | undefined;
 
   buildUrl: (cursor: number) => string;
 
@@ -29,7 +29,7 @@ export interface UseInfiniteOptions<TPage, TItem> {
   /**
    * 다음 페이지의 커서를 반환 (없으면 undefined)
    */
-  selectNextCursor?: (page: TPage) => number | undefined;
+  selectNextCursor?: (page: TPage) => number | undefined | null;
 
   /** 총 아이템 개수 */
   selectTotalCount?: (firstPage: TPage | undefined) => number;
@@ -63,7 +63,7 @@ export function useInfiniteByCursor<TPage, TItem>({
     number
   >({
     queryKey,
-    initialPageParam: initialCursor,
+    initialPageParam: initialCursor as number,
     queryFn: async ({ pageParam }) => {
       const url = buildUrl(pageParam);
 

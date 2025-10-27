@@ -2,13 +2,20 @@ import {
   getActivitiyAvailableSchedule,
   getActivitiyReviews,
   getAllActivities,
+  getAllActivitiesWithCache,
   getDetailActivity,
 } from '@/domain/activities/api';
-import type { getAllActivitiesParams } from '@/domain/activities/type';
+import type {
+  activityCategory,
+  getAllActivitiesParams,
+  sortType,
+} from '@/domain/activities/type';
 
-const queryKeys = {
-  all: ['activities'] as const,
-  detail: (activityId: number) => [...queryKeys.all, activityId] as const,
+export const queryKeys = {
+  all: (category: activityCategory | undefined, sort: sortType | undefined) => {
+    return ['activities', category, sort] as const;
+  },
+  detail: (activityId: number) => ['activity', activityId] as const,
   schedules: (activityId: number) => {
     return [...queryKeys.detail(activityId), 'schedules'] as const;
   },
@@ -16,11 +23,14 @@ const queryKeys = {
     [...queryKeys.detail(activityId), 'reviews'] as const,
 };
 
-const queryOptions = {
+export const queryOptions = {
   all: (params: getAllActivitiesParams) => {
+    const { category, sort, size, method } = params;
+
     return {
-      queryKey: queryKeys.all,
-      queryFn: () => getAllActivities(params),
+      queryKey: queryKeys.all(category, sort || 'latest'),
+      queryFn: () =>
+        getAllActivitiesWithCache({ category, sort, size, method }),
     };
   },
   detail: (activityId: number) => {
@@ -48,5 +58,3 @@ const queryOptions = {
     };
   },
 };
-
-export default queryOptions;
