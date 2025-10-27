@@ -5,19 +5,24 @@ import Button from '@/components/button/Button';
 import { toast } from '@/components/toast';
 import Input from '@/components/ui/Input/Input';
 import { useProfileEditMutate } from '@/domain/auth/queries/useProfileEditMutate';
-import type {
-  ProfileEditFormInputs,
-  ProfileEditFormProps,
-} from '@/domain/profile/type';
+import type { ProfileEditFormInputs } from '@/domain/profile/type';
 import { SignUpFormRegisterKey as profileFormRegisterKey } from '@/form/auth/register-key';
 import ProfileImageInput from '@/domain/profile/components/ProfileImageInput';
 import { useProfileImageCreateMutate } from '@/domain/auth/queries/useProfileImageCreateMutate';
-
+import { useQueryClient } from '@tanstack/react-query';
+import { queryKeys } from '@/domain/auth/queryOptions';
+interface ProfileEditFormProps {
+  nickname: string;
+  email: string;
+  profileImageUrl: string | null;
+}
 export default function ProfileEditForm({
   nickname,
   email,
   profileImageUrl,
 }: ProfileEditFormProps) {
+  const queryClient = useQueryClient();
+
   const {
     register,
     handleSubmit,
@@ -29,8 +34,10 @@ export default function ProfileEditForm({
       email,
     },
   });
-  const { mutateAsync: profileEditMutateAsync, isPending } =
-    useProfileEditMutate();
+  const {
+    mutateAsync: profileEditMutateAsync,
+    isPending: isProfileEditPending,
+  } = useProfileEditMutate();
   const {
     mutateAsync: profileImageCreateMutateAsync,
     isPending: isImagePending,
@@ -63,6 +70,7 @@ export default function ProfileEditForm({
         message: '프로필 정보가 변경 되었습니다',
         eventType: 'success',
       });
+      queryClient.invalidateQueries({ queryKey: queryKeys.me() });
     } catch (error) {
       if (error instanceof ApiError) {
         if (error.status === 400) {
@@ -73,16 +81,15 @@ export default function ProfileEditForm({
       }
     }
   };
-
   return (
     <form
       className='mb:gap-6 flex w-full flex-col gap-5'
       onSubmit={handleSubmit(onSubmit)}
     >
       <ProfileImageInput
-        isPending={isPending || isImagePending}
+        isPending={isImagePending || isProfileEditPending}
         register={register}
-        profileImageUrl={profileImageUrl}
+        profileImageUrl={profileImageUrl || ''}
       />
       <Input
         label='닉네임'

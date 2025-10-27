@@ -1,9 +1,8 @@
-import { auth } from '@/app/api/auth/[...nextauth]/route';
+import { getUserInfo } from '@/domain/auth/api';
 import ProfileEditForm from '@/domain/profile/components/ProfileEditForm';
 
 export default async function ProfilePage() {
-  const session = await auth();
-
+  const { nickname, email, profileImageUrl } = await getUserInfo();
   return (
     <>
       <main className='w-full'>
@@ -14,9 +13,9 @@ export default async function ProfilePage() {
           </div>
         </div>
         <ProfileEditForm
-          nickname={session?.user.nickname || ''}
-          email={session?.user.email || ''}
-          profileImageUrl={session?.user.profileImageUrl || null}
+          nickname={nickname}
+          email={email}
+          profileImageUrl={profileImageUrl}
         />
       </main>
     </>
