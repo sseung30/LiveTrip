@@ -1,7 +1,5 @@
 import { Suspense } from 'react';
-import { getAllActivitiesWithCache } from '@/domain/activities/api';
 import { queryOptions } from '@/domain/activities/queryOptions';
-import type { getAllActivitiesParams } from '@/domain/activities/type';
 import AllActivitySection from '@/domain/home/components/all-activity-section/AllActivitySection';
 import PopularActivitySection from '@/domain/home/components/popular-activity-section/PopularActivitySection';
 import ToastLayer from '@/domain/home/components/ToastLayer';
@@ -26,17 +24,10 @@ export default async function Home({
     initialPageParam: undefined,
   });
 
-  const { activities } = await getAllActivitiesWithCache({
-    sort: 'most_reviewed',
-    page: 1,
-    size: 16,
-    method: 'offset',
-  } as getAllActivitiesParams);
-
   return (
     <>
       <div className='flex-center w-full flex-col gap-20'>
-        <PopularActivitySection activities={activities} />
+        <PopularActivitySection />
         <Hydrate state={hydratedInfiniteActivities}>
           <AllActivitySection sort={sort} category={category} />
         </Hydrate>

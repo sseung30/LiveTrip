@@ -2,7 +2,7 @@
 import { useRef } from 'react';
 import type { Activity } from '@/domain/activities/type';
 import Card from '@/domain/home/components/Card';
-import ArrowButtons from '@/domain/home/components/popular-activity-section/ArrowButtons';
+import ArrowButtons from '@/domain/home/components/popular-activity-section/CarouselButtons';
 
 export default function PopularActivityCarouselWrapper({
   activities,

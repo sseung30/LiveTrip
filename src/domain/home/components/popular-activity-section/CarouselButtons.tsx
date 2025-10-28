@@ -4,7 +4,7 @@ import {
   RightArrowButton,
 } from '@/components/button/ArrowButton';
 
-export default function ArrowButtons({
+export default function CarouselButtons({
   pageSize,
   sliderRef,
 }: {
@@ -15,9 +15,6 @@ export default function ArrowButtons({
   const hasPrevPage = page > 1;
   const hasNextPage = page < pageSize;
   const getScrollPosition = (pageNumber: number) => {
-    /**
-     * 1페이지 -> 0번 카드, 2페이지 -> 4번 카드...
-     */
     const cardIndex = (pageNumber - 1) * 4;
     const cards = sliderRef.current?.children;
 
@@ -34,7 +31,6 @@ export default function ArrowButtons({
       const scrollPosition = getScrollPosition(page - 1);
 
       setPage((prev) => prev - 1);
-      console.log(scrollPosition);
       sliderRef.current.scrollTo({ left: scrollPosition, behavior: 'smooth' });
     }
   };
