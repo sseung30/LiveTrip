@@ -5,4 +5,5 @@ export interface ActivityCardProps {
   reviewCount: number;
   price: number;
   bannerImageUrl: string;
+  onDelete?: () => void;
 }
