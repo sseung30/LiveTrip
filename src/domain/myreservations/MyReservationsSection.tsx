@@ -1,6 +1,6 @@
 'use client';
 import Image from 'next/image';
-import { useActionState, useEffect, useState } from 'react';
+import { useActionState, useEffect, useMemo, useRef, useState } from 'react';
 import { apiFetch } from '@/api/api';
 import Button from '@/components/button/Button';
 import CardList from '@/components/cardList/CardList';
@@ -12,11 +12,8 @@ import {
 import { toast } from '@/components/toast';
 import { ReviewModalContents } from '@/domain/myreservations/components/ReviewModalContents';
 import type { MyReservations, Reservation } from '@/domain/myreservations/type';
-
-interface MyReservationsSectionProps {
-  hasReservations: boolean;
-  reservations: Reservation[];
-}
+import { useInfiniteByCursor } from '@/hooks/useInfiniteScroll';
+import useIntersectionObserver from '@/hooks/useIntersectionObserver';
 
 const STATUSES = [
   '예약 신청',
@@ -25,6 +22,14 @@ const STATUSES = [
   '예약 거절',
   '체험 완료',
 ];
+
+const STATUS_OBJ = {
+  '예약 신청': 'pending',
+  '예약 완료': 'confirmed',
+  '예약 취소': 'canceled',
+  '예약 거절': 'declined',
+  '체험 완료': 'completed',
+};
 
 const deleteAction = async (
   prevState: { state: string },
@@ -60,10 +65,8 @@ const ReviewModalAction = async () => {
   return { state: 'success' };
 };
 
-export default function MyReservationsSection({
-  hasReservations,
-  reservations,
-}: MyReservationsSectionProps) {
+export default function MyReservationsSection() {
+  const pageSize = 5;
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
 
   // #68 후기 모달 컴포넌트 하나만 배치
@@ -76,8 +79,10 @@ export default function MyReservationsSection({
     });
 
   const reviewDialog = useDialog();
-  const [reviewModalState, reviewModalFormAction, reviewModalIsPending] =
-    useActionState(ReviewModalAction, { state: ' ' });
+  const [, reviewModalFormAction, reviewModalIsPending] = useActionState(
+    ReviewModalAction,
+    { state: ' ' }
+  );
 
   const [rating, setRating] = useState<number>(0);
   const [inputText, setInputText] = useState<string>();
@@ -87,22 +92,6 @@ export default function MyReservationsSection({
   };
 
   const [targetId, setTargetId] = useState<number | null>(null);
-
-  const [list, setList] = useState<Reservation[]>(reservations);
-
-  useEffect(() => {
-    if (deleteModalState.state === 'success') {
-      (async () => {
-        const fresh = await apiFetch<MyReservations>('/my-reservations', {
-          method: 'GET',
-        });
-
-        setList(fresh.reservations);
-        // state 변경
-        deleteModalState.state = 'idle';
-      })();
-    }
-  }, [deleteModalState]);
 
   const onCancelReservation = (id: number) => {
     setTargetId(id);
@@ -124,6 +113,74 @@ export default function MyReservationsSection({
     setRating(0);
     setInputText('');
   };
+
+  const [version, setVersion] = useState(0);
+  const {
+    items: reservationList,
+    totalCount,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteByCursor<MyReservations, Reservation>({
+    queryKey: ['myReservations', version],
+    initialCursor: 0,
+    buildUrl: (cursor) => {
+      const url =
+        cursor !== 0
+          ? `/my-reservations?cursorId=${cursor}&size=${pageSize}`
+          : `/my-reservations?size=${pageSize}`;
+
+      return url;
+    },
+    selectItems: (view) => view.reservations,
+    selectNextCursor: (view) => {
+      const list = view.reservations;
+
+      if (list.length < pageSize) {
+        return undefined;
+      }
+
+      return list[list.length - 1]?.id;
+    },
+    selectTotalCount: (first) => first?.totalCount ?? 0,
+    pageSize,
+  });
+
+  const hasReservations = Boolean(totalCount);
+
+  useEffect(() => {
+    if (deleteModalState.state !== 'success') {
+      return;
+    }
+    setVersion((v) => v + 1);
+  }, [deleteModalState]);
+
+  const [page, setPage] = useState(0);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  const { loader } = useIntersectionObserver({
+    loading: isFetchingNextPage,
+    hasMore: hasNextPage,
+    setPage,
+    rootRef: containerRef,
+    rootMargin: '0px 0px 0px 0px',
+    threshold: 0.1,
+  });
+
+  useEffect(() => {
+    if (page > 0) {
+      fetchNextPage();
+    }
+  }, [page, fetchNextPage]);
+
+  const filteredReservations = useMemo(() => {
+    if (!selectedStatus) {
+      return reservationList;
+    }
+    const code = STATUS_OBJ[selectedStatus as keyof typeof STATUS_OBJ];
+
+    return reservationList.filter((r) => r.status === code);
+  }, [reservationList, selectedStatus]);
 
   return (
     <>
@@ -161,7 +218,7 @@ export default function MyReservationsSection({
         )}
       </ModalContainer>
 
-      <section className='pb-30'>
+      <section className='h-200 overflow-auto [&::-webkit-scrollbar]:hidden'>
         {/* 필터 버튼 랜더링 */}
         {hasReservations && (
           <div role='group' className='mb-3 flex gap-2 md:mb-7.5'>
@@ -184,13 +241,12 @@ export default function MyReservationsSection({
             })}
           </div>
         )}
-        <div className='flex h-full flex-col gap-6 overflow-y-auto'>
+        <div
+          ref={containerRef}
+          className='flex h-full flex-col gap-6 overflow-y-auto [&::-webkit-scrollbar]:hidden'
+        >
           {hasReservations &&
-            list.map((r: Reservation) => {
-              // 여기서 list.map 쓰면 에러남 is not function
-              // 처음에 응답으로 오는 건 배열, 객체 안의,... 객체 형태로...
-              // 객체 안에는, map 이 없음
-
+            filteredReservations.map((r: Reservation) => {
               return (
                 <div key={r.id}>
                   <CardList
@@ -215,6 +271,8 @@ export default function MyReservationsSection({
                 </div>
               );
             })}
+          {hasReservations && hasNextPage && <div ref={loader} />}
+
           {!hasReservations && (
             <div className='mt-2.5 flex flex-col'>
               <div className='flex items-center justify-center'>
