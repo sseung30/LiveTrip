@@ -1,21 +1,8 @@
+import { Activity } from '@/domain/activities/type';
 import Card from '@/domain/home/components/Card';
 
-interface activity {
-  id: number;
-  userId: number;
-  title: string;
-  description: string;
-  category: string;
-  price: number;
-  address: string;
-  bannerImageUrl: string;
-  rating: number;
-  reviewCount: number;
-  createdAt: string;
-  updatedAt: string;
-}
 interface GridCardListProps {
-  activities: activity[];
+  activities: Activity[];
 }
 export default function GridCardList({ activities }: GridCardListProps) {
   return (
@@ -23,10 +10,9 @@ export default function GridCardList({ activities }: GridCardListProps) {
       {activities.map((activity) => {
         return (
           <Card
-            id={activity.id}
-            src={activity.bannerImageUrl}
-            title={activity.title}
-            key={crypto.randomUUID()}
+            activity={activity}
+            alt={activity.title}
+            key={`card-${crypto.randomUUID()}`}
             imageClassNames='aspect-1/1'
           />
         );
