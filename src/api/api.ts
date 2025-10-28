@@ -55,7 +55,8 @@ export async function apiFetch<T>(
             message = obj.error;
           } else if (Array.isArray(obj.errors) && obj.errors.length > 0) {
             const first = obj.errors[0] as Record<string, unknown>;
-            if (typeof first?.message === 'string') message = first.message as string;
+            if (typeof first?.message === 'string')
+              message = first.message as string;
           } else {
             // 마지막 수단: JSON을 문자열로
             try {

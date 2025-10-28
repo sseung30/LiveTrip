@@ -1,4 +1,4 @@
-import { ApiError, apiFetch } from '@/api/api';
+import { ApiError, apiFetch, BASE_URL } from '@/api/api';
 import {
   type NewTokenResponse,
   newTokenResponseSchema,
@@ -12,24 +12,17 @@ import {
   type SignUpResponse,
   type UserInfo,
 } from '@/domain/auth/type';
-import {
-  NEW_TOKEN_ENDPOINT,
-  SIGNIN_ENDPOINT,
-  SIGNUP_ENDPOINT,
-  USER_INFO_ENDPINT,
-} from '@/domain/auth/util';
-
-const _PROFILE_EDIT_ENDPOINT = '/users/me';
-const _PROFILE_IMAGE_CREATE_ENDPOINT = '/users/me/image';
+import { endpoint } from '@/domain/auth/util';
+import { getAuth } from '@/utils/getAuth';
 
 export async function getUserInfo(): Promise<UserInfo> {
-  return await apiFetch(USER_INFO_ENDPINT);
+  return await apiFetch(`${endpoint.USER_INFO}`);
 }
 export async function getNewToken(
   refreshToken: string
 ): Promise<NewTokenResponse> {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}${NEW_TOKEN_ENDPOINT}`,
+    `${process.env.NEXT_PUBLIC_API_URL}${endpoint.NEW_TOKEN}`,
     {
       method: 'POST',
       headers: {
@@ -51,7 +44,7 @@ export async function getNewToken(
 export const mutateSignin = async (
   signinInputs: SigninInputs
 ): Promise<SignInResponse> => {
-  const res = await apiFetch<SignInResponse>(SIGNIN_ENDPOINT, {
+  const res = await apiFetch<SignInResponse>(endpoint.SIGNIN, {
     method: 'POST',
     body: JSON.stringify({
       ...signinInputs,
@@ -63,7 +56,7 @@ export const mutateSignin = async (
 export const mutateSignup = async (
   signupInputs: SignupInputs
 ): Promise<SignInResponse> => {
-  await apiFetch<SignUpResponse>(SIGNUP_ENDPOINT, {
+  await apiFetch<SignUpResponse>(endpoint.SIGNUP, {
     method: 'POST',
     body: JSON.stringify({
       ...signupInputs,
@@ -81,19 +74,16 @@ export const mutateSignup = async (
 export const mutateKaKaoSignIn = async (
   token: string
 ): Promise<SignInResponse> => {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/oauth/sign-in/kakao`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        redirectUri: `${process.env.NEXT_PUBLIC_KAKAO_SIGNIN_CALLBACK_URI}`,
-        token,
-      }),
-    }
-  );
+  const res = await fetch(`${BASE_URL}${endpoint.KAKAO_SIGNIN}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      redirectUri: `${process.env.NEXT_PUBLIC_KAKAO_SIGNIN_CALLBACK_URI}`,
+      token,
+    }),
+  });
 
   if (!res.ok && res.status === 403) {
     throw new ApiError(403, '카카오 로그인: 회원 정보가 없습니다');
@@ -110,20 +100,17 @@ export const mutateKaKaoSignUp = async ({
   nickname: string;
   token: string;
 }): Promise<SignInResponse> => {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/oauth/sign-up/kakao`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        nickname,
-        redirectUri: `${process.env.NEXT_PUBLIC_KAKAO_SIGNUP_CALLBACK_URI}`,
-        token,
-      }),
-    }
-  );
+  const res = await fetch(`${BASE_URL}${endpoint.KAKAO_SIGNUP}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      nickname,
+      redirectUri: `${process.env.NEXT_PUBLIC_KAKAO_SIGNUP_CALLBACK_URI}`,
+      token,
+    }),
+  });
 
   if (!res.ok && res.status === 400) {
     throw new ApiError(400, '카카오 회원가입: 이미 등록된 사용자입니다');
@@ -136,7 +123,7 @@ export const mutateKaKaoSignUp = async ({
 export const mutateProfileEdit = async (
   profileEditRequest: ProfileEditRequest
 ): Promise<ProfileEditResponse> => {
-  const res = await apiFetch<ProfileEditResponse>(_PROFILE_EDIT_ENDPOINT, {
+  const res = await apiFetch<ProfileEditResponse>(endpoint.PROFILE_EDIT, {
     method: 'PATCH',
     body: JSON.stringify({
       ...profileEditRequest,
@@ -152,7 +139,7 @@ export const mutateProfileImageCreate = async (
 
   formData.append('image', imageFile);
   const res = await apiFetch<ProfileImageCreateResponse>(
-    _PROFILE_IMAGE_CREATE_ENDPOINT,
+    endpoint.PROFILE_IMAGE_CREATE,
     {
       method: 'POST',
       body: formData,

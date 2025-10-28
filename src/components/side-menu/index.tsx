@@ -3,12 +3,12 @@
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
-import ProfileImageUploader from '@/components/side-menu/ProfileImageUploader';
 import type {
   MenuItem,
   MenuItemType,
   SideMenuProps,
 } from '@/components/side-menu/type';
+import { cx } from '@/utils/cx';
 
 const MENU_ITEMS: MenuItem[] = [
   {
@@ -38,38 +38,22 @@ const MENU_ITEMS: MenuItem[] = [
 ];
 
 export const SIZE_CONFIG = {
-  large: {
-    container: { width: '291px', height: '450px' },
-    profile: { size: 120, iconSize: 16, editSize: 32 },
-    spacing: {
-      padding: 'pt-6 pb-6',
-      menuPadding: 'px-[15px]',
-      gap: 'gap-4 p-4',
-      spaceY: 'space-y-3',
-      textSize: 'text-base',
-    },
-  },
-  small: {
-    container: { width: '178px', height: '342px' },
-    profile: { size: 70, iconSize: 12, editSize: 24 },
-    spacing: {
-      padding: 'pt-4 pb-4',
-      menuPadding: 'px-[12px]',
-      gap: 'gap-3 p-4',
-      spaceY: 'space-y-2',
-      textSize: 'text-sm',
-    },
+  container: 'w-[11.12rem] xl:w-[18.187rem]',
+  iconDefaultSize: 16,
+  iconSize: 'w-3 h-4 xl:w-4 xl:h-4',
+  spacing: {
+    padding: 'py-4 xl:py-6',
+    menuPadding: 'px-3 py-4 xl:px-4 xl:py-6',
+    gap: 'gap-3 p-4',
+    spaceY: 'space-y-2 xl:space-y-3',
+    textSize: 'text-sm xl:text-base',
   },
 } as const;
 
 const PRIMARY_FILTER =
   'brightness(0) saturate(100%) invert(43%) sepia(96%) saturate(1352%) hue-rotate(188deg) brightness(119%) contrast(119%)';
 
-export default function SideMenu({
-  size,
-  className = '',
-}: SideMenuProps) {
-  const config = SIZE_CONFIG[size];
+export default function SideMenu({ className = '' }: SideMenuProps) {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -112,17 +96,15 @@ export default function SideMenu({
 
   return (
     <div
-      className={`rounded-lg bg-white shadow-sm ${className}`}
-      style={{
-        width: config.container.width,
-        height: config.container.height,
-      }}
+      className={cx(
+        `rounded-lg bg-white shadow-sm`,
+        SIZE_CONFIG.container,
+        className
+      )}
     >
-      <ProfileImageUploader size={size} />
-
       {/* 메뉴 항목들 */}
-      <div className={config.spacing.menuPadding}>
-        <div className={config.spacing.spaceY}>
+      <div className={SIZE_CONFIG.spacing.menuPadding}>
+        <div className={SIZE_CONFIG.spacing.spaceY}>
           {MENU_ITEMS.map((item) => {
             const isActive = item.id === activeItem;
 
@@ -131,7 +113,7 @@ export default function SideMenu({
                 key={item.id}
                 tabIndex={0}
                 role='button'
-                className={`flex cursor-pointer items-center rounded-2xl transition-colors ${config.spacing.gap} ${
+                className={`flex cursor-pointer items-center rounded-2xl transition-colors ${SIZE_CONFIG.spacing.gap} ${
                   isActive ? 'bg-primary-100' : 'hover:bg-gray-50'
                 }`}
                 onClick={() => {
@@ -144,13 +126,16 @@ export default function SideMenu({
                 <Image
                   src={item.iconPath}
                   alt={item.label}
-                  width={config.profile.iconSize + 8}
-                  height={config.profile.iconSize + 8}
-                  className={isActive ? 'brightness-0 saturate-100' : ''}
+                  width={SIZE_CONFIG.iconDefaultSize + 8}
+                  height={SIZE_CONFIG.iconDefaultSize + 8}
+                  className={cx(
+                    SIZE_CONFIG.iconSize,
+                    isActive ? 'brightness-0 saturate-100' : ''
+                  )}
                   style={isActive ? { filter: PRIMARY_FILTER } : {}}
                 />
                 <span
-                  className={`font-medium ${config.spacing.textSize} ${isActive ? 'text-gray-950' : 'text-gray-600'}`}
+                  className={`font-medium ${SIZE_CONFIG.spacing.textSize} ${isActive ? 'text-gray-950' : 'text-gray-600'}`}
                 >
                   {item.label}
                 </span>

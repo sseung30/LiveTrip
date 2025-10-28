@@ -1,16 +1,18 @@
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useSession } from 'next-auth/react';
 import bellDefault from '@/components/header/asset/bell-default.svg';
 import defaultProfileImg from '@/components/header/asset/default-profile-img.svg';
 import LogoutButton from '@/components/header/LogoutButton';
 import { useEffect, useRef, useState } from 'react';
 import Notification from '@/components/notification/Notification';
+import { useUserInfo } from '@/domain/auth/queries/useUserInfo';
+import Spinner from '@/components/ui/Spinner';
 
 export default function SessionNav() {
-  const { data, status } = useSession();
-  const isAuthenticated = status === 'authenticated';
+  const { data, isPending, error } = useUserInfo();
+  const isKakao = data?.email?.split('@')[1].includes('kakao.com');
+  const type = isKakao ? 'kakao' : 'normal';
 
   const [showNotification, setShowNotification] = useState(false);
   const bellRef = useRef<HTMLDivElement | null>(null);
@@ -27,9 +29,10 @@ export default function SessionNav() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [showNotification]);
 
+  if (isPending) return <Spinner size='sm' />;
   return (
     <nav className='flex items-center space-x-3 pl-4 text-sm text-gray-950'>
-      {isAuthenticated ? (
+      {!error && data ? (
         // ⭐️ 로그인 상태
         <div className='flex items-center space-x-4'>
           {/* Bell + Notification popover */}
@@ -49,7 +52,7 @@ export default function SessionNav() {
               />
             </button>
             {showNotification && (
-              <div className='absolute right-0 top-full mt-2 z-50'>
+              <div className='absolute top-full right-0 z-50 mt-2'>
                 {/*
                   Panel is positioned so the bell sits at the panel's top-right.
                 */}
@@ -63,20 +66,19 @@ export default function SessionNav() {
             className='flex cursor-pointer items-center space-x-2 py-8'
           >
             <Image
-              src={data.user.profileImageUrl || defaultProfileImg}
+              src={data.profileImageUrl || defaultProfileImg}
               alt='Profile'
               width={30}
               height={30}
               className='h-[30px] w-[30px] rounded-full object-cover'
             />
             <Link href='/profile' aria-label='내 정보 수정 페이지로 이동'>
-              <span className='font-medium'>{data.user.nickname}</span>
+              <span className='font-medium'>{data.nickname}</span>
             </Link>
           </div>
-          <LogoutButton sessionType={data.type} />
+          <LogoutButton sessionType={type} />
         </div>
       ) : (
-        // ⭐️ 로그아웃 상태: 로그인 및 회원가입 링크
         <>
           <Link
             href='/auth/signin'

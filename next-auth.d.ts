@@ -6,7 +6,6 @@ declare module 'next-auth' {
     nickname: string;
     email: string;
     profileImageUrl: string | null;
-    password: string;
   }
 
   export interface BackendAccessJWT {
@@ -49,7 +48,6 @@ declare module 'next-auth' {
     profileImageUrl: string | null;
     email: string;
     nickname: string;
-    password: string;
   }
 }
 
@@ -59,10 +57,9 @@ declare module 'next-auth/jwt' {
     error: 'RefreshTokenExpired' | 'RefreshAccessTokenError';
   }
 
-declare module 'next-auth' {
-  interface Session {
-    accessToken?: string
+  declare module 'next-auth' {
+    interface Session {
+      accessToken?: string;
+    }
   }
-}
-
 }

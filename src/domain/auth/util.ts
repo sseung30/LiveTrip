@@ -1,8 +1,14 @@
-export const SIGNIN_ENDPOINT = '/auth/login';
-export const USER_INFO_ENDPINT = '/users/me';
-export const SIGNUP_ENDPOINT = '/users';
-export const NEW_TOKEN_ENDPOINT = '/auth/tokens';
 export const KAKAO_LOGOUT_URI = 'https://kauth.kakao.com/oauth/logout';
+export const endpoint = {
+  SIGNIN: '/auth/login',
+  USER_INFO: '/users/me',
+  SIGNUP: '/users',
+  NEW_TOKEN: '/auth/tokens',
+  PROFILE_EDIT: '/users/me',
+  PROFILE_IMAGE_CREATE: '/users/me/image',
+  KAKAO_SIGNIN: '/oauth/sign-in/kakao',
+  KAKAO_SIGNUP: '/oauth/sign-up/kakao',
+};
 export const getKaKaoAuthroizeURL = (redirectURI: string) => {
   const _KAKAO_AUTHORIZE_URL = 'https://kauth.kakao.com/oauth/authorize';
 
