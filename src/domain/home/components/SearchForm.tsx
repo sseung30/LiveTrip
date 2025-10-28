@@ -21,7 +21,7 @@ export default function SearchForm() {
     if (q === searchValue) {
       return;
     }
-    router.push(`/search?q=${searchValue}`);
+    router.push(`/search?q=${searchValue}`, { scroll: false });
   };
 
   return (

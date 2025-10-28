@@ -6,6 +6,7 @@ import ToastLayer from '@/domain/home/components/ToastLayer';
 import type { homeSearchParams } from '@/domain/home/type';
 import { getDehydratedInfiniteQueryClient } from '@/utils/react-query/getDehydratedInfiniteQueryClient';
 import { Hydrate } from '@/utils/react-query/getQueryClient';
+import IntroSection from '@/domain/home/components/IntroSection';
 
 export default async function Home({
   searchParams,
@@ -26,6 +27,7 @@ export default async function Home({
 
   return (
     <>
+      <IntroSection />
       <div className='flex-center w-full flex-col gap-20'>
         <PopularActivitySection />
         <Hydrate state={hydratedInfiniteActivities}>
