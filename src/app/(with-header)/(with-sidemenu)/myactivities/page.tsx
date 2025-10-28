@@ -1,10 +1,9 @@
-import Image from 'next/image';
 import ToastOnMount from '@/components/ToastOnMount';
 import { apiFetch } from '@/api/api';
-import Button from '@/components/button/Button';
 import ActivitiyCard from '@/domain/myactivities/components/ActivityCard';
 import RegisterActivity from '@/domain/myactivities/components/RegitsterActivity';
 import type { Activity, MyActivities } from '@/domain/myactivities/type';
+import EmptyResult from '@/components/ui/EmptyResult';
 // import mockData from '@/mocks/mockMyActivities.json'; // 🗄️ 목 데이터
 
 export default async function Page({
@@ -26,9 +25,7 @@ export default async function Page({
   return (
     <main className='w-full'>
       <section className='pb-30'>
-        {unauthorized && (
-          <ToastOnMount message='접근 권한이 없습니다.' />
-        )}
+        {unauthorized && <ToastOnMount message='접근 권한이 없습니다.' />}
         <div className='flex items-center justify-between'>
           <div>
             <h2 className='text-18 mb-2.5 font-bold text-gray-950'>
@@ -57,27 +54,7 @@ export default async function Page({
                 </div>
               );
             })}
-          {!hasActivities && (
-            <div className='mt-7.5 flex flex-col'>
-              <div className='flex items-center justify-center'>
-                <Image
-                  src='/images/reservation_empty.png'
-                  alt='empty'
-                  width={122}
-                  height={122}
-                  className='mb-7.5'
-                />
-              </div>
-              <p className='text-18 mb-7.5 flex justify-center font-medium text-gray-600'>
-                아직 예약한 체험이 없어요
-              </p>
-              <div className='flex justify-center'>
-                <Button variant='primary' classNames='w-[182px]'>
-                  둘러보기
-                </Button>
-              </div>
-            </div>
-          )}
+          {!hasActivities && <EmptyResult text={'아직 예약한 체험이 없어요'} />}
         </div>
       </section>
     </main>
