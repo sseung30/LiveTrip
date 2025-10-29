@@ -7,7 +7,7 @@ import LogoutButton from '@/components/header/LogoutButton';
 import { useEffect, useRef, useState } from 'react';
 import Notification from '@/components/notification/Notification';
 import { useUserInfo } from '@/domain/auth/queries/useUserInfo';
-import Spinner from '@/components/ui/Spinner';
+import SessionNavSkeleton from '@/components/header/SessionNavSkeleton';
 
 export default function SessionNav() {
   const { data, isPending, error } = useUserInfo();
@@ -29,7 +29,7 @@ export default function SessionNav() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [showNotification]);
 
-  if (isPending) return <Spinner size='sm' />;
+  if (isPending) return <SessionNavSkeleton />;
   return (
     <nav className='flex items-center space-x-3 pl-4 text-sm text-gray-950'>
       {!error && data ? (
