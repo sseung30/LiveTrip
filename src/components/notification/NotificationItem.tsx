@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import type { Notification } from '@/components/notification/type';
 
@@ -92,26 +93,20 @@ function NotificationItem({ n, onClick }: NotificationItemProps) {
   }, []);
 
   return (
-    <div
-      className='hover:bg-primary-100 flex w-full flex-col px-5 py-4'
-      role='button'
-      tabIndex={0}
-      onClick={handleClick}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          handleClick();
-        }
-      }}
-    >
-      <div className='mb-2 flex justify-between'>
+    <div className='hover:bg-primary-100 flex w-full flex-col px-5 py-4'>
+      <div className='mb-2 flex items-center justify-between'>
         <h3 className='text-14 leading-3.5 font-bold text-gray-950'>
           예약 {content.slice(-8, -6)}
         </h3>
-        <h3 className='text-12 leading-3 font-medium text-gray-400'>
-          {formattedMilliseconds(now - parsed.updatedTime.getTime())}
-        </h3>
+        <button
+          className='relative h-6 w-6'
+          type='button'
+          onClick={handleClick}
+        >
+          <Image fill src='/icons/delete.svg' alt='close' />
+        </button>
       </div>
-      <div className='text-14-body font-medium text-gray-800'>
+      <div className='text-14-body mb-2 font-medium text-gray-800'>
         {parsed.title}
         <br />
         {parsed.reservedDate}
@@ -121,9 +116,12 @@ function NotificationItem({ n, onClick }: NotificationItemProps) {
           className={parsed.isConfirmed ? 'text-primary-500' : 'text-red-500'}
         >
           {parsed.isConfirmed ? '승인' : '거절'}
-        </span>{' '}
+        </span>
         되었어요.
       </div>
+      <h3 className='text-12 leading-3 font-medium text-gray-400'>
+        {formattedMilliseconds(now - parsed.updatedTime.getTime())}
+      </h3>
     </div>
   );
 }

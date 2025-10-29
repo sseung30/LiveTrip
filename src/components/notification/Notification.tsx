@@ -95,6 +95,7 @@ export default function Notification({ onClose }: { onClose?: () => void }) {
   const deleteNotificationMutation = useMutation({
     mutationFn: (id: number) => deleteNotification(id),
     onMutate: async (id) => {
+      // 낙관적 업데이트
       await queryClient.cancelQueries({ queryKey: ['myNotifications'] });
 
       const previousData = queryClient.getQueryData<
@@ -154,13 +155,17 @@ export default function Notification({ onClose }: { onClose?: () => void }) {
           <h2 className='text-16 leading-4 font-bold text-gray-950'>
             알림 {totalCount}개
           </h2>
-          <button className='relative h-6 w-6' type='button' onClick={onClose}>
-            <Image fill src='/icons/delete.svg' alt='close' />
+          <button
+            className='text-12 relative flex h-3 items-center leading-[12px] font-medium text-gray-400'
+            type='button'
+            onClick={onClose}
+          >
+            닫기
           </button>
         </div>
         <div
           ref={containerRef}
-          className='h-68 overflow-auto pb-2 [&::-webkit-scrollbar]:hidden'
+          className='h-75 overflow-auto pb-2 [&::-webkit-scrollbar]:hidden'
         >
           {notifications.map((n: Notification) => {
             return (
