@@ -122,6 +122,7 @@ export default function MyReservationsSection() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    isLoading,
   } = useInfiniteByCursor<MyReservations, Reservation>({
     queryKey: ['myReservations', version],
     initialCursor: 0,
@@ -188,6 +189,29 @@ export default function MyReservationsSection() {
   const handleExploreClick = () => {
     router.push('/');
   };
+
+  if (isLoading) {
+    return (
+      <div className='mt-7.5 flex flex-col'>
+        <div className='flex items-center justify-center'>
+          <Image
+            src='/images/reservation_empty.png'
+            alt='empty'
+            width={122}
+            height={122}
+            className='mb-7.5'
+          />
+        </div>
+        <p className='text-18 mb-7.5 flex justify-center font-medium text-gray-600'>
+          예약내역 로딩 중입니다.
+        </p>
+        <div className='flex justify-center'></div>
+      </div>
+    );
+  }
+
+  const loadingMessage = '로딩 중입니다';
+  const hasNotReservationMessage = '아직 예약한 체험이 없어요';
 
   return (
     <>
