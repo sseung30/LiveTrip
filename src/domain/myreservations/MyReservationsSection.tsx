@@ -210,9 +210,6 @@ export default function MyReservationsSection() {
     );
   }
 
-  const loadingMessage = '로딩 중입니다';
-  const hasNotReservationMessage = '아직 예약한 체험이 없어요';
-
   return (
     <>
       <ModalContainer dialogRef={cancelDialog.dialogRef}>
