@@ -30,7 +30,7 @@ const DatePickerTrigger = forwardRef<HTMLButtonElement, CustomInputProps>(
       type="button"
       disabled={disabled}
       className={cx(
-        'flex h-[54px] w-full items-center justify-between rounded-xl border px-4 text-left text-gray-950 transition-colors placeholder:text-gray-400 focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-25',
+        'flex h-[54px] w-full items-center justify-between rounded-2xl border px-4 text-left text-gray-950 transition-colors placeholder:text-gray-400 focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-25',
         disabled ? 'border-gray-100' : 'border-gray-100 hover:border-primary-500',
         className,
       )}

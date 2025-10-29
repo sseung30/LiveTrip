@@ -247,6 +247,7 @@ function InnerRegistrationForm({
       {/* ✅ 배너 이미지 */}
       <ImageUploader
         title="배너 이미지 등록"
+        required
         description="최대 1장까지 등록할 수 있어요."
         images={bannerImage ? [bannerImage] : []}
         maxCount={MAX_IMAGE_COUNT_BANNER}
@@ -258,6 +259,7 @@ function InnerRegistrationForm({
       {/* ✅ 소개 이미지 */}
       <ImageUploader
         title="소개 이미지 등록"
+        required 
         description="최대 4장까지 등록할 수 있어요."
         images={introImages}
         maxCount={MAX_IMAGE_COUNT_INTRO}

@@ -21,7 +21,10 @@ export function TimeSlotsField({
   return (
     <div className="flex flex-col gap-5">
       <div className="flex flex-col gap-2">
-        <h2 className="text-lg font-semibold text-gray-900">예약 가능한 시간대</h2>
+        <h2 className="text-lg font-semibold text-gray-900">
+          예약 가능한 시간대
+          <span className="ml-1 text-red-500">*</span>
+        </h2>
       </div>
 
       <div className="flex flex-col gap-4">

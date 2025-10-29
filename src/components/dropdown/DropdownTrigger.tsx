@@ -29,7 +29,7 @@ export default function DropdownTrigger({
 }: DropDownTriggerProps) {
   const { toggle } = useDropdownContext();
 
-  const BASE = 'flex h-full w-full items-center px-5';
+  const BASE = 'flex h-full w-full items-center px-5 rounded-2xl focus:outline-none';
   const className = cx(BASE, getDesign(variant));
 
   return (

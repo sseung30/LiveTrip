@@ -13,6 +13,7 @@ interface DropdownOption {
 
 interface DropdownProps {
   label?: string;
+  required?: boolean;
   variant?: Variant;
   width?: number;
   position?: string;
@@ -35,6 +36,7 @@ function getDesign(variant: Variant, selected?: string) {
 
 export default function SelectDropdown({
   label: titleLabel,
+  required,
   variant = 'detailPage',
   width,
   position = DEFAULT_POSITION,
@@ -58,7 +60,12 @@ export default function SelectDropdown({
 
   return (
     <div>
-      {titleLabel && <label className="block mb-2 text-sm text-black">{titleLabel}</label>}
+      {titleLabel && (
+        <label className="block mb-2 text-sm text-black">
+          {titleLabel}
+          {required ? <span className="ml-1 text-red-500">*</span> : null}
+        </label>
+      )}
       <Dropdown width={width}>
         <Dropdown.Trigger variant={variant}>
           <div className={triggerDesign}>{displayLabel}</div>
