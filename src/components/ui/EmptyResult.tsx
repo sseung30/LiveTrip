@@ -19,7 +19,7 @@ export default function EmptyResult({ text }: { text: string }) {
       </p>
       <div className='flex justify-center'>
         <Link href={'/'}>
-          <Button variant='primary' classNames='w-[182px]'>
+          <Button classNames='w-[182px]' variant='secondary' style='accent'>
             둘러보기
           </Button>
         </Link>
