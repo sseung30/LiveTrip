@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { cx } from '@/utils/cx';
 import { Activity } from '@/domain/activities/type';
+import ImageWithFallback from '@/components/ui/ImageWithFallback';
 
 interface CardProps {
   activity: Activity;
@@ -16,7 +17,8 @@ export default function Card({ activity, alt, imageClassNames }: CardProps) {
   return (
     <div className='relative mb-20 min-w-[8.25rem] md:w-full'>
       <Link href={`/experiences/${id}`}>
-        <Image
+        <ImageWithFallback
+          fallback='/images/fallback_gray.webp'
           src={bannerImageUrl}
           width={700}
           height={700}
