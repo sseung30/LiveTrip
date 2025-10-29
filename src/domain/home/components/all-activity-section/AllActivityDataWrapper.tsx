@@ -34,11 +34,10 @@ export default function AllActivityDataWrapper({
       toast({ message: error.message, eventType: 'error' });
     }
   }, [error]);
-
   return (
     <div className='flex-center flex-col'>
       <GridCardList activities={activities} />
-      <div className='mt-12'>{isPending && <Spinner size='md' />}</div>
+      <div className='mt-12'>{isFetchingNextPage && <Spinner size='md' />}</div>
       <div ref={loader} />
     </div>
   );
