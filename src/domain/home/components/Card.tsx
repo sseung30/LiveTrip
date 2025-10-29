@@ -26,31 +26,32 @@ export default function Card({ activity, alt, imageClassNames }: CardProps) {
             imageClassNames
           )}
         />
-      </Link>
-      <div className='text-14 absolute -bottom-18 flex w-full flex-col gap-[5px] rounded-[1.125rem] bg-white p-4 text-gray-950 drop-shadow-md md:-bottom-12 md:rounded-4xl md:px-[1.875rem] md:py-5 xl:-bottom-18'>
-        <span className='text-14 md:text-18 font-semibold'>{title}</span>
-        <div className='mb-1 flex items-center gap-[5px]'>
-          <Image
-            src={'/icons/star.svg'}
-            alt='노란색 별'
-            width={20}
-            height={20}
-            className='h-2.5 w-2.5 md:h-5 md:w-5'
-          />
-          <div className='text-12 md:text-14 flex gap-0.5 font-medium'>
-            <span className=' '>{rating.toFixed(1)}</span>
-            <span className='text-gray-400'>({reviewCount})</span>
+
+        <div className='text-14 absolute -bottom-18 flex w-full flex-col gap-[5px] rounded-[1.125rem] bg-white p-4 text-gray-950 drop-shadow-md md:-bottom-12 md:rounded-4xl md:px-[1.875rem] md:py-5 xl:-bottom-18'>
+          <span className='text-14 md:text-18 font-semibold'>{title}</span>
+          <div className='mb-1 flex items-center gap-[5px]'>
+            <Image
+              src={'/icons/star.svg'}
+              alt='노란색 별'
+              width={20}
+              height={20}
+              className='h-2.5 w-2.5 md:h-5 md:w-5'
+            />
+            <div className='text-12 md:text-14 flex gap-0.5 font-medium'>
+              <span className=' '>{rating.toFixed(1)}</span>
+              <span className='text-gray-400'>({reviewCount})</span>
+            </div>
+          </div>
+          <div>
+            <span className='text-15 md:text-20 font-bold'>
+              ₩{priceAsKorCurrency}
+            </span>
+            <span className='text-12 md:text-14 font-semibold text-gray-400'>
+              {' / 인'}
+            </span>
           </div>
         </div>
-        <div>
-          <span className='text-15 md:text-20 font-bold'>
-            ₩{priceAsKorCurrency}
-          </span>
-          <span className='text-12 md:text-14 font-semibold text-gray-400'>
-            {' / 인'}
-          </span>
-        </div>
-      </div>
+      </Link>
     </div>
   );
 }

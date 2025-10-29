@@ -1,10 +1,11 @@
-import { Suspense } from 'react';
-import Spinner from '@/components/ui/Spinner';
 import { ActivityTabs } from '@/domain/home/components/all-activity-section/ActivityTabs';
 import AllActivityDataWrapper from '@/domain/home/components/all-activity-section/AllActivityDataWrapper';
 import DropdownTabs from '@/domain/home/components/all-activity-section/DropdownTabs';
 import { tabEmojiMapping } from '@/domain/home/constants/categoryTabs';
 import type { AllActivitySectionProps } from '@/domain/home/type';
+import { getDehydratedInfiniteQueryClient } from '@/utils/react-query/getDehydratedInfiniteQueryClient';
+import { queryOptions } from '@/domain/activities/queryOptions';
+import { Hydrate } from '@/utils/react-query/getQueryClient';
 
 export default async function AllActivitySection({
   sort = 'latest',
@@ -14,8 +15,15 @@ export default async function AllActivitySection({
   const sectionTitle = isCategorySelected
     ? `${tabEmojiMapping[category]} ${category}`
     : '🛼 모든 체험';
-  const suspenseKey = `${sort}-${category}`;
-
+  const hydratedInfiniteActivities = await getDehydratedInfiniteQueryClient({
+    ...queryOptions.all({
+      sort,
+      category,
+      method: 'cursor',
+      size: 8,
+    }),
+    initialPageParam: undefined,
+  });
   return (
     <section className='relative w-full'>
       <div className='mb-2.5 flex items-center justify-between md:mb-4'>
@@ -25,9 +33,9 @@ export default async function AllActivitySection({
         <DropdownTabs sortOption={sort} />
       </div>
       <ActivityTabs category={category} />
-      {/* <Suspense fallback={<Spinner size='md' />} key={suspenseKey}> */}
-      <AllActivityDataWrapper category={category} sort={sort} />
-      {/* </Suspense> */}
+      <Hydrate state={hydratedInfiniteActivities}>
+        <AllActivityDataWrapper category={category} sort={sort} />
+      </Hydrate>
     </section>
   );
 }
