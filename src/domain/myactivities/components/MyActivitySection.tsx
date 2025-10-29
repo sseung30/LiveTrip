@@ -80,6 +80,7 @@ export default function MyActivitySection() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    isLoading,
   } = useInfiniteByCursor<MyActivities, Activity>({
     queryKey: ['myActivities', version],
     initialCursor: 0,
@@ -155,6 +156,26 @@ export default function MyActivitySection() {
       fetchNextPage();
     }
   }, [page, fetchNextPage]);
+
+  if (isLoading) {
+    return (
+      <div className='mt-7.5 flex flex-col'>
+        <div className='flex items-center justify-center'>
+          <Image
+            src='/images/reservation_empty.png'
+            alt='empty'
+            width={122}
+            height={122}
+            className='mb-7.5'
+          />
+        </div>
+        <p className='text-18 mb-7.5 flex justify-center font-medium text-gray-600'>
+          내 체험 관리 로딩 중입니다.
+        </p>
+        <div className='flex justify-center'></div>
+      </div>
+    );
+  }
 
   return (
     <>
