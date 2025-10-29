@@ -218,7 +218,7 @@ export default function MyReservationsSection() {
         )}
       </ModalContainer>
 
-      <section className='h-200 overflow-auto [&::-webkit-scrollbar]:hidden'>
+      <section className='verflow-auto [&::-webkit-scrollbar]:hidden'>
         {/* 필터 버튼 랜더링 */}
         {hasReservations && (
           <div role='group' className='mb-3 flex gap-2 md:mb-7.5'>
@@ -243,7 +243,7 @@ export default function MyReservationsSection() {
         )}
         <div
           ref={containerRef}
-          className='flex h-full flex-col gap-6 overflow-y-auto [&::-webkit-scrollbar]:hidden'
+          className='flex h-200 flex-col gap-6 overflow-y-auto [&::-webkit-scrollbar]:hidden'
         >
           {hasReservations &&
             filteredReservations.map((r: Reservation) => {
@@ -288,7 +288,11 @@ export default function MyReservationsSection() {
                 아직 예약한 체험이 없어요
               </p>
               <div className='flex justify-center'>
-                <Button variant='primary' classNames='w-[182px]'>
+                <Button
+                  variant='secondary'
+                  style='accent'
+                  classNames='w-[182px]'
+                >
                   둘러보기
                 </Button>
               </div>
