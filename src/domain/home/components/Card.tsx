@@ -8,10 +8,11 @@ interface CardProps {
   alt?: string;
   imageClassNames?: string;
 }
+const _GRAY_BLUR_DATA_URL =
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN8++7TGQAJOAObFkNrgwAAAABJRU5ErkJggg==';
 export default function Card({ activity, alt, imageClassNames }: CardProps) {
   const { id, title, price, bannerImageUrl, rating, reviewCount } = activity;
   const priceAsKorCurrency = price.toLocaleString('ko-KR');
-
   return (
     <div className='relative mb-20 min-w-[8.25rem] md:w-full'>
       <Link href={`/experiences/${id}`}>
@@ -20,6 +21,8 @@ export default function Card({ activity, alt, imageClassNames }: CardProps) {
           width={700}
           height={700}
           alt={alt ?? title}
+          placeholder='blur'
+          blurDataURL={_GRAY_BLUR_DATA_URL}
           loading='lazy'
           className={cx(
             'aspect-3/4 max-w-full rounded-[1.125rem] object-cover md:aspect-1/1 md:rounded-4xl',
