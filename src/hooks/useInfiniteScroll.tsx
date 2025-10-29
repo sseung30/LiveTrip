@@ -19,7 +19,7 @@ export interface UseInfiniteOptions<TPage, TItem> {
   /**
    * 페이지의 전체 URL
    */
-  initialCursor: number;
+  initialCursor: number | undefined;
 
   buildUrl: (cursor: number) => string;
 

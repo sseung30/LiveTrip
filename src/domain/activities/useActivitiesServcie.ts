@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { BASE_URL } from '@/api/api';
 import createQueryString from '@/api/create-query-string';
 import { queryKeys, queryOptions } from '@/domain/activities/queryOptions';
 import type {
@@ -29,7 +28,7 @@ export function useInfiniteActivities({
     Activity
   >({
     queryKey: queryKeys.all(category, sort),
-    initialCursor: 0,
+    initialCursor: undefined,
     buildUrl: (cursorId) => {
       const queryString = createQueryString({
         category,
