@@ -18,7 +18,7 @@ export default function Card({ activity, alt, imageClassNames }: CardProps) {
     <div className='relative mb-20 min-w-[8.25rem] md:w-full'>
       <Link href={`/experiences/${id}`}>
         <ImageWithFallback
-          fallback='/images/fallback_gray.webp'
+          fallback='/images/fallback_cloud.webp'
           src={bannerImageUrl}
           width={700}
           height={700}
