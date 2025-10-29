@@ -201,13 +201,9 @@ export default function MyActivitySection() {
               />
             </div>
             <p className='text-18 mb-7.5 flex justify-center font-medium text-gray-600'>
-              아직 예약한 체험이 없어요
+              아직 생성한 체험이 없어요
             </p>
-            <div className='flex justify-center'>
-              <Button variant='primary' classNames='w-[182px]'>
-                둘러보기
-              </Button>
-            </div>
+            <div className='flex justify-center'></div>
           </div>
         )}
       </div>
