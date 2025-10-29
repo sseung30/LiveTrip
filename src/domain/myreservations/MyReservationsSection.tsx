@@ -14,6 +14,7 @@ import { ReviewModalContents } from '@/domain/myreservations/components/ReviewMo
 import type { MyReservations, Reservation } from '@/domain/myreservations/type';
 import { useInfiniteByCursor } from '@/hooks/useInfiniteScroll';
 import useIntersectionObserver from '@/hooks/useIntersectionObserver';
+import { useRouter } from 'next/navigation';
 
 const STATUSES = [
   '예약 신청',
@@ -182,6 +183,12 @@ export default function MyReservationsSection() {
     return reservationList.filter((r) => r.status === code);
   }, [reservationList, selectedStatus]);
 
+  const router = useRouter();
+
+  const handleExploreClick = () => {
+    router.push('/');
+  };
+
   return (
     <>
       <ModalContainer dialogRef={cancelDialog.dialogRef}>
@@ -292,6 +299,7 @@ export default function MyReservationsSection() {
                   variant='secondary'
                   style='accent'
                   classNames='w-[182px]'
+                  onClick={handleExploreClick}
                 >
                   둘러보기
                 </Button>
