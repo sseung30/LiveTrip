@@ -10,6 +10,7 @@ import {
   useFormContext,
 } from 'react-hook-form';
 import { ApiError, apiFetch } from '@/api/api';
+import { useQueryClient } from '@tanstack/react-query';
 import Button from '@/components/button/Button';
 import { ModalContainer } from '@/components/dialog/Modal/ModalContainer';
 import { toast } from '@/components/toast';
@@ -50,6 +51,7 @@ interface RegistrationFormProps {
 
 export default function RegistrationForm({ mode, initialData, isSubmitting }: RegistrationFormProps) {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const normalizeSubImages = (data?: ActivityDetail): string[] => {
     if (!data) return [];
     if (Array.isArray(data.subImageUrls)) return data.subImageUrls;
@@ -104,12 +106,16 @@ export default function RegistrationForm({ mode, initialData, isSubmitting }: Re
       // Build update-diff payload for edit endpoint
       const updatePayload = buildUpdatePayload(initialData as any, data, timeSlots);
       await updateActivity(initialData.id, updatePayload);
+      // 업데이트 후 내 체험 목록 무효화
+      await queryClient.invalidateQueries({ queryKey: ['myActivities'] });
       toast({ message: '체험 수정이 완료되었습니다.', eventType: 'success' });
     } else {
       await apiFetch('/activities', {
         method: 'POST',
         body: JSON.stringify(payload),
       });
+      // 생성 후 내 체험 목록 무효화
+      await queryClient.invalidateQueries({ queryKey: ['myActivities'] });
       toast({ message: '체험 등록이 완료되었습니다.', eventType: 'success' });
     }
     router.replace('/myactivities');

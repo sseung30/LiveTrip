@@ -1,13 +1,16 @@
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
-import bellDefault from '@/components/header/asset/bell-default.svg';
+import BellIcon from '@/components/header/BellIcon';
 import defaultProfileImg from '@/components/header/asset/default-profile-img.svg';
 import LogoutButton from '@/components/header/LogoutButton';
 import { useEffect, useRef, useState } from 'react';
 import Notification from '@/components/notification/Notification';
 import { useUserInfo } from '@/domain/auth/queries/useUserInfo';
 import SessionNavSkeleton from '@/components/header/SessionNavSkeleton';
+import { useQuery } from '@tanstack/react-query';
+import { apiFetch } from '@/api/api';
+import type { Notifications } from '@/components/notification/type';
 
 export default function SessionNav() {
   const { data, isPending, error } = useUserInfo();
@@ -16,6 +19,16 @@ export default function SessionNav() {
 
   const [showNotification, setShowNotification] = useState(false);
   const bellRef = useRef<HTMLDivElement | null>(null);
+
+  // 알림 총 개수 조회 (1개 이상이면 빨간 점 표시)
+  const { data: notificationsMeta } = useQuery({
+    queryKey: ['myNotificationsCount'],
+    queryFn: async () => apiFetch<Notifications>('/my-notifications?size=1'),
+    enabled: !!data && !error,
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 30,
+  });
+  const hasNotification = (notificationsMeta?.totalCount ?? 0) > 0;
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -43,14 +56,13 @@ export default function SessionNav() {
               className='items-center focus:outline-none'
               onClick={() => setShowNotification((v) => !v)}
             >
-              <Image
-                src={bellDefault}
-                alt='Notifications'
-                width={24}
-                height={24}
-                className='h-6 w-6'
+              <BellIcon
+                className={showNotification ? 'h-6 w-6 text-primary-500' : 'h-6 w-6 text-gray-950'}
               />
             </button>
+            {hasNotification && (
+              <span className='pointer-events-none absolute top-[5px] left-[15px] h-[6px] w-[6px] rounded-full bg-red-500 ring-1 ring-white z-10' />
+            )}
             {showNotification && (
               <div className='absolute top-full right-0 z-50 mt-2'>
                 {/*
