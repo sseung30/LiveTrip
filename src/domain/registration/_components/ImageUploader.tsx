@@ -9,6 +9,7 @@ interface ImageUploaderProps {
   onRemove: (id: string) => void;
   maxCount: number;
   inputId?: string;
+  required?: boolean;
 }
 
 export function ImageUploader({
@@ -19,6 +20,7 @@ export function ImageUploader({
   onRemove,
   maxCount,
   inputId: providedId,
+  required,
 }: ImageUploaderProps) {
   const fallbackId = useId();
   const inputId = providedId ?? fallbackId;
@@ -26,7 +28,10 @@ export function ImageUploader({
   return (
     <section className="flex flex-col gap-4">
       <div>
-        <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
+        <h2 className="text-lg font-semibold text-gray-900">
+          {title}
+          {required ? <span className="ml-1 text-red-500">*</span> : null}
+        </h2>
         <p className="text-sm text-gray-500">{description}</p>
       </div>
 

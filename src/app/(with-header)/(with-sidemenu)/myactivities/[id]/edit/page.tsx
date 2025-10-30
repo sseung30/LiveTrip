@@ -27,9 +27,14 @@ export default async function EditActivityPage({ params }: Props) {
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 md:px-0 py-8">
-      <h1 className="text-2xl font-semibold mb-6">체험 수정</h1>
-      <RegistrationForm mode="edit" initialData={activity} />
+    <div className="mx-auto w-full">
+      {/* Cancel layout padding then apply exact spec padding */}
+      <div className="-mx-4 md:-mx-12">
+        <div className="mx-auto w-full max-w-[700px] box-content">
+          <h1 className="text-2xl font-semibold mb-6">체험 수정</h1>
+          <RegistrationForm mode="edit" initialData={activity} />
+        </div>
+      </div>
     </div>
   );
 }

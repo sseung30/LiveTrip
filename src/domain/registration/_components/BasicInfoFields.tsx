@@ -53,6 +53,7 @@ const handleAddressSelect = useCallback((data: Address) => {
         render={({ field }) => 
           { return <Input
             label="제목"
+            required
             placeholder="제목을 입력해 주세요"
             className="w-full"
             value={field.value}
@@ -69,6 +70,7 @@ const handleAddressSelect = useCallback((data: Address) => {
         render={({ field }) => 
           { return <SelectDropdown
             label="카테고리"
+            required
             options={categoryOptions}
             placeholder="카테고리를 선택해 주세요"
             defaultValue={field.value || undefined}
@@ -79,9 +81,9 @@ const handleAddressSelect = useCallback((data: Address) => {
 
       {/* 설명 */}
       <div className="flex flex-col gap-3">
-        <label htmlFor="description" className="text-sm font-medium text-gray-900">설명</label>
+        <label htmlFor="description" className="text-sm font-medium text-gray-900">설명<span className="ml-1 text-red-500">*</span></label>
         <textarea
-          className="min-h-[180px] w-full rounded-3xl border border-gray-100 bg-white px-5 py-4 text-base text-gray-900 placeholder:text-gray-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-100"
+          className="min-h-[180px] w-full rounded-2xl border border-gray-100 bg-white px-5 py-4 text-base text-gray-900 placeholder:text-gray-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-100"
           placeholder="체험에 대한 설명을 입력해 주세요"
           {...register('description', { required: '설명은 필수입니다.' })}
         />
@@ -98,6 +100,7 @@ const handleAddressSelect = useCallback((data: Address) => {
         render={({ field }) => 
           { return <Input
             label="가격"
+            required
             placeholder="체험 금액을 입력해 주세요"
             type="number"
             className="w-full"
@@ -114,12 +117,12 @@ const handleAddressSelect = useCallback((data: Address) => {
     rules={{ required: '주소는 필수입니다.' }}
     render={({ field }) => 
         { return <label className="flex flex-col w-full text-sm font-medium text-gray-900">
-        주소
+        <span className="inline-flex items-center">주소<span className="ml-1 text-red-500">*</span></span>
         <div className="flex gap-2 mt-2">
             <input
             {...field}
             readOnly
-            className="flex-1 h-[54px] rounded-xl px-4 bg-gray-50"
+            className="flex-1 h-[54px] rounded-2xl px-4 bg-gray-50 border border-gray-100 text-gray-900 placeholder:text-gray-400 transition-colors focus:outline-none focus:border-primary-500"
             placeholder="주소를 검색해 주세요"
             ref={(el) => {
             field.ref(el);        // RHF의 ref 유지

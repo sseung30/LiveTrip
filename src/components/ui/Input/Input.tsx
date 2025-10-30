@@ -47,6 +47,7 @@ export default function Input({
       {label && (
         <label className='mb-2 text-sm font-medium text-gray-900'>
           {label}
+          {rest.required ? <span className='ml-1 text-red-500'>*</span> : null}
         </label>
       )}
 
@@ -56,7 +57,7 @@ export default function Input({
           type={getInputType()}
           placeholder={placeholder}
           autoComplete={autoComplete}
-          className={`h-[54px] w-full rounded-xl border px-4 ${isPassword ? 'pr-12' : ''} text-gray-950 transition-colors placeholder:text-gray-400 focus:outline-none ${getBorderColor()} disabled:bg-gray-25`}
+          className={`h-[54px] w-full rounded-2xl border px-4 ${isPassword ? 'pr-12' : ''} text-gray-950 transition-colors placeholder:text-gray-400 focus:outline-none ${getBorderColor()} disabled:bg-gray-25`}
           onFocus={() => {
             setIsFocused(true);
           }}

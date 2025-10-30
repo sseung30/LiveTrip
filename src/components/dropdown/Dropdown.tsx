@@ -11,7 +11,7 @@ interface DropdownProps {
   width?: number;
 }
 
-const BASE = 'relative h-[54px] rounded-2xl border text-gray-100';
+const BASE = 'relative h-[54px] rounded-2xl border transition-colors focus-within:border-primary-500';
 
 export default function Dropdown({ children, width }: DropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -28,7 +28,11 @@ export default function Dropdown({ children, width }: DropdownProps) {
 
   const dropdownRef = useDropdownClose(close);
 
-  const className = cx(BASE, width ? `w-[${width}px]` : 'w-full');
+  const className = cx(
+    BASE,
+    isOpen ? 'border-primary-500' : 'border-gray-100',
+    width ? `w-[${width}px]` : 'w-full',
+  );
 
   return (
     <DropdownContext.Provider value={{ isOpen, open, close, toggle, width }}>
