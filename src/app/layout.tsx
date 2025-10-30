@@ -9,6 +9,7 @@ import { ToastContainer } from '@/components/toast/ToastContainer';
 import ReactQueryProvider from '@/utils/react-query/ReactQueryProvider';
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://live-trip-lac.vercel.app'),
   title: 'LiveTrip',
   description: '삶에 스며들 경험을 찾으세요. 무엇을 체험하고 싶으신가요?',
   openGraph: {
