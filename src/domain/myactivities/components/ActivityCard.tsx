@@ -1,14 +1,30 @@
+'use client';
 import Image from 'next/image';
 import type { ActivityCardProps } from '@/domain/myactivities/components/type';
+import { useRouter } from 'next/navigation';
+
+const useGoEdit = () => {
+  const router = useRouter();
+
+  const goEditById = (id: number) => {
+    router.push(`/myactivities/${id}/edit`);
+  };
+
+  return { goEditById };
+};
 
 export default function ActivityCard({
+  id,
   title,
   rating,
   reviewCount,
   price,
   bannerImageUrl,
+  onDelete,
 }: ActivityCardProps) {
   const formattedPrice = `₩${price.toLocaleString()}`;
+
+  const { goEditById } = useGoEdit();
 
   return (
     <div>
@@ -40,10 +56,18 @@ export default function ActivityCard({
               <p className='text-14 font-medium text-gray-400'>/ 인</p>
             </div>
             <div className='flex gap-2'>
-              <button className='text-14 h-[29px] w-[68px] rounded-lg border border-gray-50 font-medium text-gray-600'>
+              <button
+                className='text-14 h-[29px] w-[68px] rounded-lg border border-gray-50 font-medium text-gray-600'
+                onClick={() => {
+                  goEditById(id);
+                }}
+              >
                 수정하기
               </button>
-              <button className='text-14 h-[29px] w-[68px] rounded-lg bg-gray-50 font-medium text-gray-600'>
+              <button
+                className='text-14 h-[29px] w-[68px] rounded-lg bg-gray-50 font-medium text-gray-600'
+                onClick={onDelete}
+              >
                 삭제하기
               </button>
             </div>
@@ -58,7 +82,6 @@ export default function ActivityCard({
           </div>
         </div>
       </div>
-
       {/* md 기준 */}
       <div className='hidden sm:flex md:hidden'>
         <div className='flex h-[159px] w-[476px] justify-between rounded-3xl p-6 leading-none shadow-[0_4px_24px_rgba(156,180,202,0.2)]'>
@@ -87,10 +110,18 @@ export default function ActivityCard({
               <p className='text-14 font-medium text-gray-400'>/ 인</p>
             </div>
             <div className='flex gap-2'>
-              <button className='text-14 h-[29px] w-[68px] rounded-lg border border-gray-50 font-medium text-gray-600'>
+              <button
+                className='text-14 h-[29px] w-[68px] rounded-lg border border-gray-50 font-medium text-gray-600'
+                onClick={() => {
+                  goEditById(id);
+                }}
+              >
                 수정하기
               </button>
-              <button className='text-14 h-[29px] w-[68px] rounded-lg bg-gray-50 font-medium text-gray-600'>
+              <button
+                className='text-14 h-[29px] w-[68px] rounded-lg bg-gray-50 font-medium text-gray-600'
+                onClick={onDelete}
+              >
                 삭제하기
               </button>
             </div>
@@ -105,7 +136,6 @@ export default function ActivityCard({
           </div>
         </div>
       </div>
-
       {/* lg 기준 */}
       <div className='hidden md:flex'>
         <div className='flex h-[202px] w-[640px] items-center justify-between rounded-3xl px-7.5 shadow-[0_4px_24px_rgba(156,180,202,0.2)]'>
@@ -132,10 +162,18 @@ export default function ActivityCard({
               <p className='text-16 font-medium text-gray-400'>/ 인</p>
             </div>
             <div className='flex gap-2'>
-              <button className='text-14 h-[29px] w-[68px] rounded-lg border border-gray-50 font-medium text-gray-600'>
+              <button
+                className='text-14 h-[29px] w-[68px] rounded-lg border border-gray-50 font-medium text-gray-600'
+                onClick={() => {
+                  goEditById(id);
+                }}
+              >
                 수정하기
               </button>
-              <button className='text-14 h-[29px] w-[68px] rounded-lg bg-gray-50 font-medium text-gray-600'>
+              <button
+                className='text-14 h-[29px] w-[68px] rounded-lg bg-gray-50 font-medium text-gray-600'
+                onClick={onDelete}
+              >
                 삭제하기
               </button>
             </div>

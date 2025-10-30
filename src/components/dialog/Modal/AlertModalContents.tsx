@@ -2,6 +2,7 @@ import Image from 'next/image';
 import WarningImage from '@/components/dialog/assets/warning.svg';
 import type { AlertModalContentsProps } from '@/components/dialog/Modal/type';
 import Spinner from '@/components/ui/Spinner';
+import Button from '@/components/button/Button';
 
 /**
  * 경고 모달의 내용을 렌더링하는 컴포넌트
@@ -28,21 +29,19 @@ export function AlertModalContents({
         <h1 className='text-md font-bold'>{message}</h1>
       </div>
       <div className='flex-center gap-3'>
-        <button
-          className='border px-5 py-1'
+        <Button
+          variant='secondary'
+          style='accent'
           disabled={isPending}
           onClick={hideModal}
+          classNames='w-34'
         >
           {rejectButtonText}
-        </button>
+        </Button>
         <form action={confirmAction}>
-          <button
-            type='submit'
-            className='bg-primary-500 border px-5 py-1 text-white'
-            disabled={isPending}
-          >
+          <Button variant='secondary' disabled={isPending} classNames='w-34'>
             {isPending ? <Spinner size='sm' /> : confirmButtonText}
-          </button>
+          </Button>
         </form>
       </div>
     </div>
