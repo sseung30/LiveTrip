@@ -70,7 +70,7 @@ export function useInfiniteByCursor<TPage, TItem>({
     number
   >({
     queryKey,
-    initialPageParam: initialCursor,
+    initialPageParam: initialCursor as number,
     queryFn: async ({ pageParam }) => {
       const url = buildUrl(pageParam);
 

@@ -21,13 +21,14 @@ export function useReviews({ activityId }: { activityId: number }) {
 export function useInfiniteActivities({
   category,
   sort,
+  keyword,
 }: useInfiniteActivitiesParams) {
   const [page, setPage] = useState(0);
   const { fetchNextPage, ...rest } = useInfiniteByCursor<
     getAllActivitiesResponse,
     Activity
   >({
-    queryKey: queryKeys.all(category, sort),
+    queryKey: queryKeys.all(category, sort, keyword),
     initialCursor: undefined,
     buildUrl: (cursorId) => {
       const queryString = createQueryString({
@@ -35,6 +36,7 @@ export function useInfiniteActivities({
         sort,
         size: 4,
         cursorId,
+        keyword,
         method: 'cursor',
       });
       const endPoint = '/activities/?';

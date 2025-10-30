@@ -1,7 +1,6 @@
 import {
   getActivitiyAvailableSchedule,
   getActivitiyReviews,
-  getAllActivities,
   getAllActivitiesWithCache,
   getDetailActivity,
 } from '@/domain/activities/api';
@@ -12,8 +11,15 @@ import type {
 } from '@/domain/activities/type';
 
 export const queryKeys = {
-  all: (category: activityCategory | undefined, sort: sortType | undefined) => {
-    return ['activities', category, sort] as const;
+  all: (category?: activityCategory, sort?: sortType, keyword?: string) => {
+    return [
+      'activities',
+      {
+        category,
+        sort,
+        keyword,
+      },
+    ] as const;
   },
   detail: (activityId: number) => ['activity', activityId] as const,
   schedules: (activityId: number) => {
@@ -25,12 +31,12 @@ export const queryKeys = {
 
 export const queryOptions = {
   all: (params: getAllActivitiesParams) => {
-    const { category, sort, size, method } = params;
+    const { category, sort, size, method, keyword } = params;
 
     return {
-      queryKey: queryKeys.all(category, sort || 'latest'),
+      queryKey: queryKeys.all(category, sort || 'latest', keyword),
       queryFn: () =>
-        getAllActivitiesWithCache({ category, sort, size, method }),
+        getAllActivitiesWithCache({ category, sort, size, method, keyword }),
     };
   },
   detail: (activityId: number) => {

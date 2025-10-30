@@ -9,4 +9,6 @@ export interface AllActivitySectionProps {
   category?: activityCategory;
 }
 export type AllActivityDataWrapperProps = AllActivitySectionProps;
-export type useInfiniteActivitiesParams = AllActivitySectionProps;
+export interface useInfiniteActivitiesParams extends AllActivitySectionProps {
+  keyword?: string;
+}
