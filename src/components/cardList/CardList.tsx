@@ -8,7 +8,7 @@ const BUTTON_STYLES = {
   cancel:
     'rounded-lg border border-gray-50 bg-gray-50 font-medium text-gray-600 hover:bg-[#FCECEA] hover:text-[#F96767]',
   review:
-    'bg-primary-500 hover:bg-primary-600 rounded-lg font-medium text-white',
+    'bg-primary-500 hover:bg-primary-600 rounded-lg font-medium text-white disabled:bg-gray-400',
 } as const;
 
 export default function CardList({
@@ -19,6 +19,7 @@ export default function CardList({
   endTime,
   price,
   capacity,
+  reviewSubmitted,
   thumbnailUrl = '/images/sample_img.png',
   onChangeReservation,
   onCancelReservation,
@@ -72,6 +73,7 @@ export default function CardList({
               <button
                 className={`${BUTTON_STYLES.review} px-4 py-1.5 text-base`}
                 onClick={onWriteReview}
+                disabled={reviewSubmitted}
               >
                 후기 작성
               </button>
@@ -142,6 +144,7 @@ export default function CardList({
           <button
             className={`${BUTTON_STYLES.review} w-[476px] py-2 text-base`}
             onClick={onWriteReview}
+            disabled={reviewSubmitted}
           >
             후기 작성
           </button>
@@ -200,6 +203,7 @@ export default function CardList({
           <button
             className={`${BUTTON_STYLES.review} w-[327px] py-1.5 text-sm`}
             onClick={onWriteReview}
+            disabled={reviewSubmitted}
           >
             후기 작성
           </button>

@@ -285,6 +285,8 @@ export default function MyReservationsSection() {
                     endTime={r.endTime}
                     price={r.totalPrice}
                     capacity={10}
+                    reviewSubmitted={r.reviewSubmitted}
+                    thumbnailUrl={r.activity.bannerImageUrl}
                     onChangeReservation={() => {
                       onChangeReservation();
                     }}

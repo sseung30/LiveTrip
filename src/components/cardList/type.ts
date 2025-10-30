@@ -8,6 +8,7 @@ export interface CardListProps {
   endTime: string;
   price: number;
   capacity: number;
+  reviewSubmitted: boolean;
   thumbnailUrl?: string;
   onChangeReservation?: () => void;
   onCancelReservation?: () => void;
