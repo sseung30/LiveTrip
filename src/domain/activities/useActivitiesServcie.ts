@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { BASE_URL } from '@/api/api';
 import createQueryString from '@/api/create-query-string';
 import { queryKeys, queryOptions } from '@/domain/activities/queryOptions';
 import type {
@@ -22,20 +21,22 @@ export function useReviews({ activityId }: { activityId: number }) {
 export function useInfiniteActivities({
   category,
   sort,
+  keyword,
 }: useInfiniteActivitiesParams) {
   const [page, setPage] = useState(0);
   const { fetchNextPage, ...rest } = useInfiniteByCursor<
     getAllActivitiesResponse,
     Activity
   >({
-    queryKey: queryKeys.all(category, sort),
-    initialCursor: 0,
+    queryKey: queryKeys.all(category, sort, keyword),
+    initialCursor: undefined,
     buildUrl: (cursorId) => {
       const queryString = createQueryString({
         category,
         sort,
         size: 4,
         cursorId,
+        keyword,
         method: 'cursor',
       });
       const endPoint = '/activities/?';

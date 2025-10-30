@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import HeroBanner from '@/domain/home/components/HeroBanner';
-import SearchForm from '@/domain/home/components/SearchForm';
+import SearchForm from '@/domain/home/components/search/SearchForm';
 
 export default function IntroSection() {
   return (

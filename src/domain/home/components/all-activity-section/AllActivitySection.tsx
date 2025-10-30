@@ -1,21 +1,21 @@
-import { Suspense } from 'react';
-import Spinner from '@/components/ui/Spinner';
 import { ActivityTabs } from '@/domain/home/components/all-activity-section/ActivityTabs';
-import AllActivityDataWrapper from '@/domain/home/components/all-activity-section/AllActivityDataWrapper';
 import DropdownTabs from '@/domain/home/components/all-activity-section/DropdownTabs';
 import { tabEmojiMapping } from '@/domain/home/constants/categoryTabs';
-import type { AllActivitySectionProps } from '@/domain/home/type';
-
+import { activityCategory, sortType } from '@/domain/activities/type';
+import { ReactNode } from 'react';
 export default async function AllActivitySection({
   sort = 'latest',
   category,
-}: AllActivitySectionProps) {
+  children,
+}: {
+  sort?: sortType;
+  category?: activityCategory;
+  children: ReactNode;
+}) {
   const isCategorySelected = category !== undefined;
   const sectionTitle = isCategorySelected
     ? `${tabEmojiMapping[category]} ${category}`
     : '🛼 모든 체험';
-  const suspenseKey = `${sort}-${category}`;
-
   return (
     <section className='relative w-full'>
       <div className='mb-2.5 flex items-center justify-between md:mb-4'>
@@ -25,9 +25,7 @@ export default async function AllActivitySection({
         <DropdownTabs sortOption={sort} />
       </div>
       <ActivityTabs category={category} />
-      {/* <Suspense fallback={<Spinner size='md' />} key={suspenseKey}> */}
-      <AllActivityDataWrapper category={category} sort={sort} />
-      {/* </Suspense> */}
+      {children}
     </section>
   );
 }
