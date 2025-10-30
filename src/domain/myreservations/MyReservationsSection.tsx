@@ -1,9 +1,11 @@
 'use client';
 import { useActionState, useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { apiFetch } from '@/api/api';
 import Button from '@/components/button/Button';
 import CardList from '@/components/cardList/CardList';
+import { CategoryIcon } from '@/domain/home/components/svg';
 import {
   AlertModalContents,
   ModalContainer,
@@ -15,7 +17,6 @@ import type { MyReservations, Reservation } from '@/domain/myreservations/type';
 import { useInfiniteByCursor } from '@/hooks/useInfiniteScroll';
 import useIntersectionObserver from '@/hooks/useIntersectionObserver';
 import EmptyResult from '@/components/ui/EmptyResult';
-import { useRouter } from 'next/navigation';
 
 const STATUSES = [
   '예약 신청',
@@ -26,6 +27,7 @@ const STATUSES = [
 ];
 
 const STATUS_OBJ = {
+  '모든 예약': 'default',
   '예약 신청': 'pending',
   '예약 완료': 'confirmed',
   '예약 취소': 'canceled',
@@ -251,6 +253,16 @@ export default function MyReservationsSection() {
         {/* 필터 버튼 랜더링 */}
         {hasReservations && (
           <div role='group' className='mb-3 flex gap-2 md:mb-7.5'>
+            <Button
+              variant='filter'
+              style={selectedStatus === null ? 'default' : 'accent'}
+              classNames='w-14'
+              onClick={() => {
+                setSelectedStatus(null);
+              }}
+            >
+              <CategoryIcon />
+            </Button>
             {STATUSES.map((status) => {
               const isSelected = selectedStatus === status;
 
@@ -258,7 +270,7 @@ export default function MyReservationsSection() {
                 <Button
                   key={status}
                   variant='filter'
-                  style={isSelected ? 'accent' : 'default'}
+                  style={isSelected ? 'default' : 'accent'}
                   classNames='w-[90px]'
                   onClick={() => {
                     setSelectedStatus(status);

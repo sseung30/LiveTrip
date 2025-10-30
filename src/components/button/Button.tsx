@@ -63,10 +63,10 @@ const TONE: Record<Variant, Record<Style, string>> = {
   },
   label: {
     default: 'bg-primary-100 hover:bg-[#D1E9FF] text-gray-950',
-    accent: 'text-gray-600 hover:bg-[#FAFAFA] ',
+    accent: 'text-gray-600 hover:bg-[#FAFAFA]',
   },
   filter: {
-    default: 'bg-[#333333] hover:bg-[#4D4D4D] text-white',
+    default: 'bg-[#333333] hover:bg-[#4D4D4D] text-white [&_svg]:fill-white',
     accent: 'border border-[#D8D8D8] bg-white hover:bg-[#FAFAFA] text-gray-950',
   },
 };
@@ -105,7 +105,12 @@ export default function Button({
   );
 
   return (
-    <button type={type} className={className} disabled={disabled} onClick={onClick}>
+    <button
+      type={type}
+      className={className}
+      disabled={disabled}
+      onClick={onClick}
+    >
       {children}
     </button>
   );
