@@ -2,6 +2,7 @@ import ExperienceDetailClient from '@/app/(with-header)/experiences/[id]/Experie
 import ExperienceInfo from '@/components/experienceDetail/experience/ExperienceInfo';
 import ExperienceReviews from '@/components/experienceDetail/experience/ExperienceReviews';
 import ImageGallery from '@/components/experienceDetail/experience/ImageGallery';
+import KakaoMapScript from '@/components/experienceDetail/experience/KakaoMapScript';
 import MobileExperienceHeader from '@/components/experienceDetail/experience/MobileExperienceHeader';
 import type {
   ExperienceDetail,
@@ -63,6 +64,7 @@ export default async function ExperienceDetailPage({ params }: PageProps) {
 
   return (
     <div className='min-h-screen'>
+      <KakaoMapScript />
       {/* 메인 콘텐츠 */}
       <div className='mx-auto max-w-7xl px-4 py-4 pb-32 sm:px-6 sm:py-6 sm:pb-32 lg:px-8 lg:py-8 lg:pb-60'>
         <div className='grid grid-cols-1 gap-6 lg:grid-cols-3 lg:gap-8'>
