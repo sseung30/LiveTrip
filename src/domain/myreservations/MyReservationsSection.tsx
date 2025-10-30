@@ -121,6 +121,7 @@ export default function MyReservationsSection() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    isLoading,
   } = useInfiniteByCursor<MyReservations, Reservation>({
     queryKey: ['myReservations', version],
     initialCursor: 0,
@@ -182,6 +183,32 @@ export default function MyReservationsSection() {
     return reservationList.filter((r) => r.status === code);
   }, [reservationList, selectedStatus]);
 
+  const router = useRouter();
+
+  const handleExploreClick = () => {
+    router.push('/');
+  };
+
+  if (isLoading) {
+    return (
+      <div className='mt-7.5 flex flex-col'>
+        <div className='flex items-center justify-center'>
+          <Image
+            src='/images/reservation_empty.png'
+            alt='empty'
+            width={122}
+            height={122}
+            className='mb-7.5'
+          />
+        </div>
+        <p className='text-18 mb-7.5 flex justify-center font-medium text-gray-600'>
+          예약내역 로딩 중입니다.
+        </p>
+        <div className='flex justify-center'></div>
+      </div>
+    );
+  }
+
   return (
     <>
       <ModalContainer dialogRef={cancelDialog.dialogRef}>
@@ -218,7 +245,7 @@ export default function MyReservationsSection() {
         )}
       </ModalContainer>
 
-      <section className='h-200 overflow-auto [&::-webkit-scrollbar]:hidden'>
+      <section className='verflow-auto [&::-webkit-scrollbar]:hidden'>
         {/* 필터 버튼 랜더링 */}
         {hasReservations && (
           <div role='group' className='mb-3 flex gap-2 md:mb-7.5'>
@@ -243,7 +270,7 @@ export default function MyReservationsSection() {
         )}
         <div
           ref={containerRef}
-          className='flex h-full flex-col gap-6 overflow-y-auto [&::-webkit-scrollbar]:hidden'
+          className='flex h-200 flex-col gap-6 overflow-y-auto [&::-webkit-scrollbar]:hidden'
         >
           {hasReservations &&
             filteredReservations.map((r: Reservation) => {

@@ -1,9 +1,12 @@
 'use client';
 import Button from '@/components/button/Button';
+import { useRouter } from 'next/navigation';
 
 export default function RegisterActivity() {
+  const router = useRouter();
+
   const handleClick = () => {
-    console.log('clicked');
+    router.push(`/registration`);
   };
 
   return (
