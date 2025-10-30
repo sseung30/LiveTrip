@@ -1,3 +1,4 @@
+import EmptyResult from '@/components/ui/EmptyResult';
 import { getAllActivitiesWithCache } from '@/domain/activities/api';
 import type { getAllActivitiesParams } from '@/domain/activities/type';
 import GridCardList from '@/domain/home/components/GridCardList';
@@ -13,10 +14,10 @@ export default async function SearchResult({ q }: SearchResultProps) {
     size: 8,
     method: 'cursor',
   } as getAllActivitiesParams);
-
+  const hasResult = totalCount > 0;
   return (
     <>
-      <div className='flex flex-col gap-6 md:gap-8'>
+      <div className='flex w-full flex-col items-start gap-6 md:gap-8'>
         <div className='flex flex-col gap-2'>
           <h2 className='text-18 md:text-24 font-medium'>
             <span className='font-bold'>{q}</span>
@@ -26,7 +27,13 @@ export default async function SearchResult({ q }: SearchResultProps) {
             {totalCount}개의 결과
           </span>
         </div>
-        <GridCardList activities={activities} />
+        {hasResult ? (
+          <GridCardList activities={activities} />
+        ) : (
+          <div className='self-center-safe'>
+            <EmptyResult text='검색 결과가 없어요' />
+          </div>
+        )}
       </div>
     </>
   );

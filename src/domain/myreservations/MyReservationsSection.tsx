@@ -1,5 +1,4 @@
 'use client';
-import Image from 'next/image';
 import { useActionState, useEffect, useMemo, useRef, useState } from 'react';
 import { apiFetch } from '@/api/api';
 import Button from '@/components/button/Button';
@@ -14,7 +13,7 @@ import { ReviewModalContents } from '@/domain/myreservations/components/ReviewMo
 import type { MyReservations, Reservation } from '@/domain/myreservations/type';
 import { useInfiniteByCursor } from '@/hooks/useInfiniteScroll';
 import useIntersectionObserver from '@/hooks/useIntersectionObserver';
-import { useRouter } from 'next/navigation';
+import EmptyResult from '@/components/ui/EmptyResult';
 
 const STATUSES = [
   '예약 신청',
@@ -302,30 +301,7 @@ export default function MyReservationsSection() {
           {hasReservations && hasNextPage && <div ref={loader} />}
 
           {!hasReservations && (
-            <div className='mt-2.5 flex flex-col'>
-              <div className='flex items-center justify-center'>
-                <Image
-                  src='/images/reservation_empty.png'
-                  alt='empty'
-                  width={122}
-                  height={122}
-                  className='mb-7.5'
-                />
-              </div>
-              <p className='text-18 mb-7.5 flex justify-center font-medium text-gray-600'>
-                아직 예약한 체험이 없어요
-              </p>
-              <div className='flex justify-center'>
-                <Button
-                  variant='secondary'
-                  style='accent'
-                  classNames='w-[182px]'
-                  onClick={handleExploreClick}
-                >
-                  둘러보기
-                </Button>
-              </div>
-            </div>
+            <EmptyResult text={'아직 예약한 체험이 없어요'} />
           )}
         </div>
       </section>

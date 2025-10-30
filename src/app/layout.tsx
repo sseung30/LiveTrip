@@ -10,7 +10,10 @@ import ReactQueryProvider from '@/utils/react-query/ReactQueryProvider';
 
 export const metadata: Metadata = {
   title: 'LiveTrip',
-  description: 'LiveTrip',
+  description: '삶에 스며들 경험을 찾으세요. 무엇을 체험하고 싶으신가요?',
+  openGraph: {
+    images: '/images/open_graph.webp',
+  },
 };
 const pretendardVariable = localFont({
   src: '../../public/font/PretendardVariable.woff2',

@@ -2,7 +2,7 @@
 import { useRef } from 'react';
 import type { Activity } from '@/domain/activities/type';
 import Card from '@/domain/home/components/Card';
-import ArrowButtons from '@/domain/home/components/popular-activity-section/ArrowButtons';
+import ArrowButtons from '@/domain/home/components/popular-activity-section/CarouselButtons';
 
 export default function PopularActivityCarouselWrapper({
   activities,
@@ -24,14 +24,9 @@ export default function PopularActivityCarouselWrapper({
           return (
             <div
               className='w-[8.25rem] shrink-0 snap-start md:w-[20.75rem] xl:w-[16.6rem]'
-              key={crypto.randomUUID()}
+              key={`card-${crypto.randomUUID()}`}
             >
-              <Card
-                id={activity.id}
-                title={activity.title}
-                src={activity.bannerImageUrl}
-                alt={activity.title}
-              />
+              <Card activity={activity} alt={activity.title} />
             </div>
           );
         })}

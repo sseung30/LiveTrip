@@ -1,26 +1,22 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { cx } from '@/utils/cx';
+import { Activity } from '@/domain/activities/type';
 
 interface CardProps {
-  src: string;
-  title: string;
+  activity: Activity;
   alt?: string;
   imageClassNames?: string;
-  id: number;
 }
-export default function Card({
-  src,
-  title,
-  alt,
-  imageClassNames,
-  id,
-}: CardProps) {
+export default function Card({ activity, alt, imageClassNames }: CardProps) {
+  const { id, title, price, bannerImageUrl, rating, reviewCount } = activity;
+  const priceAsKorCurrency = price.toLocaleString('ko-KR');
+
   return (
     <div className='relative mb-20 min-w-[8.25rem] md:w-full'>
       <Link href={`/experiences/${id}`}>
         <Image
-          src={src}
+          src={bannerImageUrl}
           width={700}
           height={700}
           alt={alt ?? title}
@@ -42,14 +38,16 @@ export default function Card({
             className='h-2.5 w-2.5 md:h-5 md:w-5'
           />
           <div className='text-12 md:text-14 flex gap-0.5 font-medium'>
-            <span className=' '>3.9</span>
-            <span className='text-gray-400'>(160)</span>
+            <span className=' '>{rating.toFixed(1)}</span>
+            <span className='text-gray-400'>({reviewCount})</span>
           </div>
         </div>
         <div>
-          <span className='text-15 md:text-18 font-bold'>₩ 42,800</span>
-          <span className='text-12 md:text-16 font-semibold text-gray-400'>
-            /인
+          <span className='text-15 md:text-20 font-bold'>
+            ₩{priceAsKorCurrency}
+          </span>
+          <span className='text-12 md:text-14 font-semibold text-gray-400'>
+            {' / 인'}
           </span>
         </div>
       </div>
