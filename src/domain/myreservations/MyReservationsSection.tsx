@@ -1,5 +1,6 @@
 'use client';
 import { useActionState, useEffect, useMemo, useRef, useState } from 'react';
+import Image from 'next/image';
 import { apiFetch } from '@/api/api';
 import Button from '@/components/button/Button';
 import CardList from '@/components/cardList/CardList';
@@ -14,6 +15,7 @@ import type { MyReservations, Reservation } from '@/domain/myreservations/type';
 import { useInfiniteByCursor } from '@/hooks/useInfiniteScroll';
 import useIntersectionObserver from '@/hooks/useIntersectionObserver';
 import EmptyResult from '@/components/ui/EmptyResult';
+import { useRouter } from 'next/navigation';
 
 const STATUSES = [
   '예약 신청',
