@@ -1,0 +1,21 @@
+import { revalidateTag } from 'next/cache';
+import { NextRequest, NextResponse } from 'next/server';
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const tag = body.tag;
+
+    revalidateTag(tag);
+
+    return NextResponse.json(
+      { revalidated: true, tag, now: Date.now() },
+      { status: 200 }
+    );
+  } catch (err) {
+    return NextResponse.json(
+      { revalidated: false, error: 'Failed to revalidate' },
+      { status: 500 }
+    );
+  }
+}
