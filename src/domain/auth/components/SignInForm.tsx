@@ -31,7 +31,6 @@ export default function SignInForm() {
     } else {
       startTransition(() => {
         router.push('/');
-        router.refresh();
         toast({ message: '로그인에 성공했습니다', eventType: 'success' });
       });
     }

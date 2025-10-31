@@ -5,15 +5,23 @@ import type { SessionType } from 'next-auth';
 import { signOut as nextAuthSignOut } from 'next-auth/react';
 import { toast } from '@/components/toast';
 import { getKaKaoLogoutURL } from '@/domain/auth/util';
+import { useRouter } from 'next/navigation';
+import { useTransition } from 'react';
 
 export default function LogoutForm({
   sessionType,
 }: {
   sessionType: SessionType;
 }) {
+  const router = useRouter();
+  const [, startTransition] = useTransition();
+
   const handleLogout = async () => {
-    await nextAuthSignOut();
-    toast({ message: '로그아웃에 성공했습니다', eventType: 'success' });
+    startTransition(async () => {
+      router.push('/');
+      await nextAuthSignOut();
+      toast({ message: '로그아웃에 성공했습니다', eventType: 'success' });
+    });
   };
 
   return sessionType === 'kakao' ? (

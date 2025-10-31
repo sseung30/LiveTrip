@@ -32,7 +32,6 @@ export default function SignUpForm() {
     } else {
       startTransition(() => {
         router.push('/');
-        router.refresh();
         toast({ message: '회원가입이 완료 되었습니다', eventType: 'success' });
       });
     }
