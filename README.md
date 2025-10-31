@@ -84,8 +84,8 @@ src/
 
 ## 👥 팀 & 역할 (Team)
 
-| 이름 | 역할 | 주요 담당 |
-|------|------|-----------|
+| 이름 | 역할 | 주요 담당 | GitHub |
+|------|------|-----------|-----|
 | **권수형** | Frontend Developer | 홈, 프로필, 로그인/ 회원가입 | [Ospac](https://github.com/Ospac) |
 | **박서현** | Frontend Developer | 체험 상세, 예약현황 | [urapp13ofmyeye](https://github.com/urapp13ofmyeye) |
 | **안연정** | Frontend Developer | 예약 내역, 내 체험 관리 | [aNN-algorithm](https://github.com/aNN-algorithm) |
