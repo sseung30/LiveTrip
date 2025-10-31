@@ -19,11 +19,15 @@ const pretendardVariable = localFont({
   src: '../../public/font/PretendardVariable.woff2',
   display: 'swap',
   weight: '45 920',
+  preload: true,
+  adjustFontFallback: 'Arial',
 });
 const notoSans = Noto_Sans({
   weight: ['300', '700'],
   subsets: ['latin'],
   variable: '--font-notosans',
+  preload: true,
+  adjustFontFallback: true,
 });
 
 export default function RootLayout({
