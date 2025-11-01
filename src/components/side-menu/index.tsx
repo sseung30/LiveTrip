@@ -31,7 +31,7 @@ const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'reservationStatus',
-    label: '예약 현황',
+    label: '예약현황',
     iconPath: '/icons/icon_calendar.svg',
     href: '/reservation-status',
   },

@@ -70,16 +70,23 @@ export default function ReservationPopup({
 
   const { totalCounts, filteredReservationsBySchedule } = useMemo(() => {
     const counts = { pending: 0, confirmed: 0, declined: 0 };
-    const filtered: { pending: ReservationDetail[]; confirmed: ReservationDetail[]; declined: ReservationDetail[] } = { 
-      pending: [], 
-      confirmed: [], 
-      declined: [] 
+    const filtered: {
+      pending: ReservationDetail[];
+      confirmed: ReservationDetail[];
+      declined: ReservationDetail[];
+    } = {
+      pending: [],
+      confirmed: [],
+      declined: [],
     };
 
     reservations.forEach((reservation) => {
       counts[reservation.status] = counts[reservation.status] + 1;
 
-      if (selectedScheduleId !== null && reservation.scheduleId === selectedScheduleId) {
+      if (
+        selectedScheduleId !== null &&
+        reservation.scheduleId === selectedScheduleId
+      ) {
         filtered[reservation.status].push(reservation);
       }
     });
@@ -190,7 +197,7 @@ export default function ReservationPopup({
               <div className='w-full'>
                 <SelectDropdown
                   key={selectedScheduleId}
-                  width={isBottomSheet ? 450 : 302}
+                  width={isBottomSheet ? undefined : 302}
                   options={scheduleOptions}
                   placeholder='예약 시간을 선택하세요'
                   defaultValue={
@@ -232,13 +239,12 @@ export default function ReservationPopup({
                 })}
               </div>
             )}
-            {selectedScheduleId !== null && filteredReservations.length === 0 && (
-              <div className='py-4 text-center'>
-                <p className='text-sm text-gray-500'>
-                  예약 내역이 없습니다.
-                </p>
-              </div>
-            )}
+            {selectedScheduleId !== null &&
+              filteredReservations.length === 0 && (
+                <div className='py-4 text-center'>
+                  <p className='text-sm text-gray-500'>예약 내역이 없습니다.</p>
+                </div>
+              )}
           </div>
         </div>
       </>

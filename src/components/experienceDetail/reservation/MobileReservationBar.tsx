@@ -137,7 +137,7 @@ export default function MobileReservationBar({
                   <>
                     {/* 1단계: 날짜와 시간 선택 */}
                     <div className='flex flex-col gap-6'>
-                      <div className='max-h-[40vh] overflow-y-auto'>
+                      <div>
                         <Calendar
                           selectedDate={selectedDate}
                           availableDates={availableDates}
@@ -228,7 +228,7 @@ export default function MobileReservationBar({
               <div className='hidden md:block'>
                 <div className='flex gap-6 md:flex-row'>
                   {/* 캘린더 */}
-                  <div className='max-h-[50vh] flex-1 overflow-y-auto'>
+                  <div className='flex-1'>
                     <Calendar
                       selectedDate={selectedDate}
                       availableDates={availableDates}
