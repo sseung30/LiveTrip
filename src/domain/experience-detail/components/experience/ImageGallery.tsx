@@ -10,7 +10,8 @@ import {
 interface ImageGalleryProps {
   images: string[];
 }
-
+const _GRAY_BLUR_DATA_URL =
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN8++7TGQAJOAObFkNrgwAAAABJRU5ErkJggg==';
 const ANIMATION_DURATION = 300;
 const GALLERY_HEIGHTS = {
   mobile: 'h-64',
@@ -79,6 +80,8 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
                   alt={`체험 이미지 ${index + 1}`}
                   sizes='(max-width: 768px) 100vw, (max-width: 1200px) 66vw, 50vw'
                   className='object-cover'
+                  placeholder='blur'
+                  blurDataURL={_GRAY_BLUR_DATA_URL}
                   fetchPriority='high'
                 />
               </div>
