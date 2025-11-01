@@ -253,11 +253,8 @@ function InnerRegistrationForm({
   const isUploadingAny = Boolean(isBannerUploading || isIntroUploading);
 
   //모달 훅
-  const router = useRouter();
   const { formState } = useFormContext();
-  const { guardLeave, dialogRef, onConfirm, onCancel } = useLeaveGuard(
-    formState.isDirty
-  );
+  const { dialogRef, onConfirm, onCancel } = useLeaveGuard(formState.isDirty);
 
   return (
     <form
