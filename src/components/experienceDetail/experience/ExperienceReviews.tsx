@@ -7,7 +7,7 @@ import type {
   Review,
 } from '@/components/experienceDetail/type';
 import Pagination from '@/components/pagination/Pagination';
-import { fetchReviews } from '@/domain/experienceDetail/api';
+import { getReviews } from '@/domain/experienceDetail/api';
 
 const REVIEWS_PER_PAGE = 3;
 const STAR_COUNT = 5;
@@ -64,7 +64,7 @@ export default function ExperienceReviews({
     setCurrentPage(page);
 
     try {
-      const data = await fetchReviews(activityId, page, REVIEWS_PER_PAGE);
+      const data = await getReviews(activityId, page, REVIEWS_PER_PAGE);
 
       setCurrentReviews(data.reviews);
     } catch (error) {

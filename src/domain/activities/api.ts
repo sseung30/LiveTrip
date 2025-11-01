@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import { apiFetch, BASE_URL } from '@/api/api';
+import { apiFetch } from '@/api/api';
 import createQueryString from '@/api/create-query-string';
 import { fetchRevalidateByTag } from '@/api/revalidate-fetch';
 import type {
@@ -83,6 +83,7 @@ export const updateActivity = async (
     body: JSON.stringify(payload),
   });
   await fetchRevalidateByTag(getAllActivitiesCacheTag);
+  await fetchRevalidateByTag(String(id));
   return res;
 };
 export const createActivity = async (payload: any) => {

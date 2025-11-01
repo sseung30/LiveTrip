@@ -8,10 +8,7 @@ import type {
   ExperienceDetail,
   ReviewResponse,
 } from '@/components/experienceDetail/type';
-import {
-  fetchExperienceDetail,
-  fetchReviews,
-} from '@/domain/experienceDetail/api';
+import { getExperienceDetail, getReviews } from '@/domain/experienceDetail/api';
 import {
   MOCK_EXPERIENCE_DETAIL,
   MOCK_REVIEWS,
@@ -45,8 +42,8 @@ export default async function ExperienceDetailPage({ params }: PageProps) {
 
   try {
     [experience, reviews] = await Promise.all([
-      fetchExperienceDetail(activityId),
-      fetchReviews(activityId, 1, 10),
+      getExperienceDetail(activityId),
+      getReviews(activityId, 1, 10),
     ]);
   } catch {
     console.warn(

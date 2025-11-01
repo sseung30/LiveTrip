@@ -14,7 +14,7 @@ import type {
 import { toast } from '@/components/toast';
 import {
   createReservation,
-  fetchAvailableSchedule,
+  getAvailableSchedule,
 } from '@/domain/experienceDetail/api';
 
 const VALIDATION_MESSAGES = {
@@ -45,7 +45,7 @@ export default function ReservationCard({
       try {
         const year = currentYear.toString();
         const month = currentMonth.toString().padStart(2, '0');
-        const schedules = await fetchAvailableSchedule(
+        const schedules = await getAvailableSchedule(
           experience.id,
           year,
           month
@@ -79,12 +79,14 @@ export default function ReservationCard({
       return [];
     }
 
-    return daySchedule.times.map((time) => { return {
-      id: time.id,
-      date: dateString,
-      startTime: time.startTime,
-      endTime: time.endTime,
-    } });
+    return daySchedule.times.map((time) => {
+      return {
+        id: time.id,
+        date: dateString,
+        startTime: time.startTime,
+        endTime: time.endTime,
+      };
+    });
   };
 
   const validateReservation = () => {
@@ -122,11 +124,15 @@ export default function ReservationCard({
     try {
       const schedules = getFilteredSchedules();
       const selectedSchedule = schedules.find(
-        (schedule) => `${schedule.startTime}-${schedule.endTime}` === selectedTime
+        (schedule) =>
+          `${schedule.startTime}-${schedule.endTime}` === selectedTime
       );
 
       if (!selectedSchedule) {
-        toast({ message: '선택한 시간을 찾을 수 없습니다.', eventType: 'error' });
+        toast({
+          message: '선택한 시간을 찾을 수 없습니다.',
+          eventType: 'error',
+        });
 
         return;
       }
