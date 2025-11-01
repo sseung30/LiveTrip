@@ -9,15 +9,6 @@ import type {
 import type { useInfiniteActivitiesParams } from '@/domain/home/type';
 import { useInfiniteByCursor } from '@/hooks/useInfiniteScroll';
 
-export function useDetailActivity({ activityId }: { activityId: number }) {
-  return useQuery(queryOptions.detail(activityId));
-}
-export function useSchedules({ activityId }: { activityId: number }) {
-  return useQuery(queryOptions.schedules(activityId));
-}
-export function useReviews({ activityId }: { activityId: number }) {
-  return useQuery(queryOptions.reviews(activityId));
-}
 export function useInfiniteActivities({
   category,
   sort,

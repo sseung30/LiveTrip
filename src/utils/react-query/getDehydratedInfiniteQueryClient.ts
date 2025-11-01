@@ -15,7 +15,6 @@ export async function getDehydratedInfiniteQueryClient({
   // 캐싱된 QueryClient를 불러오기
   const queryClient = getQueryClient();
 
-  // 모든 쿼리를 병렬로 prefetch
   await queryClient.prefetchInfiniteQuery({
     queryKey,
     queryFn,

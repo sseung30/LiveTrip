@@ -1,16 +1,17 @@
-import ExperienceDetailClient from '@/app/(with-header)/experiences/[id]/ExperienceDetailClient';
-import ExperienceInfo from '@/components/experienceDetail/experience/ExperienceInfo';
-import ExperienceReviews from '@/components/experienceDetail/experience/ExperienceReviews';
-import ImageGallery from '@/components/experienceDetail/experience/ImageGallery';
-import MobileExperienceHeader from '@/components/experienceDetail/experience/MobileExperienceHeader';
+import ExperienceDetailClient from '@/domain/experience-detail/components/experience/ExperienceDetailClient';
+import ExperienceInfo from '@/domain/experience-detail/components/experience/ExperienceInfo';
+import ExperienceReviews from '@/domain/experience-detail/components/experience/ExperienceReviews';
+import ImageGallery from '@/domain/experience-detail/components/experience/ImageGallery';
+import KakaoMapScript from '@/domain/experience-detail/components/experience/KakaoMapScript';
+import MobileExperienceHeader from '@/domain/experience-detail/components/experience/MobileExperienceHeader';
 import type {
   ExperienceDetail,
   ReviewResponse,
-} from '@/components/experienceDetail/type';
+} from '@/domain/experience-detail/type';
 import {
-  fetchExperienceDetail,
-  fetchReviews,
-} from '@/domain/experienceDetail/api';
+  getExperienceDetail,
+  getReviews,
+} from '@/domain/experience-detail/api';
 import {
   MOCK_EXPERIENCE_DETAIL,
   MOCK_REVIEWS,
@@ -44,8 +45,8 @@ export default async function ExperienceDetailPage({ params }: PageProps) {
 
   try {
     [experience, reviews] = await Promise.all([
-      fetchExperienceDetail(activityId),
-      fetchReviews(activityId, 1, 10),
+      getExperienceDetail(activityId),
+      getReviews(activityId, 1, 10),
     ]);
   } catch {
     console.warn(
@@ -63,6 +64,7 @@ export default async function ExperienceDetailPage({ params }: PageProps) {
 
   return (
     <div className='min-h-screen'>
+      <KakaoMapScript />
       {/* 메인 콘텐츠 */}
       <div className='mx-auto max-w-7xl px-4 py-4 pb-32 sm:px-6 sm:py-6 sm:pb-32 lg:px-8 lg:py-8 lg:pb-60'>
         <div className='grid grid-cols-1 gap-6 lg:grid-cols-3 lg:gap-8'>

@@ -1,9 +1,4 @@
-import {
-  getActivitiyAvailableSchedule,
-  getActivitiyReviews,
-  getAllActivitiesWithCache,
-  getDetailActivity,
-} from '@/domain/activities/api';
+import { getAllActivitiesWithCache } from '@/domain/activities/api';
 import type {
   activityCategory,
   getAllActivitiesParams,
@@ -37,30 +32,6 @@ export const queryOptions = {
       queryKey: queryKeys.all(category, sort || 'latest', keyword),
       queryFn: () =>
         getAllActivitiesWithCache({ category, sort, size, method, keyword }),
-    };
-  },
-  detail: (activityId: number) => {
-    return {
-      queryKey: queryKeys.detail(activityId),
-      queryFn: () => {
-        getDetailActivity();
-      },
-    };
-  },
-  schedules: (activityId: number) => {
-    return {
-      queryKey: queryKeys.schedules(activityId),
-      queryFn: () => {
-        getActivitiyAvailableSchedule();
-      },
-    };
-  },
-  reviews: (activityId: number) => {
-    return {
-      queryKey: queryKeys.reviews(activityId),
-      queryFn: () => {
-        getActivitiyReviews();
-      },
     };
   },
 };
