@@ -113,7 +113,7 @@ export default function Calendar({
       return 'bg-primary-100 text-primary-700 rounded-full font-bold cursor-pointer hover:bg-primary-200';
     }
 
-    return 'rounded-full text-gray-700 hover:bg-gray-100 cursor-pointer';
+    return 'rounded-full text-gray-900 font-bold hover:bg-gray-100 cursor-pointer';
   };
 
   return (

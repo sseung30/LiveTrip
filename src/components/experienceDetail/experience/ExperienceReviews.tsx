@@ -87,18 +87,34 @@ export default function ExperienceReviews({
 
         {/* 전체 평점 */}
         <div className='flex flex-col items-center gap-2'>
-          <span className='text-3xl font-bold text-gray-950'>
-            {averageRating}
-          </span>
-          <span className='text-sm font-bold text-gray-950'>
-            {getSatisfactionLevel(averageRating)}
-          </span>
-          <div className='flex items-center gap-1'>
-            <Image src='/icons/star.svg' alt='별점' width={16} height={16} />
-            <span className='text-sm text-gray-700'>
-              {totalReviews.toLocaleString()}개 후기
-            </span>
-          </div>
+          {totalReviews === 0 ? (
+            <>
+              <span className='text-3xl font-bold text-gray-950'>-</span>
+              <span className='text-sm font-bold text-gray-500'>
+                아직 리뷰가 없습니다
+              </span>
+            </>
+          ) : (
+            <>
+              <span className='text-3xl font-bold text-gray-950'>
+                {averageRating.toFixed(2)}
+              </span>
+              <span className='text-sm font-bold text-gray-950'>
+                {getSatisfactionLevel(averageRating)}
+              </span>
+              <div className='flex items-center gap-1'>
+                <Image
+                  src='/icons/star.svg'
+                  alt='별점'
+                  width={16}
+                  height={16}
+                />
+                <span className='text-sm text-gray-700'>
+                  {totalReviews.toLocaleString()}개 후기
+                </span>
+              </div>
+            </>
+          )}
         </div>
       </div>
 
@@ -109,7 +125,7 @@ export default function ExperienceReviews({
             <div className='text-gray-500'>리뷰를 불러오는 중...</div>
           </div>
         )}
-        {!isLoading && currentReviews.length === 0 && (
+        {!isLoading && currentReviews.length === 0 && totalReviews > 0 && (
           <div className='flex items-center justify-center py-12'>
             <div className='text-gray-500'>아직 리뷰가 없습니다.</div>
           </div>

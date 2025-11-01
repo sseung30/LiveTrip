@@ -106,11 +106,11 @@ export function BottomSheetContainer({
       {...dragBind()}
       style={{ y }}
       className={
-        'top-auto bottom-0 mx-auto flex h-96 w-dvw touch-none flex-col items-center rounded-t-[1.875rem] bg-white text-gray-950 not-open:hidden backdrop:bg-black/50'
+        'top-auto bottom-0 mx-auto flex max-h-[90vh] w-dvw touch-none flex-col items-center rounded-t-[1.875rem] bg-white text-gray-950 not-open:hidden backdrop:bg-black/50'
       }
       onClick={handleOutsideClick}
     >
-      <div className='h-full w-full p-[1.875rem]'>
+      <div className='scrollbar-hide max-h-[90vh] w-full overflow-y-auto p-[1.875rem]'>
         {children({ closeDialog })}
       </div>
     </animated.dialog>

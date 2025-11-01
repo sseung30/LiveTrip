@@ -21,6 +21,7 @@ const GALLERY_HEIGHTS = {
 export default function ImageGallery({ images }: ImageGalleryProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [failedImages, setFailedImages] = useState<Set<string>>(new Set());
 
   const goToIndex = useCallback(
     (index: number) => {
@@ -70,15 +71,28 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
           style={{ transform: `translateX(-${currentIndex * 100}%)` }}
         >
           {images.map((image, index) => {
+            const imageSrc = failedImages.has(image)
+              ? '/images/fallback_cloud.webp'
+              : image;
+
             return (
               <div key={image} className='relative h-full w-full flex-shrink-0'>
                 <Image
                   fill
                   priority={index === 0}
-                  src={image}
+                  src={imageSrc}
                   alt={`체험 이미지 ${index + 1}`}
                   sizes='(max-width: 768px) 100vw, (max-width: 1200px) 66vw, 50vw'
                   className='object-cover'
+                  onError={() => {
+                    setFailedImages((prev) => {
+                      const newSet = new Set(prev);
+
+                      newSet.add(image);
+
+                      return newSet;
+                    });
+                  }}
                 />
               </div>
             );
