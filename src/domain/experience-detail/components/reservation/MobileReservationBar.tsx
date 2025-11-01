@@ -4,13 +4,13 @@ import { useCallback, useEffect, useState } from 'react';
 import Button from '@/components/button/Button';
 import { BottomSheetContainer } from '@/components/dialog/BottomSheet/BottomSheetContainer';
 import { useDialog } from '@/components/dialog/useDialog';
-import Calendar from '@/components/experienceDetail/reservation/Calendar';
-import ParticipantCounter from '@/components/experienceDetail/reservation/ParticipantCounter';
-import TimeSelector from '@/components/experienceDetail/reservation/TimeSelector';
+import Calendar from '@/domain/experience-detail/components/reservation/Calendar';
+import ParticipantCounter from '@/domain/experience-detail/components/reservation/ParticipantCounter';
+import TimeSelector from '@/domain/experience-detail/components/reservation/TimeSelector';
 import type {
   ExperienceDetail,
   Schedule,
-} from '@/components/experienceDetail/type';
+} from '@/domain/experience-detail/type';
 
 interface MobileReservationBarProps {
   experience: ExperienceDetail;

@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import ReservationCard from '@/components/experienceDetail/reservation/ReservationCard';
-import type { ExperienceDetail } from '@/components/experienceDetail/type';
+import ReservationCard from '@/domain/experience-detail/components/reservation/ReservationCard';
+import type { ExperienceDetail } from '@/domain/experience-detail/type';
 
 interface ExperienceDetailClientProps {
   experience: ExperienceDetail;

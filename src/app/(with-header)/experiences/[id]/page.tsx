@@ -1,14 +1,17 @@
-import ExperienceDetailClient from '@/app/(with-header)/experiences/[id]/ExperienceDetailClient';
-import ExperienceInfo from '@/components/experienceDetail/experience/ExperienceInfo';
-import ExperienceReviews from '@/components/experienceDetail/experience/ExperienceReviews';
-import ImageGallery from '@/components/experienceDetail/experience/ImageGallery';
-import KakaoMapScript from '@/components/experienceDetail/experience/KakaoMapScript';
-import MobileExperienceHeader from '@/components/experienceDetail/experience/MobileExperienceHeader';
+import ExperienceDetailClient from '@/domain/experience-detail/components/experience/ExperienceDetailClient';
+import ExperienceInfo from '@/domain/experience-detail/components/experience/ExperienceInfo';
+import ExperienceReviews from '@/domain/experience-detail/components/experience/ExperienceReviews';
+import ImageGallery from '@/domain/experience-detail/components/experience/ImageGallery';
+import KakaoMapScript from '@/domain/experience-detail/components/experience/KakaoMapScript';
+import MobileExperienceHeader from '@/domain/experience-detail/components/experience/MobileExperienceHeader';
 import type {
   ExperienceDetail,
   ReviewResponse,
-} from '@/components/experienceDetail/type';
-import { getExperienceDetail, getReviews } from '@/domain/experienceDetail/api';
+} from '@/domain/experience-detail/type';
+import {
+  getExperienceDetail,
+  getReviews,
+} from '@/domain/experience-detail/api';
 import {
   MOCK_EXPERIENCE_DETAIL,
   MOCK_REVIEWS,

@@ -1,21 +1,21 @@
-import type { ExperienceDetail } from '@/components/experienceDetail/type';
+import type { ExperienceDetail } from '@/domain/experience-detail/type';
 import LocationInfo from '@/components/ui/LocationInfo';
 import StarRating from '@/components/ui/StarRating';
 
-interface MobileExperienceHeaderProps {
+interface ExperienceHeaderProps {
   experience: ExperienceDetail;
 }
 
-export default function MobileExperienceHeader({
+export default function ExperienceHeader({
   experience,
-}: MobileExperienceHeaderProps) {
+}: ExperienceHeaderProps) {
   return (
     <div className='relative mb-7'>
-      <div className='mx-auto max-w-md'>
+      <div>
         <div className='mb-2 text-sm font-medium text-gray-600'>
           {experience.category}
         </div>
-        <h1 className='mb-2 text-xl font-bold text-gray-900'>
+        <h1 className='mb-2 pr-12 text-xl font-bold text-gray-900'>
           {experience.title}
         </h1>
         <div className='mb-2'>
@@ -27,9 +27,8 @@ export default function MobileExperienceHeader({
         <div className='mb-6'>
           <LocationInfo address={experience.address} />
         </div>
+        <p className='text-sm text-gray-700'>{experience.shortDescription}</p>
       </div>
-      {/* 구분선 */}
-      <div className='mt-6 border-t border-gray-200'></div>
     </div>
   );
 }

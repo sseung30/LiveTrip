@@ -40,10 +40,8 @@ export default function RootLayout({
       <body className={cx(pretendardVariable.className, notoSans.variable)}>
         <ReactQueryProvider>
           <SessionProvider>
-            <div>
-              {children}
-              <ToastContainer />
-            </div>
+            {children}
+            <ToastContainer />
           </SessionProvider>
         </ReactQueryProvider>
       </body>

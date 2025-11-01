@@ -3,8 +3,8 @@ import {
   QueryClient,
   dehydrate,
 } from '@tanstack/react-query';
-import { fetchMyActivities } from '@/domain/reservationStatus/api';
-import ReservationStatusClient from '@/app/(with-header)/(with-sidemenu)/reservation-status/ReservationStatusClient';
+import { fetchMyActivities } from '@/domain/reservation-status/api';
+import ReservationStatusClient from '@/domain/reservation-status/components/ReservationStatusClient';
 
 export default async function ReservationStatusPage() {
   const queryClient = new QueryClient();

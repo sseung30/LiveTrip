@@ -3,15 +3,15 @@ import { useActionState, useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 import { apiFetch } from '@/api/api';
 import Button from '@/components/button/Button';
-import CardList from '@/components/cardList/CardList';
+import CardList from '@/domain/myreservation/components/CardList';
 import {
   AlertModalContents,
   ModalContainer,
   useDialog,
 } from '@/components/dialog';
 import { toast } from '@/components/toast';
-import { ReviewModalContents } from '@/domain/myreservations/components/ReviewModalContents';
-import type { MyReservations, Reservation } from '@/domain/myreservations/type';
+import { ReviewModalContents } from '@/domain/myreservation/components/ReviewModalContents';
+import type { MyReservations, Reservation } from '@/domain/myreservation/type';
 import { useInfiniteByCursor } from '@/hooks/useInfiniteScroll';
 import useIntersectionObserver from '@/hooks/useIntersectionObserver';
 import EmptyResult from '@/components/ui/EmptyResult';

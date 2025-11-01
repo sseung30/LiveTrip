@@ -5,9 +5,9 @@ import { useState } from 'react';
 import type {
   ExperienceReviewsProps,
   Review,
-} from '@/components/experienceDetail/type';
+} from '@/domain/experience-detail/type';
 import Pagination from '@/components/pagination/Pagination';
-import { getReviews } from '@/domain/experienceDetail/api';
+import { getReviews } from '@/domain/experience-detail/api';
 
 const REVIEWS_PER_PAGE = 3;
 const STAR_COUNT = 5;

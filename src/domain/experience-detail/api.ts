@@ -5,7 +5,7 @@ import type {
   ReservationRequest,
   ReservationResponse,
   ReviewResponse,
-} from '@/components/experienceDetail/type';
+} from '@/domain/experience-detail/type';
 
 /**
  * 체험 상세 조회

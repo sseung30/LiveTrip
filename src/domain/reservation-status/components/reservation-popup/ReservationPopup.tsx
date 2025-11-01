@@ -5,12 +5,12 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { BottomSheetContainer } from '@/components/dialog/BottomSheet/BottomSheetContainer';
 import { useDialog } from '@/components/dialog/useDialog';
 import SelectDropdown from '@/components/dropdown/SelectDropdown';
-import ReservationCard from '@/components/reservationPopup/ReservationCard';
+import ReservationCard from '@/domain/reservation-status/components/reservation-popup/ReservationCard';
 import type {
   ReservationDetail,
   ReservationPopupProps,
   ReservationStatusType,
-} from '@/components/reservationPopup/type';
+} from '@/domain/reservation-status/components/reservation-popup/type';
 
 const TAB_CONFIG: Record<ReservationStatusType, { label: string }> = {
   pending: { label: '신청' },
@@ -70,16 +70,23 @@ export default function ReservationPopup({
 
   const { totalCounts, filteredReservationsBySchedule } = useMemo(() => {
     const counts = { pending: 0, confirmed: 0, declined: 0 };
-    const filtered: { pending: ReservationDetail[]; confirmed: ReservationDetail[]; declined: ReservationDetail[] } = { 
-      pending: [], 
-      confirmed: [], 
-      declined: [] 
+    const filtered: {
+      pending: ReservationDetail[];
+      confirmed: ReservationDetail[];
+      declined: ReservationDetail[];
+    } = {
+      pending: [],
+      confirmed: [],
+      declined: [],
     };
 
     reservations.forEach((reservation) => {
       counts[reservation.status] = counts[reservation.status] + 1;
 
-      if (selectedScheduleId !== null && reservation.scheduleId === selectedScheduleId) {
+      if (
+        selectedScheduleId !== null &&
+        reservation.scheduleId === selectedScheduleId
+      ) {
         filtered[reservation.status].push(reservation);
       }
     });
@@ -232,13 +239,12 @@ export default function ReservationPopup({
                 })}
               </div>
             )}
-            {selectedScheduleId !== null && filteredReservations.length === 0 && (
-              <div className='py-4 text-center'>
-                <p className='text-sm text-gray-500'>
-                  예약 내역이 없습니다.
-                </p>
-              </div>
-            )}
+            {selectedScheduleId !== null &&
+              filteredReservations.length === 0 && (
+                <div className='py-4 text-center'>
+                  <p className='text-sm text-gray-500'>예약 내역이 없습니다.</p>
+                </div>
+              )}
           </div>
         </div>
       </>

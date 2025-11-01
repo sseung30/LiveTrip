@@ -1,21 +1,21 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import ExperienceHeader from '@/components/experienceDetail/experience/ExperienceHeader';
-import Calendar from '@/components/experienceDetail/reservation/Calendar';
-import MobileReservationBar from '@/components/experienceDetail/reservation/MobileReservationBar';
-import ParticipantCounter from '@/components/experienceDetail/reservation/ParticipantCounter';
-import TimeSelector from '@/components/experienceDetail/reservation/TimeSelector';
+import ExperienceHeader from '@/domain/experience-detail/components/experience/ExperienceHeader';
+import Calendar from '@/domain/experience-detail/components/reservation/Calendar';
+import MobileReservationBar from '@/domain/experience-detail/components/reservation/MobileReservationBar';
+import ParticipantCounter from '@/domain/experience-detail/components/reservation/ParticipantCounter';
+import TimeSelector from '@/domain/experience-detail/components/reservation/TimeSelector';
 import type {
   AvailableSchedule,
   ReservationCardProps,
   Schedule,
-} from '@/components/experienceDetail/type';
+} from '@/domain/experience-detail/type';
 import { toast } from '@/components/toast';
 import {
   createReservation,
   getAvailableSchedule,
-} from '@/domain/experienceDetail/api';
+} from '@/domain/experience-detail/api';
 
 const VALIDATION_MESSAGES = {
   NO_DATE: '날짜를 선택해주세요.',

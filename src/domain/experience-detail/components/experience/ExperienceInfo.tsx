@@ -1,6 +1,6 @@
 'use client';
 
-import type { ExperienceInfoProps } from '@/components/experienceDetail/type';
+import type { ExperienceInfoProps } from '@/domain/experience-detail/type';
 import KakaoMap from '@/components/ui/KakaoMap';
 import Section from '@/components/ui/Section';
 

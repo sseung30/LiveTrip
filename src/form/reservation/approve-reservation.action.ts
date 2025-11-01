@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { approveReservation } from '@/domain/reservationStatus/api';
+import { approveReservation } from '@/domain/reservation-status/api';
 
 interface ApproveState {
   status: 'idle' | 'success' | 'error';
