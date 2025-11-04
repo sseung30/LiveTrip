@@ -11,6 +11,7 @@ export default function RegisterActivity() {
 
   return (
     <Button variant='primary' classNames='w-[138px]' onClick={handleClick}>
+      {/* 여기도 a 태그? */}
       체험 등록하기
     </Button>
   );
