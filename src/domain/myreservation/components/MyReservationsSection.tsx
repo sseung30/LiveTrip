@@ -2,7 +2,6 @@
 import { useActionState, useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { apiFetch } from '@/api/api';
 import Button from '@/components/button/Button';
 import { CategoryIcon } from '@/domain/home/components/svg';
 import CardList from '@/domain/myreservation/components/CardList';
@@ -13,10 +12,11 @@ import {
 } from '@/components/dialog';
 import { toast } from '@/components/toast';
 import { ReviewModalContents } from '@/domain/myreservation/components/ReviewModalContents';
-import type { MyReservations, Reservation } from '@/domain/myreservation/type';
-import { useInfiniteByCursor } from '@/hooks/useInfiniteScroll';
+import type { Reservation } from '@/domain/myreservation/type';
 import useIntersectionObserver from '@/hooks/useIntersectionObserver';
 import EmptyResult from '@/components/ui/EmptyResult';
+import { cancelReservation } from '@/domain/myreservation/api';
+import { useMyReservations } from '@/domain/myreservation/hooks/useMyReservations';
 
 const STATUSES = [
   '예약 신청',
@@ -46,18 +46,14 @@ const deleteAction = async (
     return { state: 'error' };
   }
 
-  const body = { status: 'canceled' };
+  const result = await cancelReservation(id);
 
-  try {
-    await apiFetch(`/my-reservations/${id}`, {
-      method: 'PATCH',
-      body: JSON.stringify(body),
-    });
-    toast({ message: '예약이 취소되었습니다', eventType: 'success' });
-  } catch (error) {
-    console.error('error', error);
+  if (!result.ok) {
+    toast({ message: '예약 취소에 실패했습니다.', eventType: 'error' });
+    return { state: 'error' };
   }
 
+  toast({ message: '예약이 취소되었습니다', eventType: 'success' });
   return { state: 'success' };
 };
 
@@ -70,7 +66,6 @@ const ReviewModalAction = async () => {
 };
 
 export default function MyReservationsSection() {
-  const pageSize = 5;
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
 
   // #68 후기 모달 컴포넌트 하나만 배치
@@ -90,10 +85,6 @@ export default function MyReservationsSection() {
 
   const [rating, setRating] = useState<number>(0);
   const [inputText, setInputText] = useState<string>();
-
-  const onChangeReservation = () => {
-    console.log('예약 변경');
-  };
 
   const [targetId, setTargetId] = useState<number | null>(null);
 
@@ -118,50 +109,23 @@ export default function MyReservationsSection() {
     setInputText('');
   };
 
-  const [version, setVersion] = useState(0);
-  const {
-    items: reservationList,
-    totalCount,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    isLoading,
-  } = useInfiniteByCursor<MyReservations, Reservation>({
-    queryKey: ['myReservations', version],
-    initialCursor: 0,
-    buildUrl: (cursor) => {
-      const url =
-        cursor !== 0
-          ? `/my-reservations?cursorId=${cursor}&size=${pageSize}`
-          : `/my-reservations?size=${pageSize}`;
-
-      return url;
-    },
-    selectItems: (view) => view.reservations,
-    selectNextCursor: (view) => {
-      const list = view.reservations;
-
-      if (list.length < pageSize) {
-        return undefined;
-      }
-
-      return list[list.length - 1]?.id;
-    },
-    selectTotalCount: (first) => first?.totalCount ?? 0,
-    pageSize,
-  });
-
-  const hasReservations = Boolean(totalCount);
-
   useEffect(() => {
     if (deleteModalState.state !== 'success') {
       return;
     }
-    setVersion((v) => v + 1);
   }, [deleteModalState]);
 
   const [page, setPage] = useState(0);
   const containerRef = useRef<HTMLDivElement | null>(null);
+
+  const {
+    reservationList,
+    hasReservations,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+  } = useMyReservations();
 
   const { loader } = useIntersectionObserver({
     loading: isFetchingNextPage,
@@ -300,9 +264,6 @@ export default function MyReservationsSection() {
                     capacity={10}
                     reviewSubmitted={r.reviewSubmitted}
                     thumbnailUrl={r.activity.bannerImageUrl}
-                    onChangeReservation={() => {
-                      onChangeReservation();
-                    }}
                     onCancelReservation={() => {
                       onCancelReservation(r.id);
                     }}
