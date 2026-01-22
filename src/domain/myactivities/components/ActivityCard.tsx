@@ -1,17 +1,7 @@
 'use client';
 import Image from 'next/image';
+import Link from 'next/link';
 import type { ActivityCardProps } from '@/domain/myactivities/components/type';
-import { useRouter } from 'next/navigation';
-
-const useGoEdit = () => {
-  const router = useRouter();
-
-  const goEditById = (id: number) => {
-    router.push(`/myactivities/${id}/edit`);
-  };
-
-  return { goEditById };
-};
 
 export default function ActivityCard({
   id,
@@ -23,8 +13,6 @@ export default function ActivityCard({
   onDelete,
 }: ActivityCardProps) {
   const formattedPrice = `₩${price.toLocaleString()}`;
-
-  const { goEditById } = useGoEdit();
 
   return (
     <div>
@@ -56,14 +44,12 @@ export default function ActivityCard({
               <p className='text-14 font-medium text-gray-400'>/ 인</p>
             </div>
             <div className='flex gap-2'>
-              <button
-                className='text-14 h-[29px] w-[68px] rounded-lg border border-gray-50 font-medium text-gray-600'
-                onClick={() => {
-                  goEditById(id);
-                }}
+              <Link
+                href={`/myactivities/${id}/edit`}
+                className='text-14 flex h-[29px] w-[68px] items-center justify-center rounded-lg border border-gray-50 font-medium text-gray-600'
               >
                 수정하기
-              </button>
+              </Link>
               <button
                 className='text-14 h-[29px] w-[68px] rounded-lg bg-gray-50 font-medium text-gray-600'
                 onClick={onDelete}
@@ -110,14 +96,12 @@ export default function ActivityCard({
               <p className='text-14 font-medium text-gray-400'>/ 인</p>
             </div>
             <div className='flex gap-2'>
-              <button
-                className='text-14 h-[29px] w-[68px] rounded-lg border border-gray-50 font-medium text-gray-600'
-                onClick={() => {
-                  goEditById(id);
-                }}
+              <Link
+                href={`/myactivities/${id}/edit`}
+                className='text-14 flex h-[29px] w-[68px] items-center justify-center rounded-lg border border-gray-50 font-medium text-gray-600'
               >
                 수정하기
-              </button>
+              </Link>
               <button
                 className='text-14 h-[29px] w-[68px] rounded-lg bg-gray-50 font-medium text-gray-600'
                 onClick={onDelete}
@@ -162,14 +146,12 @@ export default function ActivityCard({
               <p className='text-16 font-medium text-gray-400'>/ 인</p>
             </div>
             <div className='flex gap-2'>
-              <button
-                className='text-14 h-[29px] w-[68px] rounded-lg border border-gray-50 font-medium text-gray-600'
-                onClick={() => {
-                  goEditById(id);
-                }}
+              <Link
+                href={`/myactivities/${id}/edit`}
+                className='text-14 flex h-[29px] w-[68px] items-center justify-center rounded-lg border border-gray-50 font-medium text-gray-600'
               >
                 수정하기
-              </button>
+              </Link>
               <button
                 className='text-14 h-[29px] w-[68px] rounded-lg bg-gray-50 font-medium text-gray-600'
                 onClick={onDelete}
