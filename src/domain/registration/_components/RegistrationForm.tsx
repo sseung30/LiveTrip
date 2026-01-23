@@ -7,20 +7,11 @@ import {
   type SubmitErrorHandler,
   type SubmitHandler,
   useForm,
-  useFormContext,
 } from 'react-hook-form';
 import { ApiError } from '@/api/api';
 import { useQueryClient } from '@tanstack/react-query';
-import Button from '@/components/button/Button';
-import { ModalContainer } from '@/components/dialog/Modal/ModalContainer';
 import { toast } from '@/components/toast';
-import { BasicInfoFields } from '@/domain/registration/_components/BasicInfoFields';
-import ClientConfirmModal from '@/domain/registration/_components/ClientConfirmModal';
-import { ImageUploader } from '@/domain/registration/_components/ImageUploader';
-import { TimeSlotsField } from '@/domain/registration/_components/TimeSlotsField';
-import { useBannerImageUpload } from '@/domain/registration/_hooks/useBannerImageUpload';
-import { useIntroImageUpload } from '@/domain/registration/_hooks/useIntroImageUpload';
-import { useLeaveGuard } from '@/domain/registration/_hooks/useLeaveGuard';
+
 import { buildRegistrationPayload } from '@/domain/registration/_utils/buildRegistrationPayload';
 import { buildUpdatePayload } from '@/domain/registration/_utils/buildUpdatePayload';
 import {
@@ -30,21 +21,10 @@ import {
 import type { FormValues } from '@/domain/registration/types';
 import type { ActivityDetail } from '@/domain/activities/api';
 import { createActivity, updateActivity } from '@/domain/activities/api';
-
-const CATEGORY_OPTIONS = [
-  { label: '문화 · 예술', value: '문화 · 예술' },
-  { label: '식음료', value: '식음료' },
-  { label: '스포츠', value: '스포츠' },
-  { label: '투어', value: '투어' },
-  { label: '관광', value: '관광' },
-  { label: '웰빙', value: '웰빙' },
-];
-
-const MAX_IMAGE_COUNT_BANNER = 1;
-const MAX_IMAGE_COUNT_INTRO = 4;
+import InnerRegistrationForm from '@/domain/registration/_components/InnerRegistrationForm';
+import { normalizeSubImages } from '../_utils/normalizeSubImages';
 
 type Mode = 'create' | 'edit';
-
 interface RegistrationFormProps {
   mode: Mode;
   initialData?: ActivityDetail;
@@ -58,19 +38,6 @@ export default function RegistrationForm({
 }: RegistrationFormProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const normalizeSubImages = (data?: ActivityDetail): string[] => {
-    if (!data) return [];
-    if (Array.isArray(data.subImageUrls)) return data.subImageUrls;
-    if (Array.isArray((data as any).subImages)) {
-      const arr = (data as any).subImages as Array<
-        string | { imageUrl: string }
-      >;
-      return arr
-        .map((item) => (typeof item === 'string' ? item : item.imageUrl))
-        .filter(Boolean);
-    }
-    return [];
-  };
 
   const defaults: FormValues = {
     title: initialData?.title ?? '',
@@ -223,117 +190,5 @@ export default function RegistrationForm({
         onChangeTimeSlot={handleChangeTimeSlot}
       />
     </FormProvider>
-  );
-}
-
-function InnerRegistrationForm({
-  isSubmitting,
-  formRef,
-  handleSubmit,
-  onSubmit,
-  onInvalid,
-  mode,
-  timeSlots,
-  onAddTimeSlot,
-  onRemoveTimeSlot,
-  onChangeTimeSlot,
-}: any) {
-  // ✅ 배너 이미지 훅
-  const {
-    image: bannerImage,
-    handleUploadBanner,
-    removeImage: removeBanner,
-    isUploading: isBannerUploading,
-  } = useBannerImageUpload();
-
-  // ✅ 소개 이미지 훅
-  const {
-    images: introImages,
-    handleUpload: handleUploadIntro,
-    removeImage: removeIntro,
-    isUploading: isIntroUploading,
-  } = useIntroImageUpload(MAX_IMAGE_COUNT_INTRO);
-
-  const isUploadingAny = Boolean(isBannerUploading || isIntroUploading);
-
-  //모달 훅
-  const { formState } = useFormContext();
-  const { dialogRef, onConfirm, onCancel } = useLeaveGuard(formState.isDirty);
-
-  return (
-    <form
-      ref={formRef}
-      className='flex flex-col gap-8'
-      onSubmit={handleSubmit(onSubmit, onInvalid)} // ✅ react-hook-form submit 연결
-    >
-      <BasicInfoFields categoryOptions={CATEGORY_OPTIONS} />
-
-      <TimeSlotsField
-        timeSlots={timeSlots}
-        timeOptions={Array.from(
-          { length: 48 },
-          (_, i) =>
-            `${String(Math.floor(i / 2)).padStart(2, '0')}:${i % 2 ? '30' : '00'}`
-        )}
-        onAdd={onAddTimeSlot}
-        onRemove={onRemoveTimeSlot}
-        onChange={onChangeTimeSlot}
-      />
-
-      {/* ✅ 배너 이미지 */}
-      <ImageUploader
-        title='배너 이미지 등록'
-        required
-        description='최대 1장까지 등록할 수 있어요.'
-        images={bannerImage ? [bannerImage] : []}
-        maxCount={MAX_IMAGE_COUNT_BANNER}
-        inputId='banner-image-upload'
-        onUpload={handleUploadBanner}
-        onRemove={() => {
-          removeBanner();
-        }}
-      />
-
-      {/* ✅ 소개 이미지 */}
-      <ImageUploader
-        title='소개 이미지 등록'
-        required
-        description='최대 4장까지 등록할 수 있어요.'
-        images={introImages}
-        maxCount={MAX_IMAGE_COUNT_INTRO}
-        inputId='intro-images-upload'
-        onUpload={handleUploadIntro}
-        onRemove={removeIntro}
-      />
-
-      <div className='mt-8 flex justify-center'>
-        <Button
-          type='submit'
-          variant='primary'
-          disabled={isUploadingAny || isSubmitting}
-          classNames='w-[120px] !text-white text-14 font-bold md:text-14'
-        >
-          {isUploadingAny
-            ? '업로드 중...'
-            : isSubmitting
-              ? mode === 'edit'
-                ? '수정 중...'
-                : '등록 중...'
-              : mode === 'edit'
-                ? '수정하기'
-                : '등록하기'}
-        </Button>
-      </div>
-
-      <ModalContainer dialogRef={dialogRef} onClose={onCancel}>
-        <ClientConfirmModal
-          message={`저장되지 않았습니다.\n 정말 뒤로 가시겠습니까?`}
-          cancelText='아니오'
-          confirmText='네'
-          onCancel={onCancel}
-          onConfirm={onConfirm}
-        />
-      </ModalContainer>
-    </form>
   );
 }
