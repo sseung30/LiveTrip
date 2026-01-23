@@ -12,11 +12,6 @@ import {
   getExperienceDetail,
   getReviews,
 } from '@/domain/experience-detail/api';
-import {
-  MOCK_EXPERIENCE_DETAIL,
-  MOCK_REVIEWS,
-} from '@/mocks/experienceDetailMock';
-
 interface PageProps {
   params: Promise<{ id: string }>;
 }
@@ -40,21 +35,10 @@ export default async function ExperienceDetailPage({ params }: PageProps) {
   const { id } = await params;
   const activityId = Number(id);
 
-  let experience: ExperienceDetail;
-  let reviews: ReviewResponse;
-
-  try {
-    [experience, reviews] = await Promise.all([
-      getExperienceDetail(activityId),
-      getReviews(activityId, 1, 10),
-    ]);
-  } catch {
-    console.warn(
-      `API에서 체험 ID ${activityId}를 찾을 수 없어 Mock 데이터를 사용합니다.`
-    );
-    experience = MOCK_EXPERIENCE_DETAIL;
-    reviews = MOCK_REVIEWS;
-  }
+  let [experience, reviews] = await Promise.all([
+    getExperienceDetail(activityId),
+    getReviews(activityId, 1, 10),
+  ]);
 
   const imageArray = createImageArray(experience);
   const reviewData = extractReviewData(reviews);
