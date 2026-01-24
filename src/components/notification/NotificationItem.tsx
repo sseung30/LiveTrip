@@ -35,9 +35,13 @@ function formattedContents(content: string) {
 }
 
 function formattedMilliseconds(ms: number) {
-  ms -= 32400000; // +9시간
+  /**
+   * +9시간 (9 * 60 * 60 * 1000)
+   */
+  const SEOUL_TIMEZONE_OFFSET = 32400000;
+  const adjustedMs = ms - SEOUL_TIMEZONE_OFFSET;
 
-  if (ms < 1000) {
+  if (adjustedMs < 1000) {
     return '방금 전';
   }
 
@@ -51,8 +55,8 @@ function formattedMilliseconds(ms: number) {
   ];
 
   for (const unit of units) {
-    if (ms >= unit.ms) {
-      const formattedResult = Math.floor(ms / unit.ms);
+    if (adjustedMs >= unit.ms) {
+      const formattedResult = Math.floor(adjustedMs / unit.ms);
 
       return `${formattedResult}${unit.label} 전`;
     }

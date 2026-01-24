@@ -1,6 +1,6 @@
-import type { ExperienceDetail } from '@/domain/experience-detail/type';
 import LocationInfo from '@/components/ui/LocationInfo';
 import StarRating from '@/components/ui/StarRating';
+import type { ExperienceDetail } from '@/domain/experience-detail/type';
 
 interface MobileExperienceHeaderProps {
   experience: ExperienceDetail;

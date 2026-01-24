@@ -1,5 +1,5 @@
 import Skeleton from 'react-loading-skeleton';
-import GridCardListSkeleton from '../GridCardListSkeleton';
+import GridCardListSkeleton from '@/domain/home/components/GridCardListSkeleton';
 
 export default function SearchResultSkeleton() {
   return (

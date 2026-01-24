@@ -1,6 +1,7 @@
 'use server';
 
 import { ApiError, apiFetch } from '@/api/api';
+import { toast } from '@/components/toast';
 
 interface UploadResponse {
   activityImageUrl: string;
@@ -25,6 +26,8 @@ export async function uploadImageAction(formData: FormData) {
 
     return { success: true, url: data.activityImageUrl };
   } catch (error) {
-    // ApiError면 메시지를 그대로 노출
+    if (error instanceof ApiError) {
+      toast({ message: error.message, eventType: 'error' });
+    }
   }
 }

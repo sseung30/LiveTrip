@@ -2,6 +2,7 @@ import Image from 'next/image';
 
 const _BLUR_DATA_URL =
   'data:image/webp;base64,UklGRpoAAABXRUJQVlA4WAoAAAAQAAAABwAABAAAQUxQSAwAAAABD9D/iAjMf0T/AwJWUDggaAAAAFADAJ0BKggABQABQCYlsAJ0ugH4AfiA2QD9ALNuBl96kA6gAP75Z51e8FBt59L/pGne0IdQe7jaWeCEH7/+S3vqolH2ah3O6qfMh0gN/+5J/8/p/7AOE78+/y4j2kjwb8Bs5k/m0AAA';
+
 export default function HeroBanner() {
   return (
     <>

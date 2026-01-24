@@ -2,12 +2,12 @@
 
 import Image from 'next/image';
 import { useState } from 'react';
+import Pagination from '@/components/pagination/Pagination';
+import { getReviews } from '@/domain/experience-detail/api';
 import type {
   ExperienceReviewsProps,
   Review,
 } from '@/domain/experience-detail/type';
-import Pagination from '@/components/pagination/Pagination';
-import { getReviews } from '@/domain/experience-detail/api';
 
 const REVIEWS_PER_PAGE = 3;
 const STAR_COUNT = 5;

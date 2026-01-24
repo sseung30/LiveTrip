@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
-import SearchResult from '@/domain/home/components/search/SearchResult';
 import IntroSection from '@/domain/home/components/IntroSection';
+import SearchResult from '@/domain/home/components/search/SearchResult';
 import SearchResultSkeleton from '@/domain/home/components/search/SearchResultSkeleton';
 
 export default async function HomeSearchPage({

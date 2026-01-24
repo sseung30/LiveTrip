@@ -1,5 +1,5 @@
 import { getAllActivitiesWithCache } from '@/domain/activities/api';
-import { getAllActivitiesParams } from '@/domain/activities/type';
+import type { getAllActivitiesParams } from '@/domain/activities/type';
 import PopularActivityCarouselWrapper from '@/domain/home/components/popular-activity-section/PopularActivityCarouselWrapper';
 
 export default async function PopularActivitySection() {
@@ -9,6 +9,7 @@ export default async function PopularActivitySection() {
     size: 16,
     method: 'offset',
   } as getAllActivitiesParams);
+
   return (
     <section className='relative w-full'>
       <h2 className='text-18 md:text-24 mb-6 font-bold md:mb-8'>

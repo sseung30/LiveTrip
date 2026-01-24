@@ -128,11 +128,11 @@ export default function SideMenu({ className = '' }: SideMenuProps) {
                   alt={item.label}
                   width={SIZE_CONFIG.iconDefaultSize + 8}
                   height={SIZE_CONFIG.iconDefaultSize + 8}
+                  style={isActive ? { filter: PRIMARY_FILTER } : {}}
                   className={cx(
                     SIZE_CONFIG.iconSize,
                     isActive ? 'brightness-0 saturate-100' : ''
                   )}
-                  style={isActive ? { filter: PRIMARY_FILTER } : {}}
                 />
                 <span
                   className={`font-medium ${SIZE_CONFIG.spacing.textSize} ${isActive ? 'text-gray-950' : 'text-gray-600'}`}

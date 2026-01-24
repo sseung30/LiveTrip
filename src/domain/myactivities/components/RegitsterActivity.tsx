@@ -1,6 +1,6 @@
 'use client';
-import Button from '@/components/button/Button';
 import { useRouter } from 'next/navigation';
+import Button from '@/components/button/Button';
 
 export default function RegisterActivity() {
   const router = useRouter();

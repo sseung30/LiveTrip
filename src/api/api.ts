@@ -44,19 +44,24 @@ export async function apiFetch<T>(
     const resClone = res.clone();
 
     let message: string | undefined;
+
     if (contentType.includes('application/json')) {
       try {
         const data: unknown = await res.json();
+
         if (data && typeof data === 'object') {
           const obj = data as Record<string, unknown>;
+
           if (typeof obj.message === 'string') {
             message = obj.message;
           } else if (typeof obj.error === 'string') {
             message = obj.error;
           } else if (Array.isArray(obj.errors) && obj.errors.length > 0) {
             const first = obj.errors[0] as Record<string, unknown>;
-            if (typeof first?.message === 'string')
-              message = first.message as string;
+
+            if (typeof first.message === 'string') {
+              message = first.message;
+            }
           } else {
             // 마지막 수단: JSON을 문자열로
             try {

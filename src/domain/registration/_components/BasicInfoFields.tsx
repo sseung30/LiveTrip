@@ -52,8 +52,8 @@ export function BasicInfoFields({
         render={({ field }) => {
           return (
             <Input
-              label='제목'
               required
+              label='제목'
               placeholder='제목을 입력해 주세요'
               className='w-full'
               value={field.value}
@@ -71,8 +71,8 @@ export function BasicInfoFields({
         render={({ field }) => {
           return (
             <SelectDropdown
-              label='카테고리'
               required
+              label='카테고리'
               options={categoryOptions}
               placeholder='카테고리를 선택해 주세요'
               defaultValue={field.value || undefined}
@@ -110,8 +110,8 @@ export function BasicInfoFields({
         render={({ field }) => {
           return (
             <Input
-              label='가격'
               required
+              label='가격'
               placeholder='체험 금액을 입력해 주세요'
               type='number'
               className='w-full'

@@ -1,8 +1,8 @@
 import Image from 'next/image';
+import Button from '@/components/button/Button';
 import WarningImage from '@/components/dialog/assets/warning.svg';
 import type { AlertModalContentsProps } from '@/components/dialog/Modal/type';
 import Spinner from '@/components/ui/Spinner';
-import Button from '@/components/button/Button';
 
 /**
  * 경고 모달의 내용을 렌더링하는 컴포넌트
@@ -33,8 +33,8 @@ export function AlertModalContents({
           variant='secondary'
           style='accent'
           disabled={isPending}
-          onClick={hideModal}
           classNames='w-34'
+          onClick={hideModal}
         >
           {rejectButtonText}
         </Button>

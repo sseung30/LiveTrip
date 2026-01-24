@@ -1,8 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { cx } from '@/utils/cx';
-import { Activity } from '@/domain/activities/type';
 import ImageWithFallback from '@/components/ui/ImageWithFallback';
+import type { Activity } from '@/domain/activities/type';
+import { cx } from '@/utils/cx';
 
 interface CardProps {
   activity: Activity;
@@ -11,9 +11,11 @@ interface CardProps {
 }
 const _GRAY_BLUR_DATA_URL =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN8++7TGQAJOAObFkNrgwAAAABJRU5ErkJggg==';
+
 export default function Card({ activity, alt, imageClassNames }: CardProps) {
   const { id, title, price, bannerImageUrl, rating, reviewCount } = activity;
   const priceAsKorCurrency = price.toLocaleString('ko-KR');
+
   return (
     <div className='relative mb-20 min-w-[8.25rem] md:w-full'>
       <Link href={`/experiences/${id}`}>

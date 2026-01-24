@@ -1,6 +1,6 @@
 import Image from 'next/image';
-import Button from '@/components/button/Button';
 import Link from 'next/link';
+import Button from '@/components/button/Button';
 
 export default function EmptyResult({ text }: { text: string }) {
   return (

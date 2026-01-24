@@ -1,6 +1,6 @@
 import ToastOnMount from '@/components/ToastOnMount';
-import RegisterActivity from '@/domain/myactivities/components/RegitsterActivity';
 import MyActivitySection from '@/domain/myactivities/components/MyActivitySection';
+import RegisterActivity from '@/domain/myactivities/components/RegitsterActivity';
 
 export default async function Page({
   searchParams,
@@ -8,7 +8,7 @@ export default async function Page({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const sp = await searchParams;
-  const unauthorized = sp?.unauthorized === '1';
+  const unauthorized = sp.unauthorized === '1';
 
   return (
     <>

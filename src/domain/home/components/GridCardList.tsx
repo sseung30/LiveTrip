@@ -1,4 +1,4 @@
-import { Activity } from '@/domain/activities/type';
+import type { Activity } from '@/domain/activities/type';
 import Card from '@/domain/home/components/Card';
 
 interface GridCardListProps {

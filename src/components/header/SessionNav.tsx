@@ -1,20 +1,20 @@
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
-import BellIcon from '@/components/header/BellIcon';
-import defaultProfileImg from '@/components/header/asset/default-profile-img.svg';
-import LogoutButton from '@/components/header/LogoutButton';
 import { useEffect, useRef, useState } from 'react';
-import Notification from '@/components/notification/Notification';
-import { useUserInfo } from '@/domain/auth/queries/useUserInfo';
-import SessionNavSkeleton from '@/components/header/SessionNavSkeleton';
 import { useQuery } from '@tanstack/react-query';
 import { apiFetch } from '@/api/api';
+import defaultProfileImg from '@/components/header/asset/default-profile-img.svg';
+import BellIcon from '@/components/header/BellIcon';
+import LogoutButton from '@/components/header/LogoutButton';
+import SessionNavSkeleton from '@/components/header/SessionNavSkeleton';
+import Notification from '@/components/notification/Notification';
 import type { Notifications } from '@/components/notification/type';
+import { useUserInfo } from '@/domain/auth/queries/useUserInfo';
 
 export default function SessionNav() {
   const { data, isPending, error } = useUserInfo();
-  const isKakao = data?.email?.split('@')[1].includes('kakao.com');
+  const isKakao = data?.email.split('@')[1].includes('kakao.com');
   const type = isKakao ? 'kakao' : 'normal';
 
   const [showNotification, setShowNotification] = useState(false);
@@ -24,7 +24,7 @@ export default function SessionNav() {
   const { data: notificationsMeta } = useQuery({
     queryKey: ['myNotificationsCount'],
     queryFn: async () => apiFetch<Notifications>('/my-notifications?size=1'),
-    enabled: !!data && !error,
+    enabled: Boolean(data) && !error,
     staleTime: 1000 * 60 * 5,
     gcTime: 1000 * 60 * 30,
   });
@@ -32,21 +32,32 @@ export default function SessionNav() {
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
-      if (!showNotification) return;
+      if (!showNotification) {
+        return;
+      }
       const target = e.target as Node;
+
       if (bellRef.current && !bellRef.current.contains(target)) {
         setShowNotification(false);
       }
     }
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, [showNotification]);
 
-  if (isPending) return <SessionNavSkeleton />;
+  if (isPending) {
+    return <SessionNavSkeleton />;
+  }
+
   return (
     <nav className='flex items-center space-x-3 pl-4 text-sm text-gray-950'>
-      {!error && data ? (
-        // ⭐️ 로그인 상태
+      {!error ? (
+        /**
+         * ⭐️ 로그인 상태
+         */
         <div className='flex items-center space-x-4'>
           {/* Bell + Notification popover */}
           <div ref={bellRef} className='relative'>
@@ -54,21 +65,31 @@ export default function SessionNav() {
               type='button'
               aria-label='알림 열기'
               className='items-center focus:outline-none'
-              onClick={() => setShowNotification((v) => !v)}
+              onClick={() => {
+                setShowNotification((v) => !v);
+              }}
             >
               <BellIcon
-                className={showNotification ? 'h-6 w-6 text-primary-500' : 'h-6 w-6 text-gray-950'}
+                className={
+                  showNotification
+                    ? 'text-primary-500 h-6 w-6'
+                    : 'h-6 w-6 text-gray-950'
+                }
               />
             </button>
             {hasNotification && (
-              <span className='pointer-events-none absolute top-[5px] left-[15px] h-[6px] w-[6px] rounded-full bg-red-500 ring-1 ring-white z-10' />
+              <span className='pointer-events-none absolute top-[5px] left-[15px] z-10 h-[6px] w-[6px] rounded-full bg-red-500 ring-1 ring-white' />
             )}
             {showNotification && (
               <div className='absolute top-full right-0 z-50 mt-2'>
                 {/*
                   Panel is positioned so the bell sits at the panel's top-right.
                 */}
-                <Notification onClose={() => setShowNotification(false)} />
+                <Notification
+                  onClose={() => {
+                    setShowNotification(false);
+                  }}
+                />
               </div>
             )}
           </div>

@@ -1,13 +1,13 @@
 'use client';
 import Image from 'next/image';
 import { type ChangeEvent, useEffect, useRef, useState } from 'react';
-import { UseFormRegister } from 'react-hook-form';
+import type { UseFormRegister } from 'react-hook-form';
 import Spinner from '@/components/ui/Spinner';
+import type { ProfileEditFormInputs } from '@/domain/profile/type';
 import {
   validateFileSizeAndToast,
   validateFileTypeAndToast,
 } from '@/form/utils/validateImageFileAndToast';
-import { ProfileEditFormInputs } from '../type';
 
 export default function ProfileImageInput({
   register,
@@ -26,6 +26,7 @@ export default function ProfileImageInput({
 
   const validateImageInput = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+
     if (!file) {
       return;
     }
@@ -33,6 +34,7 @@ export default function ProfileImageInput({
       return;
     }
     const url = URL.createObjectURL(file);
+
     setPreviewImage(url);
   };
 
@@ -49,7 +51,9 @@ export default function ProfileImageInput({
 
   useEffect(() => {
     return () => {
-      if (previewImage) URL.revokeObjectURL(previewImage);
+      if (previewImage) {
+        URL.revokeObjectURL(previewImage);
+      }
     };
   }, [previewImage]);
 

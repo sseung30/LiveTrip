@@ -16,7 +16,7 @@ import { endpoint } from '@/domain/auth/util';
 import { getAuth } from '@/utils/getAuth';
 
 export async function getUserInfo(): Promise<UserInfo> {
-  return await apiFetch(`${endpoint.USER_INFO}`);
+  return await apiFetch(endpoint.USER_INFO);
 }
 export async function getNewToken(
   refreshToken: string

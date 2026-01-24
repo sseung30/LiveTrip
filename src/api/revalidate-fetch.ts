@@ -4,5 +4,6 @@ export const fetchRevalidateByTag = async (tag: string) => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ tag }),
   });
+
   return await res.json();
 };

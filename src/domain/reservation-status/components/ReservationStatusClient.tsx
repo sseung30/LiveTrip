@@ -2,10 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import CalendarBadge from '@/domain/reservation-status/components/CalendarBadge';
-import type { BadgeType } from '@/domain/reservation-status/type';
 import SelectDropdown from '@/components/dropdown/SelectDropdown';
-import ReservationPopup from '@/domain/reservation-status/components/reservation-popup/ReservationPopup';
 import { toast } from '@/components/toast';
 import {
   type ActivityReservation,
@@ -16,6 +13,9 @@ import {
   type ReservationDashboard,
   type ReservedSchedule,
 } from '@/domain/reservation-status/api';
+import CalendarBadge from '@/domain/reservation-status/components/CalendarBadge';
+import ReservationPopup from '@/domain/reservation-status/components/reservation-popup/ReservationPopup';
+import type { BadgeType } from '@/domain/reservation-status/type';
 
 const WEEKDAYS = ['월', '화', '수', '목', '금', '토', '일'];
 

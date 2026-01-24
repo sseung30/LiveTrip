@@ -34,6 +34,7 @@ export default function AllActivityDataWrapper({
       toast({ message: error.message, eventType: 'error' });
     }
   }, [error]);
+
   return (
     <div className='flex-center flex-col'>
       <GridCardList activities={activities} />

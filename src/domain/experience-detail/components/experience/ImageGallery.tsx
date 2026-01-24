@@ -85,6 +85,9 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
                   alt={`체험 이미지 ${index + 1}`}
                   sizes='(max-width: 768px) 100vw, (max-width: 1200px) 66vw, 50vw'
                   className='object-cover'
+                  placeholder='blur'
+                  blurDataURL={_GRAY_BLUR_DATA_URL}
+                  fetchPriority='high'
                   onError={() => {
                     setFailedImages((prev) => {
                       const newSet = new Set(prev);
@@ -94,9 +97,6 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
                       return newSet;
                     });
                   }}
-                  placeholder='blur'
-                  blurDataURL={_GRAY_BLUR_DATA_URL}
-                  fetchPriority='high'
                 />
               </div>
             );

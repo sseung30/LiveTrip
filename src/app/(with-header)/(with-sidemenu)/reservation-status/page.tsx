@@ -1,7 +1,7 @@
 import {
+  dehydrate,
   HydrationBoundary,
   QueryClient,
-  dehydrate,
 } from '@tanstack/react-query';
 import { fetchMyActivities } from '@/domain/reservation-status/api';
 import ReservationStatusClient from '@/domain/reservation-status/components/ReservationStatusClient';

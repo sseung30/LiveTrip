@@ -1,12 +1,12 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import type { SessionType } from 'next-auth';
 import { signOut as nextAuthSignOut } from 'next-auth/react';
+import { useTransition } from 'react';
 import { toast } from '@/components/toast';
 import { getKaKaoLogoutURL } from '@/domain/auth/util';
-import { useRouter } from 'next/navigation';
-import { useTransition } from 'react';
 
 export default function LogoutForm({
   sessionType,

@@ -1,22 +1,22 @@
 'use client';
-import { useActionState, useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { useActionState, useEffect, useMemo, useRef, useState } from 'react';
 import Button from '@/components/button/Button';
-import { CategoryIcon } from '@/domain/home/components/svg';
-import CardList from '@/domain/myreservation/components/CardList';
 import {
   AlertModalContents,
   ModalContainer,
   useDialog,
 } from '@/components/dialog';
 import { toast } from '@/components/toast';
+import EmptyResult from '@/components/ui/EmptyResult';
+import { CategoryIcon } from '@/domain/home/components/svg';
+import { cancelReservation } from '@/domain/myreservation/api';
+import CardList from '@/domain/myreservation/components/CardList';
 import { ReviewModalContents } from '@/domain/myreservation/components/ReviewModalContents';
+import { useMyReservations } from '@/domain/myreservation/hooks/useMyReservations';
 import type { Reservation } from '@/domain/myreservation/type';
 import useIntersectionObserver from '@/hooks/useIntersectionObserver';
-import EmptyResult from '@/components/ui/EmptyResult';
-import { cancelReservation } from '@/domain/myreservation/api';
-import { useMyReservations } from '@/domain/myreservation/hooks/useMyReservations';
 
 const STATUSES = [
   '예약 신청',
@@ -50,10 +50,12 @@ const deleteAction = async (
 
   if (!result.ok) {
     toast({ message: '예약 취소에 실패했습니다.', eventType: 'error' });
+
     return { state: 'error' };
   }
 
   toast({ message: '예약이 취소되었습니다', eventType: 'success' });
+
   return { state: 'success' };
 };
 

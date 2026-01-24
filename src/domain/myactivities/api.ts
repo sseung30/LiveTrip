@@ -8,11 +8,13 @@ export async function deleteMyActivity(id: number) {
       method: 'DELETE',
       body: JSON.stringify(body),
     });
+
     return { ok: true as const };
   } catch (error) {
     if (error instanceof ApiError) {
       return { ok: false as const, status: error.status };
     }
+
     return { ok: false as const, status: 500 };
   }
 }

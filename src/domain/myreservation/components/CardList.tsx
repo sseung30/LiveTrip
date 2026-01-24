@@ -72,8 +72,8 @@ export default function CardList({
             {showReviewButton && (
               <button
                 className={`${BUTTON_STYLES.review} px-4 py-1.5 text-base`}
-                onClick={onWriteReview}
                 disabled={reviewSubmitted}
+                onClick={onWriteReview}
               >
                 후기 작성
               </button>
@@ -143,8 +143,8 @@ export default function CardList({
         {showReviewButton && (
           <button
             className={`${BUTTON_STYLES.review} w-[476px] py-2 text-base`}
-            onClick={onWriteReview}
             disabled={reviewSubmitted}
+            onClick={onWriteReview}
           >
             후기 작성
           </button>
@@ -202,8 +202,8 @@ export default function CardList({
         {showReviewButton && (
           <button
             className={`${BUTTON_STYLES.review} w-[327px] py-1.5 text-sm`}
-            onClick={onWriteReview}
             disabled={reviewSubmitted}
+            onClick={onWriteReview}
           >
             후기 작성
           </button>

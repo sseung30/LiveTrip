@@ -1,16 +1,17 @@
 'use client';
 import { type SubmitHandler, useForm } from 'react-hook-form';
+import { useQueryClient } from '@tanstack/react-query';
 import { ApiError } from '@/api/api';
 import Button from '@/components/button/Button';
 import { toast } from '@/components/toast';
 import Input from '@/components/ui/Input/Input';
 import { useProfileEditMutate } from '@/domain/auth/queries/useProfileEditMutate';
+import { useProfileImageCreateMutate } from '@/domain/auth/queries/useProfileImageCreateMutate';
+import { queryKeys } from '@/domain/auth/queryOptions';
+import ProfileImageInput from '@/domain/profile/components/ProfileImageInput';
 import type { ProfileEditFormInputs } from '@/domain/profile/type';
 import { SignUpFormRegisterKey as profileFormRegisterKey } from '@/form/auth/register-key';
-import ProfileImageInput from '@/domain/profile/components/ProfileImageInput';
-import { useProfileImageCreateMutate } from '@/domain/auth/queries/useProfileImageCreateMutate';
-import { useQueryClient } from '@tanstack/react-query';
-import { queryKeys } from '@/domain/auth/queryOptions';
+
 interface ProfileEditFormProps {
   nickname: string;
   email: string;
@@ -50,8 +51,10 @@ export default function ProfileEditForm({
       const { profileImageUrl } = await profileImageCreateMutateAsync(
         profileImageFile[0]
       );
+
       return profileImageUrl;
     }
+
     return profileImageUrl;
   };
 
@@ -61,6 +64,7 @@ export default function ProfileEditForm({
     try {
       const { nickname, password, profileImageFile } = profileEditInputs;
       const profileImageUrl = await getProfileImageUrl(profileImageFile);
+
       await profileEditMutateAsync({
         nickname,
         profileImageUrl,
@@ -81,6 +85,7 @@ export default function ProfileEditForm({
       }
     }
   };
+
   return (
     <form
       className='mb:gap-6 flex w-full flex-col gap-5'

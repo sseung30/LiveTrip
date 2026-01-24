@@ -1,6 +1,6 @@
 import { queryOptions } from '@/domain/activities/queryOptions';
+import SearchResultDataWrapper from '@/domain/home/components/search/SearchResultDataWrapper';
 import { getDehydratedInfiniteQueryClient } from '@/utils/react-query/getDehydratedInfiniteQueryClient';
-import SearchResultDataWrapper from './SearchResultDataWrapper';
 import { Hydrate } from '@/utils/react-query/getQueryClient';
 
 interface SearchResultProps {
@@ -16,6 +16,7 @@ export default async function SearchResult({ q }: SearchResultProps) {
     }),
     initialPageParam: undefined,
   });
+
   return (
     <Hydrate state={hydratedInfiniteActivities}>
       <SearchResultDataWrapper q={q} />

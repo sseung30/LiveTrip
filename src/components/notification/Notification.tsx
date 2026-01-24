@@ -1,17 +1,16 @@
 'use client';
-import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import NotificationItem from '@/components/notification/NotificationItem';
-import type {
-  Notification,
-  Notifications,
-} from '@/components/notification/type';
 import {
   type InfiniteData,
   useMutation,
   useQueryClient,
 } from '@tanstack/react-query';
 import { apiFetch } from '@/api/api';
+import NotificationItem from '@/components/notification/NotificationItem';
+import type {
+  Notification,
+  Notifications,
+} from '@/components/notification/type';
 import { useInfiniteByCursor } from '@/hooks/useInfiniteScroll';
 import useIntersectionObserver from '@/hooks/useIntersectionObserver';
 

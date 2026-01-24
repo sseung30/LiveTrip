@@ -1,11 +1,11 @@
 'use client';
-import { toast } from '@/components/toast';
-import { useInfiniteActivities } from '@/domain/activities/useActivitiesServcie';
-import useIntersectionObserver from '@/hooks/useIntersectionObserver';
 import { useEffect } from 'react';
-import GridCardList from '../GridCardList';
+import { toast } from '@/components/toast';
 import EmptyResult from '@/components/ui/EmptyResult';
 import Spinner from '@/components/ui/Spinner';
+import { useInfiniteActivities } from '@/domain/activities/useActivitiesServcie';
+import GridCardList from '@/domain/home/components/GridCardList';
+import useIntersectionObserver from '@/hooks/useIntersectionObserver';
 
 export default function SearchResultDataWrapper({ q }: { q: string }) {
   const {
@@ -33,6 +33,7 @@ export default function SearchResultDataWrapper({ q }: { q: string }) {
   }, [error]);
 
   const hasResult = activities.length > 0;
+
   return (
     <>
       <div className='flex w-full flex-col items-start gap-6 md:gap-8'>

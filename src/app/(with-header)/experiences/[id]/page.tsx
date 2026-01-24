@@ -1,3 +1,7 @@
+import {
+  getExperienceDetail,
+  getReviews,
+} from '@/domain/experience-detail/api';
 import ExperienceDetailClient from '@/domain/experience-detail/components/experience/ExperienceDetailClient';
 import ExperienceInfo from '@/domain/experience-detail/components/experience/ExperienceInfo';
 import ExperienceReviews from '@/domain/experience-detail/components/experience/ExperienceReviews';
@@ -8,10 +12,7 @@ import type {
   ExperienceDetail,
   ReviewResponse,
 } from '@/domain/experience-detail/type';
-import {
-  getExperienceDetail,
-  getReviews,
-} from '@/domain/experience-detail/api';
+
 interface PageProps {
   params: Promise<{ id: string }>;
 }
@@ -35,7 +36,7 @@ export default async function ExperienceDetailPage({ params }: PageProps) {
   const { id } = await params;
   const activityId = Number(id);
 
-  let [experience, reviews] = await Promise.all([
+  const [experience, reviews] = await Promise.all([
     getExperienceDetail(activityId),
     getReviews(activityId, 1, 10),
   ]);

@@ -1,17 +1,17 @@
 'use client';
 import Image from 'next/image';
 import { useActionState, useEffect, useRef, useState } from 'react';
-import ActivitiyCard from '@/domain/myactivities/components/ActivityCard';
-import type { Activity } from '@/domain/myactivities/type';
-import useIntersectionObserver from '@/hooks/useIntersectionObserver';
 import {
   AlertModalContents,
   ModalContainer,
   useDialog,
 } from '@/components/dialog';
-import { useMyActivities } from '@/domain/myactivities/hooks/useMyActivities';
 import { toast } from '@/components/toast';
 import { deleteActivityAction } from '@/domain/myactivities/actions/delete-activity.action';
+import ActivitiyCard from '@/domain/myactivities/components/ActivityCard';
+import { useMyActivities } from '@/domain/myactivities/hooks/useMyActivities';
+import type { Activity } from '@/domain/myactivities/type';
+import useIntersectionObserver from '@/hooks/useIntersectionObserver';
 
 export default function MyActivitySection() {
   const {
@@ -124,7 +124,9 @@ export default function MyActivitySection() {
                   reviewCount={a.reviewCount}
                   price={a.price}
                   bannerImageUrl={a.bannerImageUrl}
-                  onDelete={() => onDeleteActivity(a.id)}
+                  onDelete={() => {
+                    onDeleteActivity(a.id);
+                  }}
                 />
               </div>
             );

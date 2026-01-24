@@ -1,5 +1,5 @@
-import { useInfiniteByCursor } from '@/hooks/useInfiniteScroll';
 import type { Activity, MyActivities } from '@/domain/myactivities/type';
+import { useInfiniteByCursor } from '@/hooks/useInfiniteScroll';
 
 export function useMyActivities() {
   const pageSize = 5;

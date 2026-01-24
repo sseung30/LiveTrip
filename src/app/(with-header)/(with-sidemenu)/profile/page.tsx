@@ -3,6 +3,7 @@ import ProfileEditForm from '@/domain/profile/components/ProfileEditForm';
 
 export default async function ProfilePage() {
   const { nickname, email, profileImageUrl } = await getUserInfo();
+
   return (
     <>
       <main className='w-full'>

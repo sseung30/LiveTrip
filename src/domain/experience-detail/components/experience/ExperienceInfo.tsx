@@ -1,6 +1,6 @@
-import type { ExperienceInfoProps } from '@/domain/experience-detail/type';
 import KakaoMap from '@/components/ui/KakaoMap';
 import Section from '@/components/ui/Section';
+import type { ExperienceInfoProps } from '@/domain/experience-detail/type';
 
 export default function ExperienceInfo({
   description,

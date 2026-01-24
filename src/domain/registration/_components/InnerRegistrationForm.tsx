@@ -1,3 +1,6 @@
+import { useFormContext } from 'react-hook-form';
+import Button from '@/components/button/Button';
+import { ModalContainer } from '@/components/dialog/Modal/ModalContainer';
 import { BasicInfoFields } from '@/domain/registration/_components/BasicInfoFields';
 import ClientConfirmModal from '@/domain/registration/_components/ClientConfirmModal';
 import { ImageUploader } from '@/domain/registration/_components/ImageUploader';
@@ -5,9 +8,6 @@ import { TimeSlotsField } from '@/domain/registration/_components/TimeSlotsField
 import { useBannerImageUpload } from '@/domain/registration/_hooks/useBannerImageUpload';
 import { useIntroImageUpload } from '@/domain/registration/_hooks/useIntroImageUpload';
 import { useLeaveGuard } from '@/domain/registration/_hooks/useLeaveGuard';
-import Button from '@/components/button/Button';
-import { ModalContainer } from '@/components/dialog/Modal/ModalContainer';
-import { useFormContext } from 'react-hook-form';
 
 const CATEGORY_OPTIONS = [
   { label: '문화 · 예술', value: '문화 · 예술' },
@@ -49,11 +49,23 @@ export default function InnerRegistrationForm({
     isUploading: isIntroUploading,
   } = useIntroImageUpload(MAX_IMAGE_COUNT_INTRO);
 
-  const isUploadingAny = Boolean(isBannerUploading || isIntroUploading);
+  const isUploadingAny = isBannerUploading || isIntroUploading;
 
   //모달 훅
   const { formState } = useFormContext();
   const { dialogRef, onConfirm, onCancel } = useLeaveGuard(formState.isDirty);
+
+  const getSubmitButtonMessage = () => {
+    if (isUploadingAny) {
+      return '업로드 중...';
+    }
+
+    if (isSubmitting) {
+      return mode === 'edit' ? '수정 중...' : '등록 중...';
+    }
+
+    return mode === 'edit' ? '수정하기' : '등록하기';
+  };
 
   return (
     <form
@@ -77,8 +89,8 @@ export default function InnerRegistrationForm({
 
       {/* ✅ 배너 이미지 */}
       <ImageUploader
-        title='배너 이미지 등록'
         required
+        title='배너 이미지 등록'
         description='최대 1장까지 등록할 수 있어요.'
         images={bannerImage ? [bannerImage] : []}
         maxCount={MAX_IMAGE_COUNT_BANNER}
@@ -91,8 +103,8 @@ export default function InnerRegistrationForm({
 
       {/* ✅ 소개 이미지 */}
       <ImageUploader
-        title='소개 이미지 등록'
         required
+        title='소개 이미지 등록'
         description='최대 4장까지 등록할 수 있어요.'
         images={introImages}
         maxCount={MAX_IMAGE_COUNT_INTRO}
@@ -108,15 +120,7 @@ export default function InnerRegistrationForm({
           disabled={isUploadingAny || isSubmitting}
           classNames='w-[120px] !text-white text-14 font-bold md:text-14'
         >
-          {isUploadingAny
-            ? '업로드 중...'
-            : isSubmitting
-              ? mode === 'edit'
-                ? '수정 중...'
-                : '등록 중...'
-              : mode === 'edit'
-                ? '수정하기'
-                : '등록하기'}
+          {getSubmitButtonMessage()}
         </Button>
       </div>
 

@@ -1,9 +1,9 @@
 import Image from 'next/image';
 import { type ChangeEvent, useState } from 'react';
 import { ApiError, apiFetch } from '@/api/api';
+import { fetchRevalidateByTag } from '@/api/revalidate-fetch';
 import Button from '@/components/button/Button';
 import { toast } from '@/components/toast';
-import { fetchRevalidateByTag } from '@/api/revalidate-fetch';
 
 export interface ReviewModalContentsProps {
   id: number;
@@ -57,6 +57,7 @@ export function ReviewModalContents({
         method: 'POST',
         body: JSON.stringify(body),
       });
+
       await fetchRevalidateByTag(String(id));
       toast({ message: '후기가 작성되었습니다.', eventType: 'success' });
     } catch (error) {
