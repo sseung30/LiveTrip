@@ -21,7 +21,21 @@ export interface Activity {
   createdAt: string;
   updatedAt: string;
 }
-
+export interface ActivityDetailResponse extends Activity {
+  subImageUrls?: string[];
+  subImages?: (string | { id?: number; imageUrl: string })[];
+  schedules?: { date: string; startTime: string; endTime: string }[];
+}
+// Owner detail for editing: includes IDs for subImages and schedules
+export interface MyActivityDetail extends Activity {
+  subImages: { id: number; imageUrl: string }[];
+  schedules: {
+    id: number;
+    date: string;
+    startTime: string;
+    endTime: string;
+  }[];
+}
 export interface getAllActivitiesParams {
   cursorId?: number | null;
   category?: activityCategory;

@@ -8,26 +8,25 @@ import {
   type SubmitHandler,
   useForm,
 } from 'react-hook-form';
-import { ApiError } from '@/api/api';
 import { useQueryClient } from '@tanstack/react-query';
+import { ApiError } from '@/api/api';
 import { toast } from '@/components/toast';
-
+import type { ActivityDetailResponse } from '@/domain/activities/type';
+import InnerRegistrationForm from '@/domain/registration/_components/InnerRegistrationForm';
 import { buildRegistrationPayload } from '@/domain/registration/_utils/buildRegistrationPayload';
 import { buildUpdatePayload } from '@/domain/registration/_utils/buildUpdatePayload';
 import {
   createEmptyTimeSlot,
   type TimeSlot,
 } from '@/domain/registration/_utils/createEmptyTimeSlot';
+import { normalizeSubImages } from '@/domain/registration/_utils/normalizeSubImages';
+import { createActivity, updateActivity } from '@/domain/registration/api';
 import type { FormValues } from '@/domain/registration/types';
-import type { ActivityDetail } from '@/domain/activities/api';
-import { createActivity, updateActivity } from '@/domain/activities/api';
-import InnerRegistrationForm from '@/domain/registration/_components/InnerRegistrationForm';
-import { normalizeSubImages } from '../_utils/normalizeSubImages';
 
 type Mode = 'create' | 'edit';
 interface RegistrationFormProps {
   mode: Mode;
-  initialData?: ActivityDetail;
+  initialData?: ActivityDetailResponse;
   isSubmitting?: boolean;
 }
 
@@ -44,15 +43,17 @@ export default function RegistrationForm({
     category: initialData?.category ?? '',
     description: initialData?.description ?? '',
     address: initialData?.address ?? '',
-    price: initialData?.price != null ? String(initialData.price) : '',
+    price: initialData?.price ? String(initialData.price) : '',
     bannerImage: initialData?.bannerImageUrl ?? '',
     subImageUrls: normalizeSubImages(initialData),
     timeSlots: Array.isArray(initialData?.schedules)
-      ? initialData!.schedules!.map((s) => ({
-          date: s.date,
-          startTime: s.startTime,
-          endTime: s.endTime,
-        }))
+      ? initialData.schedules.map((s) => {
+          return {
+            date: s.date,
+            startTime: s.startTime,
+            endTime: s.endTime,
+          };
+        })
       : [createEmptyTimeSlot()],
   };
 
@@ -64,12 +65,14 @@ export default function RegistrationForm({
   const formRef = useRef<HTMLFormElement>(null);
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>(
     Array.isArray(initialData?.schedules)
-      ? initialData!.schedules!.map((s) => ({
-          id: `${Date.now()}-${Math.random()}`,
-          date: s.date,
-          startTime: s.startTime,
-          endTime: s.endTime,
-        }))
+      ? initialData.schedules.map((s) => {
+          return {
+            id: `${Date.now()}-${Math.random()}`,
+            date: s.date,
+            startTime: s.startTime,
+            endTime: s.endTime,
+          };
+        })
       : [createEmptyTimeSlot()]
   );
 
@@ -88,13 +91,14 @@ export default function RegistrationForm({
     });
 
     try {
-      if (mode === 'edit' && initialData?.id != null) {
+      if (mode === 'edit' && initialData?.id) {
         // Build update-diff payload for edit endpoint
         const updatePayload = buildUpdatePayload(
           initialData as any,
           data,
           timeSlots
         );
+
         await updateActivity(initialData.id, updatePayload);
         toast({ message: '체험 수정이 완료되었습니다.', eventType: 'success' });
       } else {
@@ -105,14 +109,14 @@ export default function RegistrationForm({
       await queryClient.invalidateQueries({ queryKey: ['myActivities'] });
       router.replace('/myactivities');
     } catch (error) {
-      const message =
-        error instanceof ApiError
-          ? error.message
-          : mode === 'edit'
+      if (error instanceof ApiError) {
+        const message =
+          mode === 'edit'
             ? '수정 중 오류가 발생했습니다.'
             : '등록 중 오류가 발생했습니다.';
 
-      toast({ message, eventType: 'error' });
+        toast({ message, eventType: 'error' });
+      }
     }
   };
 
@@ -121,33 +125,50 @@ export default function RegistrationForm({
     const seen = new WeakSet<object>();
 
     const isPlainObject = (val: unknown): val is Record<string, unknown> => {
-      if (val === null || typeof val !== 'object') return false;
+      if (val === null || typeof val !== 'object') {
+        return false;
+      }
       const proto = Object.getPrototypeOf(val);
+
       return proto === Object.prototype || proto === null;
     };
 
     const visit = (obj: unknown, depth = 0) => {
-      if (!obj || depth > 6) return; // guard depth
-      if (typeof obj !== 'object') return;
+      if (!obj || depth > 6) {
+        return;
+      } // guard depth
+      if (typeof obj !== 'object') {
+        return;
+      }
 
       // Avoid circular refs and non-plain objects
-      if (!Array.isArray(obj) && !isPlainObject(obj)) return;
+      if (!Array.isArray(obj) && !isPlainObject(obj)) {
+        return;
+      }
 
       const key = obj as object;
-      if (seen.has(key)) return;
+
+      if (seen.has(key)) {
+        return;
+      }
       seen.add(key);
 
       // FieldError 형태: { message?: string }
       const maybeMessage = (obj as { message?: unknown }).message;
+
       if (typeof maybeMessage === 'string') {
         messages.push(maybeMessage);
       }
 
       if (Array.isArray(obj)) {
-        for (const v of obj) visit(v, depth + 1);
+        for (const v of obj) {
+          visit(v, depth + 1);
+        }
       } else {
         for (const [k, v] of Object.entries(obj)) {
-          if (k === 'ref') continue; // skip RHF ref
+          if (k === 'ref') {
+            continue;
+          } // skip RHF ref
           visit(v, depth + 1);
         }
       }
@@ -156,6 +177,7 @@ export default function RegistrationForm({
     visit(errors);
 
     const first = messages.find(Boolean) || '입력값을 확인해 주세요.';
+
     toast({ message: first, eventType: 'error' });
   };
 

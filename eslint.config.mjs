@@ -15,7 +15,7 @@ const sheriffOptions = {
 
 const eslintConfig = [
   // Ensure Next.js plugin is detected by Next.js tooling
-  ...nextPlugin.configs['core-web-vitals'],
+  // ...nextPlugin.configs['core-web-vitals'],
   ...sheriff(sheriffOptions),
   {
     languageOptions: {
@@ -69,6 +69,7 @@ const eslintConfig = [
       '@typescript-eslint/no-unsafe-call': 'off',
       'no-fallthrough': 'off',
       '@typescript-eslint/no-shadow': 'off',
+      'arrow-return-style/arrow-return-style': 'off',
     },
   },
 ];

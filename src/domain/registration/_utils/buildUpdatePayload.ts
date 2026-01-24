@@ -1,6 +1,9 @@
-import type { MyActivityDetail, UpdateActivityPayload } from '@/domain/activities/api';
-import type { FormValues } from '@/domain/registration/types';
+import type { MyActivityDetail } from '@/domain/activities/type';
 import type { TimeSlot as LocalTimeSlot } from '@/domain/registration/_utils/createEmptyTimeSlot';
+import type {
+  FormValues,
+  UpdateActivityPayload,
+} from '@/domain/registration/types';
 
 function normalizeKey(date: string, startTime: string, endTime: string) {
   return `${date}|${startTime}|${endTime}`;
@@ -9,7 +12,7 @@ function normalizeKey(date: string, startTime: string, endTime: string) {
 export function buildUpdatePayload(
   initial: MyActivityDetail,
   formValues: FormValues,
-  timeSlots: LocalTimeSlot[],
+  timeSlots: LocalTimeSlot[]
 ): UpdateActivityPayload {
   const payload: UpdateActivityPayload = {
     title: formValues.title.trim(),
@@ -25,9 +28,13 @@ export function buildUpdatePayload(
   };
 
   // Images diff
-  const initialImages = Array.isArray(initial.subImages) ? initial.subImages : [];
+  const initialImages = Array.isArray(initial.subImages)
+    ? initial.subImages
+    : [];
   const initialUrls = new Set(initialImages.map((i) => i.imageUrl));
-  const currentUrls = new Set(Array.isArray(formValues.subImageUrls) ? formValues.subImageUrls : []);
+  const currentUrls = new Set(
+    Array.isArray(formValues.subImageUrls) ? formValues.subImageUrls : []
+  );
 
   // removed: initial url not in current
   payload.subImageIdsToRemove = initialImages
@@ -35,11 +42,15 @@ export function buildUpdatePayload(
     .map((img) => img.id);
 
   // added: current url not in initial
-  payload.subImageUrlsToAdd = Array.from(currentUrls).filter((url) => !initialUrls.has(url));
+  payload.subImageUrlsToAdd = [...currentUrls].filter(
+    (url) => !initialUrls.has(url)
+  );
 
   // Schedules diff (by date/startTime/endTime key)
   const initialScheduleMap = new Map(
-    (initial.schedules || []).map((s) => [normalizeKey(s.date, s.startTime, s.endTime), s.id])
+    initial.schedules.map((s) => {
+      return [normalizeKey(s.date, s.startTime, s.endTime), s.id];
+    })
   );
 
   const formKeys = new Set(
@@ -49,17 +60,19 @@ export function buildUpdatePayload(
   );
 
   // remove ids: initial keys not present in form
-  payload.scheduleIdsToRemove = Array.from(initialScheduleMap.entries())
+  payload.scheduleIdsToRemove = [...initialScheduleMap.entries()]
     .filter(([key]) => !formKeys.has(key))
     .map(([, id]) => id);
 
   // add schedules: form keys not present in initial
   const initialKeys = new Set(initialScheduleMap.keys());
+
   payload.schedulesToAdd = timeSlots
     .filter((s) => s.date && s.startTime && s.endTime)
-    .filter((s) => !initialKeys.has(normalizeKey(s.date, s.startTime, s.endTime)))
+    .filter(
+      (s) => !initialKeys.has(normalizeKey(s.date, s.startTime, s.endTime))
+    )
     .map((s) => ({ date: s.date, startTime: s.startTime, endTime: s.endTime }));
 
   return payload;
 }
-

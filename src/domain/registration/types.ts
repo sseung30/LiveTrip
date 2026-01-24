@@ -1,13 +1,11 @@
-import { useForm, type UseFormReturn } from "react-hook-form";
-
 export interface FormValues {
   title: string;
   category: string;
   description: string;
   address: string;
   price: string;
-  bannerImage: string;      
-  subImageUrls: string[];   
+  bannerImage: string;
+  subImageUrls: string[];
   timeSlots: {
     date: string;
     startTime: string;
@@ -19,10 +17,26 @@ export interface TimeSlot {
   date: string;
   startTime: string;
   endTime: string;
-  isAvailable: boolean; 
+  isAvailable: boolean;
 }
 
 export interface UploadedImage {
-  id: string; 
+  id: string;
   src: string;
 }
+
+export type UpdateActivityPayload = Partial<{
+  title: string;
+  description: string;
+  category: string;
+  price: number;
+  address: string;
+  bannerImageUrl: string;
+  /**
+   * For edit endpoint contract
+   */
+  subImageIdsToRemove: number[];
+  subImageUrlsToAdd: string[];
+  scheduleIdsToRemove: number[];
+  schedulesToAdd: { date: string; startTime: string; endTime: string }[];
+}>;

@@ -26,25 +26,25 @@ export default function ClientConfirmModal({
   isPending,
 }: ClientConfirmModalProps) {
   return (
-    <div className="flex-center w-80 flex-col gap-6 md:w-[25rem]">
-      <div className="flex-center flex-col gap-2">
-        <Image src={WarningImage} alt="경고 아이콘" />
-        <h1 className="text-md font-bold whitespace-pre-line break-words text-center">
+    <div className='flex-center w-80 flex-col gap-6 md:w-[25rem]'>
+      <div className='flex-center flex-col gap-2'>
+        <Image src={WarningImage} alt='경고 아이콘' />
+        <h1 className='text-md text-center font-bold break-words whitespace-pre-line'>
           {message}
         </h1>
       </div>
-      <div className="flex-center gap-3">
+      <div className='flex-center gap-3'>
         <button
-          type="button"
-          className="rounded-lg border border-gray-100 px-5 py-1"
+          type='button'
+          className='rounded-lg border border-gray-100 px-5 py-1'
           disabled={isPending}
           onClick={onCancel}
         >
           {cancelText}
         </button>
         <button
-          type="button"
-          className="rounded-lg border bg-primary-500 px-5 py-1 text-white"
+          type='button'
+          className='bg-primary-500 rounded-lg border px-5 py-1 text-white'
           disabled={isPending}
           onClick={onConfirm}
         >
@@ -54,4 +54,3 @@ export default function ClientConfirmModal({
     </div>
   );
 }
-
