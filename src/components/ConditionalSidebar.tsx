@@ -1,15 +1,14 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
+import { useSelectedLayoutSegments } from 'next/navigation';
 import SideMenu from '@/components/side-menu';
 
 export default function ConditionalSidebar() {
-  const pathname = usePathname();
+  const segments = useSelectedLayoutSegments();
+  const isMyActivitiesEditPage =
+    segments[0] === 'myactivities' && segments[2] === 'edit';
 
-  const hideForEdit =
-    pathname?.startsWith('/myactivities/') && pathname?.endsWith('/edit');
-
-  if (hideForEdit) {
+  if (isMyActivitiesEditPage) {
     return null;
   }
 

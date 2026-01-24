@@ -20,19 +20,21 @@ export function TimeSelectDropdown({
   onSelect,
   width,
 }: TimeSelectDropdownProps) {
-  const dropdownOptions = useMemo(
-    () =>
-      { return options.map((option) => { return {
+  const dropdownOptions = useMemo(() => {
+    return options.map((option) => {
+      return {
         label: option,
         value: option,
-      } }) },
-    [options],
-  );
+      };
+    });
+  }, [options]);
 
   return (
     <div>
       {label ? (
-        <label className="hidden md:block mb-2 text-sm text-black">{label}</label>
+        <label className='mb-2 hidden text-sm text-black md:block'>
+          {label}
+        </label>
       ) : null}
       <SelectDropdown
         width={width}

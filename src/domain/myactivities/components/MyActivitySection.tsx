@@ -1,6 +1,5 @@
 'use client';
 import Image from 'next/image';
-import Button from '@/components/button/Button';
 import { useActionState, useEffect, useRef, useState } from 'react';
 import ActivitiyCard from '@/domain/myactivities/components/ActivityCard';
 import type { Activity } from '@/domain/myactivities/type';
@@ -11,54 +10,8 @@ import {
   useDialog,
 } from '@/components/dialog';
 import { useMyActivities } from '@/domain/myactivities/hooks/useMyActivities';
-import { deleteMyActivity } from '@/domain/myactivities/api';
 import { toast } from '@/components/toast';
-
-const deleteAction = async (
-  prevState: { state: string },
-  formData: FormData
-) => {
-  const raw = formData.get('activityId');
-  const id = Number(raw);
-
-  if (Number.isNaN(id)) {
-    return { state: 'error' };
-  }
-
-  const result = await deleteMyActivity(id);
-
-  if (!result.ok) {
-    switch (result.status) {
-      case 400:
-        toast({
-          message: '신청 예약이 있는 체험은 삭제할 수 없습니다.',
-          eventType: 'error',
-        });
-        break;
-      case 401:
-        toast({ message: '로그인이 필요합니다.', eventType: 'error' });
-        break;
-      case 403:
-        toast({
-          message: '본인의 체험만 삭제할 수 있습니다.',
-          eventType: 'error',
-        });
-        break;
-      case 404:
-        toast({ message: '존재하지 않는 체험입니다.', eventType: 'error' });
-        break;
-      default:
-        toast({
-          message: '알 수 없는 오류가 발생했습니다.',
-          eventType: 'error',
-        });
-    }
-    return { state: 'error' };
-  }
-
-  toast({ message: '체험이 삭제되었습니다', eventType: 'success' });
-  return { state: 'success' };
-};
+import { deleteActivityAction } from '@/domain/myactivities/actions/delete-activity.action';
 
 export default function MyActivitySection() {
   const {
@@ -74,8 +27,9 @@ export default function MyActivitySection() {
 
   const deleteDialog = useDialog();
   const [deleteModalState, deleteModalFormAction, deleteModalIsPending] =
-    useActionState(deleteAction, {
-      state: 'idle',
+    useActionState(deleteActivityAction, {
+      status: 'idle',
+      message: '',
     });
 
   const [targetId, setTargetId] = useState<number | null>(null);
@@ -96,12 +50,6 @@ export default function MyActivitySection() {
     deleteDialog.hideDialog();
   };
 
-  useEffect(() => {
-    if (deleteModalState.state !== 'success') {
-      return;
-    }
-  }, [deleteModalState]);
-
   const [page, setPage] = useState(0);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
@@ -113,6 +61,15 @@ export default function MyActivitySection() {
     rootMargin: '0px 0px 0px 0px',
     threshold: 0.1,
   });
+
+  useEffect(() => {
+    if (deleteModalState.status === 'success' && deleteModalState.message) {
+      toast({ message: deleteModalState.message, eventType: 'success' });
+    }
+    if (deleteModalState.status === 'error' && deleteModalState.message) {
+      toast({ message: deleteModalState.message, eventType: 'error' });
+    }
+  }, [deleteModalState]);
 
   useEffect(() => {
     if (page > 0) {

@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
 import createQueryString from '@/api/create-query-string';
-import { queryKeys, queryOptions } from '@/domain/activities/queryOptions';
+import { queryKeys } from '@/domain/activities/queryOptions';
 import type {
   Activity,
   getAllActivitiesResponse,

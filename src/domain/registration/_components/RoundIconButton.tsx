@@ -1,5 +1,3 @@
-// Registration/components/RoundIconButton.tsx
-
 import type { ReactNode } from 'react';
 
 interface RoundIconButtonProps {
@@ -24,7 +22,7 @@ export function RoundIconButton({
 
   return (
     <button
-      type="button"
+      type='button'
       aria-label={ariaLabel}
       className={`${baseClass} ${variantClass}`}
       onClick={onClick}
