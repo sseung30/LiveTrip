@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { toast } from '@/components/toast';
 import {
   createReservation,
-  getAvailableSchedule,
+  getAvailableScheduleWithCache,
 } from '@/domain/experience-detail/api';
 import ExperienceHeader from '@/domain/experience-detail/components/experience/ExperienceHeader';
 import Calendar from '@/domain/experience-detail/components/reservation/Calendar';
@@ -45,7 +45,7 @@ export default function ReservationCard({
       try {
         const year = currentYear.toString();
         const month = currentMonth.toString().padStart(2, '0');
-        const schedules = await getAvailableSchedule(
+        const schedules = await getAvailableScheduleWithCache(
           experience.id,
           year,
           month

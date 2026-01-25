@@ -19,7 +19,7 @@ export const getReviewsCacheTag = (activityId: number) => [
   String(activityId),
 ];
 
-export async function getExperienceDetail(
+export async function getExperienceDetailWithCache(
   activityId: number
 ): Promise<ExperienceDetail> {
   return apiFetch<ExperienceDetail>(`/activities/${activityId}`, {
@@ -30,7 +30,7 @@ export async function getExperienceDetail(
 /**
  * 체험 예약 가능일 조회
  */
-export async function getAvailableSchedule(
+export async function getAvailableScheduleWithCache(
   activityId: number,
   year: string,
   month: string
@@ -44,7 +44,7 @@ export async function getAvailableSchedule(
 /**
  * 체험 리뷰 조회
  */
-export async function getReviews(
+export async function getReviewsWithCache(
   activityId: number,
   page = 1,
   size = 3

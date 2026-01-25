@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { useState } from 'react';
 import Pagination from '@/components/pagination/Pagination';
-import { getReviews } from '@/domain/experience-detail/api';
+import { getReviewsWithCache } from '@/domain/experience-detail/api';
 import type {
   ExperienceReviewsProps,
   Review,
@@ -64,7 +64,11 @@ export default function ExperienceReviews({
     setCurrentPage(page);
 
     try {
-      const data = await getReviews(activityId, page, REVIEWS_PER_PAGE);
+      const data = await getReviewsWithCache(
+        activityId,
+        page,
+        REVIEWS_PER_PAGE
+      );
 
       setCurrentReviews(data.reviews);
     } catch (error) {
