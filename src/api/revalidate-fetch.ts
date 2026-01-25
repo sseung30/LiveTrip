@@ -5,5 +5,5 @@ export const fetchRevalidateByTag = async (tag: string) => {
     body: JSON.stringify({ tag }),
   });
 
-  return await res.json();
+  return (await res.json()) as unknown;
 };

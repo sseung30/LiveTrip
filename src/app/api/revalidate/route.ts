@@ -6,7 +6,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { tag } = body;
 
-    revalidateTag(tag);
+    revalidateTag(tag as string);
 
     return NextResponse.json(
       { revalidated: true, tag, now: Date.now() },

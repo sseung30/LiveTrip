@@ -1,6 +1,5 @@
 import { apiFetch } from '@/api/api';
 import createQueryString from '@/api/create-query-string';
-import { fetchRevalidateByTag } from '@/api/revalidate-fetch';
 import type {
   ActivityDetailResponse,
   getAllActivitiesParams,

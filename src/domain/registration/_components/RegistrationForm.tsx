@@ -11,7 +11,10 @@ import {
 import { useQueryClient } from '@tanstack/react-query';
 import { ApiError } from '@/api/api';
 import { toast } from '@/components/toast';
-import type { ActivityDetailResponse } from '@/domain/activities/type';
+import type {
+  ActivityDetailResponse,
+  MyActivityDetail,
+} from '@/domain/activities/type';
 import InnerRegistrationForm from '@/domain/registration/_components/InnerRegistrationForm';
 import { buildRegistrationPayload } from '@/domain/registration/_utils/buildRegistrationPayload';
 import { buildUpdatePayload } from '@/domain/registration/_utils/buildUpdatePayload';
@@ -94,7 +97,7 @@ export default function RegistrationForm({
       if (mode === 'edit' && initialData?.id) {
         // Build update-diff payload for edit endpoint
         const updatePayload = buildUpdatePayload(
-          initialData as any,
+          initialData as MyActivityDetail,
           data,
           timeSlots
         );

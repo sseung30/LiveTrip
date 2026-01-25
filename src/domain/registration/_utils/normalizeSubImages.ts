@@ -7,8 +7,8 @@ export const normalizeSubImages = (data?: ActivityDetailResponse): string[] => {
   if (Array.isArray(data.subImageUrls)) {
     return data.subImageUrls;
   }
-  if (Array.isArray((data as any).subImages)) {
-    const arr = (data as any).subImages as (string | { imageUrl: string })[];
+  if (Array.isArray(data.subImages)) {
+    const arr = data.subImages as (string | { imageUrl: string })[];
 
     return arr
       .map((item) => (typeof item === 'string' ? item : item.imageUrl))
