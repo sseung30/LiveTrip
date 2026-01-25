@@ -1,7 +1,7 @@
 import { apiFetch } from '@/api/api';
 import createQueryString from '@/api/create-query-string';
 import type {
-  ActivityDetailResponse,
+  ActivityDetail,
   AvailableSchedule,
   getAllActivitiesParams,
   getAllActivitiesResponse,
@@ -45,14 +45,14 @@ export const getAllActivities = async (
 
 export const getActivityDetail = async (
   activityId: number | string
-): Promise<ActivityDetailResponse> => {
-  return apiFetch<ActivityDetailResponse>(`/activities/${activityId}`);
+): Promise<ActivityDetail> => {
+  return apiFetch<ActivityDetail>(`/activities/${activityId}`);
 };
 
 export const getActivityDetailWithCache = async (
   activityId: number | string
-): Promise<ActivityDetailResponse> => {
-  return apiFetch<ActivityDetailResponse>(`/activities/${activityId}`, {
+): Promise<ActivityDetail> => {
+  return apiFetch<ActivityDetail>(`/activities/${activityId}`, {
     next: { tags: [...activityCacheTag.detail(activityId)] },
   });
 };

@@ -1,31 +1,31 @@
 import LocationInfo from '@/components/ui/LocationInfo';
 import StarRating from '@/components/ui/StarRating';
-import type { ExperienceDetail } from '@/domain/experience-detail/type';
+import type { ActivityDetail } from '@/domain/activities/type';
 
-interface MobileExperienceHeaderProps {
-  experience: ExperienceDetail;
+interface MobileActivityHeaderProps {
+  activity: ActivityDetail;
 }
 
-export default function MobileExperienceHeader({
-  experience,
-}: MobileExperienceHeaderProps) {
+export default function MobileActivityHeader({
+  activity,
+}: MobileActivityHeaderProps) {
   return (
     <div className='relative mb-7'>
       <div className='mx-auto max-w-md'>
         <div className='mb-2 text-sm font-medium text-gray-600'>
-          {experience.category}
+          {activity.category}
         </div>
         <h1 className='mb-2 text-xl font-bold text-gray-900'>
-          {experience.title}
+          {activity.title}
         </h1>
         <div className='mb-2'>
           <StarRating
-            rating={experience.rating}
-            reviewCount={experience.reviewCount}
+            rating={activity.rating}
+            reviewCount={activity.reviewCount}
           />
         </div>
         <div className='mb-6'>
-          <LocationInfo address={experience.address} />
+          <LocationInfo address={activity.address} />
         </div>
       </div>
       {/* 구분선 */}

@@ -1,30 +1,30 @@
 'use client';
 
 import { useState } from 'react';
+import type { ActivityDetail } from '@/domain/activities/type';
 import ReservationCard from '@/domain/experience-detail/components/reservation/ReservationCard';
-import type { ExperienceDetail } from '@/domain/experience-detail/type';
 
-interface ExperienceDetailClientProps {
-  experience: ExperienceDetail;
-  isMyExperience: boolean;
+interface ActivityDetailProps {
+  activity: ActivityDetail;
+  isMyActivity: boolean;
 }
 
-export default function ExperienceDetailClient({
-  experience,
-  isMyExperience,
-}: ExperienceDetailClientProps) {
+export default function ActivityDetailClient({
+  activity,
+  isMyActivity,
+}: ActivityDetailProps) {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [participantCount, setParticipantCount] = useState(1);
 
-  if (isMyExperience) {
+  if (isMyActivity) {
     return null;
   }
 
   return (
     <div className='lg:col-span-1'>
       <ReservationCard
-        experience={experience}
+        experience={activity}
         selectedDate={selectedDate}
         selectedTime={selectedTime}
         participantCount={participantCount}

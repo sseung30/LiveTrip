@@ -1,6 +1,6 @@
-import type { ActivityDetailResponse } from '@/domain/activities/type';
+import type { ActivityDetail } from '@/domain/activities/type';
 
-export const normalizeSubImages = (data?: ActivityDetailResponse): string[] => {
+export const normalizeSubImages = (data?: ActivityDetail): string[] => {
   if (!data) {
     return [];
   }

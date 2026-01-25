@@ -3,9 +3,9 @@
 import Image from 'next/image';
 import { useState } from 'react';
 import Pagination from '@/components/pagination/Pagination';
-import { getReviewsWithCache } from '@/domain/experience-detail/api';
+import { getReviewsWithCache } from '@/domain/activities/api';
 import type {
-  ExperienceReviewsProps,
+  ActivityReviewsProps,
   Review,
 } from '@/domain/experience-detail/type';
 
@@ -26,12 +26,12 @@ const getSatisfactionLevel = (rating: number): string => {
   return '불만족';
 };
 
-export default function ExperienceReviews({
+export default function ActivityReviews({
   reviews: initialReviews,
   totalReviews,
   averageRating,
   activityId,
-}: ExperienceReviewsProps) {
+}: ActivityReviewsProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [currentReviews, setCurrentReviews] =
     useState<Review[]>(initialReviews);

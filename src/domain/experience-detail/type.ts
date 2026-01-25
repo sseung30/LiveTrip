@@ -90,19 +90,9 @@ export interface ExperienceInfoProps {
   address: string;
 }
 
-export interface ExperienceReviewsProps {
+export interface ActivityReviewsProps {
   reviews: Review[];
   totalReviews: number;
   averageRating: number;
   activityId: number;
-}
-
-export interface ReservationCardProps {
-  experience: ExperienceDetail;
-  selectedDate: Date | null;
-  selectedTime: string | null;
-  participantCount: number;
-  onDateChange: (date: Date | null) => void;
-  onTimeChange: (time: string | null) => void;
-  onParticipantChange: (count: number) => void;
 }

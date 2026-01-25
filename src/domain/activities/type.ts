@@ -21,7 +21,7 @@ export interface Activity {
   createdAt: string;
   updatedAt: string;
 }
-export interface ActivityDetailResponse extends Activity {
+export interface ActivityDetail extends Activity {
   subImageUrls: string[];
   subImages: SubImage[];
   schedules: Schedule[];

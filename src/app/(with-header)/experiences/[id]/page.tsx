@@ -2,25 +2,23 @@ import {
   getActivityDetailWithCache,
   getReviewsWithCache,
 } from '@/domain/activities/api';
-import ExperienceDetailClient from '@/domain/experience-detail/components/experience/ExperienceDetailClient';
+import type { ActivityDetail } from '@/domain/activities/type';
+import ActivityDetailClient from '@/domain/experience-detail/components/experience/ActivityDetailClient';
+import ExperienceReviews from '@/domain/experience-detail/components/experience/ActivityReviews';
 import ExperienceInfo from '@/domain/experience-detail/components/experience/ExperienceInfo';
-import ExperienceReviews from '@/domain/experience-detail/components/experience/ExperienceReviews';
 import ImageGallery from '@/domain/experience-detail/components/experience/ImageGallery';
 import KakaoMapScript from '@/domain/experience-detail/components/experience/KakaoMapScript';
-import MobileExperienceHeader from '@/domain/experience-detail/components/experience/MobileExperienceHeader';
-import type {
-  ExperienceDetail,
-  ReviewResponse,
-} from '@/domain/experience-detail/type';
+import MobileActivityHeader from '@/domain/experience-detail/components/experience/MobileActivityHeader';
+import type { ReviewResponse } from '@/domain/experience-detail/type';
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
-function createImageArray(experience: ExperienceDetail): string[] {
+function createImageArray(activity: ActivityDetail): string[] {
   return [
-    experience.bannerImageUrl,
-    ...experience.subImages.map((img) => img.imageUrl),
+    activity.bannerImageUrl,
+    ...activity.subImages.map((img) => img.imageUrl),
   ];
 }
 
@@ -32,20 +30,20 @@ function extractReviewData(reviewResponse: ReviewResponse) {
   };
 }
 
-export default async function ExperienceDetailPage({ params }: PageProps) {
+export default async function ActivityDetailPage({ params }: PageProps) {
   const { id } = await params;
   const activityId = Number(id);
 
-  const [experience, reviews] = await Promise.all([
+  const [activity, reviews] = await Promise.all([
     getActivityDetailWithCache(activityId),
     getReviewsWithCache(activityId, 1, 10),
   ]);
 
-  const imageArray = createImageArray(experience);
+  const imageArray = createImageArray(activity);
   const reviewData = extractReviewData(reviews);
 
   const currentUserId = 999;
-  const isMyExperience = experience.userId === currentUserId;
+  const isMyExperience = activity.userId === currentUserId;
 
   return (
     <div className='min-h-screen'>
@@ -60,13 +58,13 @@ export default async function ExperienceDetailPage({ params }: PageProps) {
 
             {/* 모바일/태블릿 버전 체험 간략 설명 */}
             <div className='lg:hidden'>
-              <MobileExperienceHeader experience={experience} />
+              <MobileActivityHeader activity={activity} />
             </div>
 
             {/* 체험 정보 */}
             <ExperienceInfo
-              description={experience.description}
-              address={experience.address}
+              description={activity.description}
+              address={activity.address}
             />
 
             {/* 체험 후기 */}
@@ -79,9 +77,9 @@ export default async function ExperienceDetailPage({ params }: PageProps) {
           </div>
 
           {/* 우측 예약 카드 - 내 체험이 아닐 때만 표시 */}
-          <ExperienceDetailClient
-            experience={experience}
-            isMyExperience={isMyExperience}
+          <ActivityDetailClient
+            activity={activity}
+            isMyActivity={isMyExperience}
           />
         </div>
       </div>

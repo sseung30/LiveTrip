@@ -12,7 +12,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { ApiError } from '@/api/api';
 import { toast } from '@/components/toast';
 import type {
-  ActivityDetailResponse,
+  ActivityDetail,
   MyActivityDetail,
 } from '@/domain/activities/type';
 import InnerRegistrationForm from '@/domain/registration/_components/InnerRegistrationForm';
@@ -29,7 +29,7 @@ import type { FormValues } from '@/domain/registration/types';
 type Mode = 'create' | 'edit';
 interface RegistrationFormProps {
   mode: Mode;
-  initialData?: ActivityDetailResponse;
+  initialData?: ActivityDetail;
   isSubmitting?: boolean;
 }
 

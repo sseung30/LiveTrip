@@ -6,14 +6,14 @@ import {
   createReservation,
   getAvailableScheduleWithCache,
 } from '@/domain/activities/api';
-import ExperienceHeader from '@/domain/experience-detail/components/experience/ExperienceHeader';
+import type { ActivityDetail } from '@/domain/activities/type';
+import ActivityHeader from '@/domain/experience-detail/components/experience/ActivityHeader';
 import Calendar from '@/domain/experience-detail/components/reservation/Calendar';
 import MobileReservationBar from '@/domain/experience-detail/components/reservation/MobileReservationBar';
 import ParticipantCounter from '@/domain/experience-detail/components/reservation/ParticipantCounter';
 import TimeSelector from '@/domain/experience-detail/components/reservation/TimeSelector';
 import type {
   AvailableSchedule,
-  ReservationCardProps,
   Schedule,
 } from '@/domain/experience-detail/type';
 
@@ -23,6 +23,16 @@ const VALIDATION_MESSAGES = {
   INVALID_PARTICIPANT: '참여 인원을 1명 이상으로 설정해주세요.',
   SUCCESS: '예약이 완료되었습니다.',
 } as const;
+
+export interface ReservationCardProps {
+  experience: ActivityDetail;
+  selectedDate: Date | null;
+  selectedTime: string | null;
+  participantCount: number;
+  onDateChange: (date: Date | null) => void;
+  onTimeChange: (time: string | null) => void;
+  onParticipantChange: (count: number) => void;
+}
 
 export default function ReservationCard({
   experience,
@@ -163,7 +173,7 @@ export default function ReservationCard({
       <div className='space-y-4'>
         {/* 데스크톱용 체험 기본 정보 - lg 이상에서만 표시 */}
         <div className='hidden lg:block'>
-          <ExperienceHeader experience={experience} />
+          <ActivityHeader activity={experience} />
         </div>
 
         {/* 데스크톱용 예약 폼 - lg 이상에서만 표시 */}
