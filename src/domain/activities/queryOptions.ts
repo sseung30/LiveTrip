@@ -16,12 +16,6 @@ export const queryKeys = {
       },
     ] as const;
   },
-  detail: (activityId: number) => ['activity', activityId] as const,
-  schedules: (activityId: number) => {
-    return [...queryKeys.detail(activityId), 'schedules'] as const;
-  },
-  reviews: (activityId: number) =>
-    [...queryKeys.detail(activityId), 'reviews'] as const,
 };
 
 export const queryOptions = {

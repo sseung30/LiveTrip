@@ -5,7 +5,7 @@ import { toast } from '@/components/toast';
 import {
   createReservation,
   getAvailableScheduleWithCache,
-} from '@/domain/experience-detail/api';
+} from '@/domain/activities/api';
 import ExperienceHeader from '@/domain/experience-detail/components/experience/ExperienceHeader';
 import Calendar from '@/domain/experience-detail/components/reservation/Calendar';
 import MobileReservationBar from '@/domain/experience-detail/components/reservation/MobileReservationBar';

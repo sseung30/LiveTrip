@@ -1,7 +1,7 @@
 import {
-  getExperienceDetailWithCache,
+  getActivityDetailWithCache,
   getReviewsWithCache,
-} from '@/domain/experience-detail/api';
+} from '@/domain/activities/api';
 import ExperienceDetailClient from '@/domain/experience-detail/components/experience/ExperienceDetailClient';
 import ExperienceInfo from '@/domain/experience-detail/components/experience/ExperienceInfo';
 import ExperienceReviews from '@/domain/experience-detail/components/experience/ExperienceReviews';
@@ -37,7 +37,7 @@ export default async function ExperienceDetailPage({ params }: PageProps) {
   const activityId = Number(id);
 
   const [experience, reviews] = await Promise.all([
-    getExperienceDetailWithCache(activityId),
+    getActivityDetailWithCache(activityId),
     getReviewsWithCache(activityId, 1, 10),
   ]);
 

@@ -22,11 +22,21 @@ export interface Activity {
   updatedAt: string;
 }
 export interface ActivityDetailResponse extends Activity {
-  subImageUrls?: string[];
-  subImages?: (string | { id?: number; imageUrl: string })[];
-  schedules?: { date: string; startTime: string; endTime: string }[];
+  subImageUrls: string[];
+  subImages: SubImage[];
+  schedules: Schedule[];
+  shortDescription: string;
 }
-// Owner detail for editing: includes IDs for subImages and schedules
+export interface Schedule {
+  id: number;
+  date: string;
+  startTime: string;
+  endTime: string;
+}
+export interface SubImage {
+  id: number;
+  imageUrl: string;
+}
 export interface MyActivityDetail extends Activity {
   subImages: { id: number; imageUrl: string }[];
   schedules: {
@@ -49,4 +59,54 @@ export interface getAllActivitiesResponse {
   cursorId: number | null;
   totalCount: number;
   activities: Activity[];
+}
+
+export interface ReviewResponse {
+  averageRating: number;
+  totalCount: number;
+  reviews: Review[];
+}
+export interface Review {
+  id: number;
+  user: {
+    id: number;
+    profileImageUrl: string;
+    nickname: string;
+  };
+  activityId: number;
+  rating: number;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AvailableSchedule {
+  date: string;
+  times: AvailableTime[];
+}
+export interface AvailableTime {
+  id: number;
+  startTime: string;
+  endTime: string;
+}
+
+export interface ReservationRequest {
+  scheduleId: number;
+  headCount: number;
+}
+export interface ReservationResponse {
+  id: number;
+  teamId: string;
+  userId: number;
+  activityId: number;
+  scheduleId: number;
+  status: string;
+  reviewSubmitted: boolean;
+  totalPrice: number;
+  headCount: number;
+  date: string;
+  startTime: string;
+  endTime: string;
+  createdAt: string;
+  updatedAt: string;
 }
