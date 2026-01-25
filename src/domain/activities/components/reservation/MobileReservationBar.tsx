@@ -4,16 +4,13 @@ import { useCallback, useEffect, useState } from 'react';
 import Button from '@/components/button/Button';
 import { BottomSheetContainer } from '@/components/dialog/BottomSheet/BottomSheetContainer';
 import { useDialog } from '@/components/dialog/useDialog';
-import Calendar from '@/domain/experience-detail/components/reservation/Calendar';
-import ParticipantCounter from '@/domain/experience-detail/components/reservation/ParticipantCounter';
-import TimeSelector from '@/domain/experience-detail/components/reservation/TimeSelector';
-import type {
-  ExperienceDetail,
-  Schedule,
-} from '@/domain/experience-detail/type';
+import Calendar from '@/domain/activities/components/reservation/Calendar';
+import ParticipantCounter from '@/domain/activities/components/reservation/ParticipantCounter';
+import TimeSelector from '@/domain/activities/components/reservation/TimeSelector';
+import type { ActivityDetail, Schedule } from '@/domain/activities/type';
 
 interface MobileReservationBarProps {
-  experience: ExperienceDetail;
+  activity: ActivityDetail;
   selectedDate: Date | null;
   selectedTime: string | null;
   participantCount: number;
@@ -28,7 +25,7 @@ interface MobileReservationBarProps {
 }
 
 export default function MobileReservationBar({
-  experience,
+  activity,
   selectedDate,
   selectedTime,
   participantCount,
@@ -90,7 +87,7 @@ export default function MobileReservationBar({
             {/* 총 합계 금액 */}
             <div className='flex items-center gap-2'>
               <span className='text-lg font-bold text-gray-900'>
-                ₩ {(experience.price * participantCount).toLocaleString()}
+                ₩ {(activity.price * participantCount).toLocaleString()}
               </span>
               <span className='text-sm text-gray-600'>
                 총 {participantCount}명

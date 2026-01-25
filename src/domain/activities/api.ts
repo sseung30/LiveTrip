@@ -12,9 +12,7 @@ import type {
 
 const _ALL_ACTIVITIES_ENDPOINT = '/activities?';
 
-export const getAllActivitiesCacheTag = () => 'activity';
-
-const activityCacheTag = {
+export const activityCacheTag = {
   all: () => 'activity',
   detail: (activityId: string | number) => [
     ...activityCacheTag.all(),

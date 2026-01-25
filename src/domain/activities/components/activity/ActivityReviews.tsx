@@ -4,10 +4,7 @@ import Image from 'next/image';
 import { useState } from 'react';
 import Pagination from '@/components/pagination/Pagination';
 import { getReviewsWithCache } from '@/domain/activities/api';
-import type {
-  ActivityReviewsProps,
-  Review,
-} from '@/domain/experience-detail/type';
+import type { Review } from '@/domain/activities/type';
 
 const REVIEWS_PER_PAGE = 3;
 const STAR_COUNT = 5;
@@ -25,6 +22,13 @@ const getSatisfactionLevel = (rating: number): string => {
 
   return '불만족';
 };
+
+export interface ActivityReviewsProps {
+  reviews: Review[];
+  totalReviews: number;
+  averageRating: number;
+  activityId: number;
+}
 
 export default function ActivityReviews({
   reviews: initialReviews,

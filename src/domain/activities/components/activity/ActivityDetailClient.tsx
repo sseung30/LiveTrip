@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import ReservationCard from '@/domain/activities/components/reservation/ReservationCard';
 import type { ActivityDetail } from '@/domain/activities/type';
-import ReservationCard from '@/domain/experience-detail/components/reservation/ReservationCard';
 
 interface ActivityDetailProps {
   activity: ActivityDetail;
@@ -24,7 +24,7 @@ export default function ActivityDetailClient({
   return (
     <div className='lg:col-span-1'>
       <ReservationCard
-        experience={activity}
+        activity={activity}
         selectedDate={selectedDate}
         selectedTime={selectedTime}
         participantCount={participantCount}

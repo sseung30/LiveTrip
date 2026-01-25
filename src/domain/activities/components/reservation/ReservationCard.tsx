@@ -6,16 +6,16 @@ import {
   createReservation,
   getAvailableScheduleWithCache,
 } from '@/domain/activities/api';
-import type { ActivityDetail } from '@/domain/activities/type';
-import ActivityHeader from '@/domain/experience-detail/components/experience/ActivityHeader';
-import Calendar from '@/domain/experience-detail/components/reservation/Calendar';
-import MobileReservationBar from '@/domain/experience-detail/components/reservation/MobileReservationBar';
-import ParticipantCounter from '@/domain/experience-detail/components/reservation/ParticipantCounter';
-import TimeSelector from '@/domain/experience-detail/components/reservation/TimeSelector';
+import ActivityHeader from '@/domain/activities/components/activity/ActivityHeader';
+import Calendar from '@/domain/activities/components/reservation/Calendar';
+import MobileReservationBar from '@/domain/activities/components/reservation/MobileReservationBar';
+import ParticipantCounter from '@/domain/activities/components/reservation/ParticipantCounter';
+import TimeSelector from '@/domain/activities/components/reservation/TimeSelector';
 import type {
+  ActivityDetail,
   AvailableSchedule,
   Schedule,
-} from '@/domain/experience-detail/type';
+} from '@/domain/activities/type';
 
 const VALIDATION_MESSAGES = {
   NO_DATE: '날짜를 선택해주세요.',
@@ -25,7 +25,7 @@ const VALIDATION_MESSAGES = {
 } as const;
 
 export interface ReservationCardProps {
-  experience: ActivityDetail;
+  activity: ActivityDetail;
   selectedDate: Date | null;
   selectedTime: string | null;
   participantCount: number;
@@ -35,7 +35,7 @@ export interface ReservationCardProps {
 }
 
 export default function ReservationCard({
-  experience,
+  activity,
   selectedDate,
   selectedTime,
   participantCount,
@@ -56,7 +56,7 @@ export default function ReservationCard({
         const year = currentYear.toString();
         const month = currentMonth.toString().padStart(2, '0');
         const schedules = await getAvailableScheduleWithCache(
-          experience.id,
+          activity.id,
           year,
           month
         );
@@ -68,7 +68,7 @@ export default function ReservationCard({
     };
 
     loadAvailableSchedules();
-  }, [experience.id, currentYear, currentMonth]);
+  }, [activity.id, currentYear, currentMonth]);
 
   const handleMonthChange = (year: number, month: number) => {
     setCurrentYear(year);
@@ -147,7 +147,7 @@ export default function ReservationCard({
         return;
       }
 
-      await createReservation(experience.id, {
+      await createReservation(activity.id, {
         scheduleId: selectedSchedule.id,
         headCount: participantCount,
       });
@@ -165,7 +165,7 @@ export default function ReservationCard({
     }
   };
 
-  const totalPrice = experience.price * participantCount;
+  const totalPrice = activity.price * participantCount;
   const filteredSchedules = getFilteredSchedules();
 
   return (
@@ -173,7 +173,7 @@ export default function ReservationCard({
       <div className='space-y-4'>
         {/* 데스크톱용 체험 기본 정보 - lg 이상에서만 표시 */}
         <div className='hidden lg:block'>
-          <ActivityHeader activity={experience} />
+          <ActivityHeader activity={activity} />
         </div>
 
         {/* 데스크톱용 예약 폼 - lg 이상에서만 표시 */}
@@ -184,7 +184,7 @@ export default function ReservationCard({
           <div className='space-y-6'>
             {/* 가격 */}
             <div className='text-2xl font-bold text-gray-900'>
-              ₩ {experience.price.toLocaleString()}{' '}
+              ₩ {activity.price.toLocaleString()}{' '}
               <span style={{ color: '#79747E' }}>/ 인</span>
             </div>
 
@@ -248,7 +248,7 @@ export default function ReservationCard({
 
       {/* 모바일/태블릿용 하단 고정 예약 바 */}
       <MobileReservationBar
-        experience={experience}
+        activity={activity}
         participantCount={participantCount}
         selectedDate={selectedDate}
         selectedTime={selectedTime}

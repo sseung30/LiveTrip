@@ -1,6 +1,6 @@
 import { apiFetch } from '@/api/api';
 import { fetchRevalidateByTag } from '@/api/revalidate-fetch';
-import { getAllActivitiesCacheTag } from '@/domain/activities/api';
+import { activityCacheTag } from '@/domain/activities/api';
 import type { ActivityDetail } from '@/domain/activities/type';
 import type { UpdateActivityPayload } from '@/domain/registration/types';
 
@@ -14,7 +14,7 @@ export const updateActivity = async (
     body: JSON.stringify(payload),
   });
 
-  await fetchRevalidateByTag(getAllActivitiesCacheTag);
+  await fetchRevalidateByTag(activityCacheTag.all());
   await fetchRevalidateByTag(String(id));
 
   return res;
@@ -26,7 +26,7 @@ export const createActivity = async (payload: any) => {
     body: JSON.stringify(payload),
   });
 
-  await fetchRevalidateByTag(getAllActivitiesCacheTag);
+  await fetchRevalidateByTag(activityCacheTag.all());
 
   return res;
 };

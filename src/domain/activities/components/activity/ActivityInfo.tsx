@@ -1,11 +1,14 @@
 import KakaoMap from '@/components/ui/KakaoMap';
 import Section from '@/components/ui/Section';
-import type { ExperienceInfoProps } from '@/domain/experience-detail/type';
 
-export default function ExperienceInfo({
+export interface ActivityInfoProps {
+  description: string;
+  address: string;
+}
+export default function ActivityInfo({
   description,
   address,
-}: ExperienceInfoProps) {
+}: ActivityInfoProps) {
   return (
     <div className='space-y-8'>
       {/* 체험 설명 */}

@@ -2,14 +2,13 @@ import {
   getActivityDetailWithCache,
   getReviewsWithCache,
 } from '@/domain/activities/api';
-import type { ActivityDetail } from '@/domain/activities/type';
-import ActivityDetailClient from '@/domain/experience-detail/components/experience/ActivityDetailClient';
-import ExperienceReviews from '@/domain/experience-detail/components/experience/ActivityReviews';
-import ExperienceInfo from '@/domain/experience-detail/components/experience/ExperienceInfo';
-import ImageGallery from '@/domain/experience-detail/components/experience/ImageGallery';
-import KakaoMapScript from '@/domain/experience-detail/components/experience/KakaoMapScript';
-import MobileActivityHeader from '@/domain/experience-detail/components/experience/MobileActivityHeader';
-import type { ReviewResponse } from '@/domain/experience-detail/type';
+import ActivityDetailClient from '@/domain/activities/components/activity/ActivityDetailClient';
+import ExperienceInfo from '@/domain/activities/components/activity/ActivityInfo';
+import ExperienceReviews from '@/domain/activities/components/activity/ActivityReviews';
+import ImageGallery from '@/domain/activities/components/activity/ImageGallery';
+import KakaoMapScript from '@/domain/activities/components/activity/KakaoMapScript';
+import MobileActivityHeader from '@/domain/activities/components/activity/MobileActivityHeader';
+import type { ActivityDetail, ReviewResponse } from '@/domain/activities/type';
 
 interface PageProps {
   params: Promise<{ id: string }>;

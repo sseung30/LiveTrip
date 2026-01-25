@@ -1,5 +1,5 @@
 import Button from '@/components/button/Button';
-import type { Schedule } from '@/domain/experience-detail/type';
+import type { Schedule } from '@/domain/activities/type';
 
 interface TimeSelectorProps {
   schedules: Schedule[];
