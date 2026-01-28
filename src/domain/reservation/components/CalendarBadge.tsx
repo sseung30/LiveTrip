@@ -1,7 +1,4 @@
-import type {
-  BadgeProps,
-  BadgeStyleMap,
-} from '@/domain/reservation-status/type';
+import type { BadgeProps, BadgeStyleMap } from '@/domain/reservation/types';
 
 const BADGE_STYLES: BadgeStyleMap = {
   // 예약

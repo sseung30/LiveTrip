@@ -3,8 +3,8 @@
 import { useRouter } from 'next/navigation';
 import { useActionState, useEffect } from 'react';
 import { toast } from '@/components/toast';
-import type { ReservationStatusType } from '@/domain/reservation-status/components/reservation-popup/type';
-import StateBadge from '@/domain/reservation-status/components/state-badge/StateBadge';
+import type { ReservationStatusType } from '@/domain/reservation/components/ReservationPopup/type';
+import StateBadge from '@/domain/reservation/components/StateBadge';
 import { approveReservationAction } from '@/form/reservation/approve-reservation.action';
 import { rejectReservationAction } from '@/form/reservation/reject-reservation.action';
 

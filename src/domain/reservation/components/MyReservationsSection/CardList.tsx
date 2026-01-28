@@ -1,6 +1,6 @@
 import Image from 'next/image';
-import type { CardListProps } from '@/domain/myreservation/type';
-import StateBadge from '@/domain/reservation-status/components/state-badge/StateBadge';
+import StateBadge from '@/domain/reservation/components/StateBadge';
+import type { CardListProps } from '@/domain/reservation/types';
 
 const BUTTON_STYLES = {
   change:

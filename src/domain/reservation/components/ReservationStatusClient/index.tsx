@@ -1,115 +1,24 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import SelectDropdown from '@/components/dropdown/SelectDropdown';
 import { toast } from '@/components/toast';
 import {
-  type ActivityReservation,
   fetchActivityReservations,
   fetchMyActivities,
   fetchReservationDashboard,
   fetchReservedSchedule,
-  type ReservationDashboard,
-  type ReservedSchedule,
-} from '@/domain/reservation-status/api';
-import CalendarBadge from '@/domain/reservation-status/components/CalendarBadge';
-import ReservationPopup from '@/domain/reservation-status/components/reservation-popup/ReservationPopup';
-import type { BadgeType } from '@/domain/reservation-status/type';
+} from '@/domain/reservation/api';
+import ReservationPopup from '@/domain/reservation/components/ReservationPopup';
+import CalendarCell from '@/domain/reservation/components/ReservationStatusClient/CalendarCell';
+import { formatDateString } from '@/domain/reservation/components/ReservationStatusClient/formatDateString';
+import type {
+  ActivityReservation,
+  ReservedSchedule,
+} from '@/domain/reservation/types';
 
 const WEEKDAYS = ['월', '화', '수', '목', '금', '토', '일'];
-
-const formatDateString = (date: Date): string => {
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-};
-
-function CalendarCell({
-  date,
-  isCurrentMonth,
-  isLastRow,
-  dashboardData,
-  onClick,
-}: {
-  date: Date;
-  isCurrentMonth: boolean;
-  isLastRow: boolean;
-  dashboardData: ReservationDashboard[];
-  onClick: (date: Date, element: HTMLDivElement) => void;
-}) {
-  const cellRef = useRef<HTMLDivElement>(null);
-  const dateString = formatDateString(date);
-  const dayData = dashboardData.find((d) => d.date === dateString);
-
-  const badges: { type: BadgeType; count: number }[] = [];
-
-  if (isCurrentMonth && dayData) {
-    const { completed, confirmed, pending } = dayData.reservations;
-
-    if (completed > 0) {
-      badges.push({ type: 'completed', count: completed });
-    }
-    if (confirmed > 0) {
-      badges.push({ type: 'approval', count: confirmed });
-    }
-    if (pending > 0) {
-      badges.push({ type: 'reservation', count: pending });
-    }
-  }
-
-  const hasReservations = badges.length > 0;
-
-  const handleClick = () => {
-    if (hasReservations && cellRef.current) {
-      onClick(date, cellRef.current);
-    }
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (hasReservations && (e.key === 'Enter' || e.key === ' ')) {
-      e.preventDefault();
-
-      if (cellRef.current) {
-        onClick(date, cellRef.current);
-      }
-    }
-  };
-
-  return (
-    <div
-      ref={cellRef}
-      role={hasReservations ? 'button' : undefined}
-      tabIndex={hasReservations ? 0 : undefined}
-      className={`relative flex min-h-[100px] flex-col items-center bg-white p-2 sm:min-h-[120px] sm:p-3 md:min-h-[150px] ${
-        !isLastRow ? 'border-b border-gray-200' : ''
-      } ${hasReservations ? 'cursor-pointer hover:bg-gray-50' : ''}`}
-      onClick={handleClick}
-      onKeyDown={handleKeyDown}
-    >
-      <div className='flex w-full items-start justify-center'>
-        <span
-          className={`relative text-xs sm:text-sm ${!isCurrentMonth ? 'text-gray-300' : 'text-gray-800'}`}
-        >
-          {date.getDate()}
-          {hasReservations && (
-            <div className='absolute -top-0.5 -right-1 h-1 w-1 rounded-full bg-red-500 sm:-right-1.5 sm:h-1.5 sm:w-1.5' />
-          )}
-        </span>
-      </div>
-
-      <div className='mt-1 flex flex-col gap-0.5 sm:mt-2 sm:gap-1'>
-        {badges.map((badge) => {
-          return (
-            <CalendarBadge
-              key={`${dateString}-${badge.type}`}
-              type={badge.type}
-              count={badge.count}
-            />
-          );
-        })}
-      </div>
-    </div>
-  );
-}
 
 function getCalendarDates(year: number, month: number): Date[] {
   const firstDay = new Date(year, month, 1);
@@ -165,11 +74,11 @@ export default function ReservationStatusClient() {
       const yearStr = currentDate.getFullYear().toString();
       const monthStr = (currentDate.getMonth() + 1).toString().padStart(2, '0');
 
-      return fetchReservationDashboard(
-        Number(selectedExperience),
-        yearStr,
-        monthStr
-      );
+      return fetchReservationDashboard({
+        activityId: Number(selectedExperience),
+        year: yearStr,
+        month: monthStr,
+      });
     },
     enabled: Boolean(selectedExperience),
   });
@@ -253,11 +162,11 @@ export default function ReservationStatusClient() {
             }
 
             try {
-              const reservationsData = await fetchActivityReservations(
-                Number(selectedExperience),
-                schedule.scheduleId,
-                status
-              );
+              const reservationsData = await fetchActivityReservations({
+                activityId: Number(selectedExperience),
+                scheduleId: schedule.scheduleId,
+                status,
+              });
 
               allReservations.push(...reservationsData.reservations);
             } catch {

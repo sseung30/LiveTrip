@@ -1,4 +1,7 @@
-import type { MyReservations, Reservation } from '@/domain/myreservation/type';
+import type {
+  MyReservationsResponse,
+  UserReservation,
+} from '@/domain/reservation/types';
 import { useInfiniteByCursor } from '@/hooks/useInfiniteScroll';
 
 export function useMyReservations() {
@@ -11,7 +14,7 @@ export function useMyReservations() {
     hasNextPage,
     isFetchingNextPage,
     isLoading,
-  } = useInfiniteByCursor<MyReservations, Reservation>({
+  } = useInfiniteByCursor<MyReservationsResponse, UserReservation>({
     queryKey: ['myReservations'],
     initialCursor: 0,
     buildUrl: (cursor) => {

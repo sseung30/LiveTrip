@@ -5,12 +5,12 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { BottomSheetContainer } from '@/components/dialog/BottomSheet/BottomSheetContainer';
 import { useDialog } from '@/components/dialog/useDialog';
 import SelectDropdown from '@/components/dropdown/SelectDropdown';
-import ReservationCard from '@/domain/reservation-status/components/reservation-popup/ReservationCard';
+import ReservationCard from '@/domain/reservation/components/ReservationPopup/ReservationCard';
 import type {
   ReservationDetail,
   ReservationPopupProps,
   ReservationStatusType,
-} from '@/domain/reservation-status/components/reservation-popup/type';
+} from '@/domain/reservation/components/ReservationPopup/type';
 
 const TAB_CONFIG: Record<ReservationStatusType, { label: string }> = {
   pending: { label: '신청' },

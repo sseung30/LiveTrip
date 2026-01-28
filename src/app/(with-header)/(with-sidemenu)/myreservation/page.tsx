@@ -1,4 +1,4 @@
-import MyReservationsSection from '@/domain/myreservation/components/MyReservationsSection';
+import MyReservationsSection from '@/domain/reservation/components/MyReservationsSection';
 
 export default async function Page() {
   return (

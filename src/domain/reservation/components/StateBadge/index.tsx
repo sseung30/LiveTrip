@@ -1,4 +1,4 @@
-import type { StateBadgeProps } from '@/domain/reservation-status/components/state-badge/type';
+import type { StateBadgeProps } from '@/domain/reservation/components/StateBadge/type';
 
 const STATE_CONFIG = {
   canceled: {

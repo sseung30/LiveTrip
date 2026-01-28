@@ -1,6 +1,5 @@
 'use client';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { useActionState, useEffect, useMemo, useRef, useState } from 'react';
 import Button from '@/components/button/Button';
 import {
@@ -11,11 +10,11 @@ import {
 import CategoryIcon from '@/components/icons/CategoryIcon';
 import { toast } from '@/components/toast';
 import EmptyResult from '@/components/ui/EmptyResult';
-import { cancelReservation } from '@/domain/myreservation/api';
-import CardList from '@/domain/myreservation/components/CardList';
-import { ReviewModalContents } from '@/domain/myreservation/components/ReviewModalContents';
-import { useMyReservations } from '@/domain/myreservation/hooks/useMyReservations';
-import type { Reservation } from '@/domain/myreservation/type';
+import { cancelReservation } from '@/domain/reservation/api';
+import CardList from '@/domain/reservation/components/MyReservationsSection/CardList';
+import { ReviewModalContents } from '@/domain/reservation/components/MyReservationsSection/ReviewModalContents';
+import { useMyReservations } from '@/domain/reservation/hooks/useMyReservations';
+import type { UserReservation } from '@/domain/reservation/types';
 import useIntersectionObserver from '@/hooks/useIntersectionObserver';
 
 const STATUSES = [
@@ -71,7 +70,7 @@ export default function MyReservationsSection() {
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
 
   // #68 후기 모달 컴포넌트 하나만 배치
-  const [reservation, setReservation] = useState<Reservation>();
+  const [reservation, setReservation] = useState<UserReservation>();
 
   const cancelDialog = useDialog();
   const [deleteModalState, deleteModalFormAction, deleteModalIsPending] =
@@ -152,12 +151,6 @@ export default function MyReservationsSection() {
 
     return reservationList.filter((r) => r.status === code);
   }, [reservationList, selectedStatus]);
-
-  const router = useRouter();
-
-  const handleExploreClick = () => {
-    router.push('/');
-  };
 
   if (isLoading) {
     return (
@@ -253,7 +246,7 @@ export default function MyReservationsSection() {
           className='flex h-200 flex-col gap-6 overflow-y-auto [&::-webkit-scrollbar]:hidden'
         >
           {hasReservations &&
-            filteredReservations.map((r: Reservation) => {
+            filteredReservations.map((r: UserReservation) => {
               return (
                 <div key={r.id}>
                   <CardList
