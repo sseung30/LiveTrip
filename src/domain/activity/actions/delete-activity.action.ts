@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { deleteMyActivity } from '@/domain/myactivities/api';
+import { deleteMyActivity } from '@/domain/activity/api';
 
 interface DeleteActionState {
   status: 'idle' | 'success' | 'error';
@@ -21,7 +21,6 @@ export async function deleteActivityAction(
 
   const result = await deleteMyActivity(id);
 
-  console.log(result);
   if (!result.ok) {
     switch (result.status) {
       case 400: {

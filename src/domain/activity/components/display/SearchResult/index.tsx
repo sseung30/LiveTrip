@@ -1,4 +1,4 @@
-import SearchResultDataWrapper from '@/domain/activity/components/search/SearchResultDataWrapper';
+import SearchResultDataWrapper from '@/domain/activity/components/display/SearchResult/SearchResultDataWrapper';
 import { activityQueryOptions } from '@/domain/activity/utils/queryOptions';
 import { getDehydratedInfiniteQueryClient } from '@/utils/react-query/getDehydratedInfiniteQueryClient';
 import { Hydrate } from '@/utils/react-query/getQueryClient';

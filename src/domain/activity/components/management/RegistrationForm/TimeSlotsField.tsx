@@ -1,8 +1,8 @@
 'use client';
-import DatePickerField from '@/domain/activity/components/management/DatePickerField';
-import { RoundIconButton } from '@/domain/activity/components/management/RoundIconButton';
-import { TimeSelectDropdown } from '@/domain/activity/components/management/TimeSelectDropdown';
-import type { TimeSlot } from '@/domain/activity/components/management/utils/createEmptyTimeSlot';
+import DatePickerField from '@/domain/activity/components/management/RegistrationForm/DatePickerField';
+import { RoundIconButton } from '@/domain/activity/components/management/RegistrationForm/RoundIconButton';
+import { TimeSelectDropdown } from '@/domain/activity/components/management/RegistrationForm/TimeSelectDropdown';
+import type { TimeSlot } from '@/domain/activity/components/management/RegistrationForm/utils/createEmptyTimeSlot';
 
 interface TimeSlotsFieldProps {
   timeSlots: TimeSlot[];

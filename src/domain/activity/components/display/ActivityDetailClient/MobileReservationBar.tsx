@@ -4,9 +4,9 @@ import { useCallback, useEffect, useState } from 'react';
 import Button from '@/components/button/Button';
 import { BottomSheetContainer } from '@/components/dialog/BottomSheet/BottomSheetContainer';
 import { useDialog } from '@/components/dialog/useDialog';
-import Calendar from '@/domain/activity/components/display/ReservationCard/Calendar';
-import ParticipantCounter from '@/domain/activity/components/display/ReservationCard/ParticipantCounter';
-import TimeSelector from '@/domain/activity/components/display/ReservationCard/TimeSelector';
+import Calendar from '@/domain/activity/components/display/ActivityDetailClient/Calendar';
+import ParticipantCounter from '@/domain/activity/components/display/ActivityDetailClient/ParticipantCounter';
+import TimeSelector from '@/domain/activity/components/display/ActivityDetailClient/TimeSelector';
 import type { ActivityDetail, Schedule } from '@/domain/activity/types';
 
 interface MobileReservationBarProps {

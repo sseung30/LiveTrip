@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
-import HeroBanner from '@/domain/activity/components/display/HeroBanner';
-import SearchForm from '@/domain/activity/components/search/SearchForm';
+import HeroBanner from '@/domain/activity/components/display/IntroSection/HeroBanner';
+import SearchForm from '@/domain/activity/components/display/IntroSection/SearchForm';
 
 export default function IntroSection() {
   return (

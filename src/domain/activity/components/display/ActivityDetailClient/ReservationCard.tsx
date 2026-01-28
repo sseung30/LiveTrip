@@ -6,11 +6,11 @@ import {
   createReservation,
   getAvailableScheduleWithCache,
 } from '@/domain/activity/api';
-import ActivityHeader from '@/domain/activity/components/display/ReservationCard/ActivityHeader';
-import Calendar from '@/domain/activity/components/display/ReservationCard/Calendar';
-import MobileReservationBar from '@/domain/activity/components/display/ReservationCard/MobileReservationBar';
-import ParticipantCounter from '@/domain/activity/components/display/ReservationCard/ParticipantCounter';
-import TimeSelector from '@/domain/activity/components/display/ReservationCard/TimeSelector';
+import ActivityHeader from '@/domain/activity/components/display/ActivityDetailClient/ActivityHeader';
+import Calendar from '@/domain/activity/components/display/ActivityDetailClient/Calendar';
+import MobileReservationBar from '@/domain/activity/components/display/ActivityDetailClient/MobileReservationBar';
+import ParticipantCounter from '@/domain/activity/components/display/ActivityDetailClient/ParticipantCounter';
+import TimeSelector from '@/domain/activity/components/display/ActivityDetailClient/TimeSelector';
 import type {
   ActivityDetail,
   AvailableSchedule,

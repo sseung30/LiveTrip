@@ -1,8 +1,16 @@
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
-import type { ActivityCardProps } from '@/domain/myactivities/components/type';
 
+export interface ActivityCardProps {
+  id: number;
+  title: string;
+  rating: number;
+  reviewCount: number;
+  price: number;
+  bannerImageUrl: string;
+  onDelete?: () => void;
+}
 export default function ActivityCard({
   id,
   title,

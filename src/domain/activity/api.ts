@@ -1,4 +1,4 @@
-import { apiFetch } from '@/api/api';
+import { ApiError, apiFetch } from '@/api/api';
 import createQueryString from '@/api/create-query-string';
 import { fetchRevalidateByTag } from '@/api/revalidate-fetch';
 import type {
@@ -144,14 +144,24 @@ export const getMyActivityDetail = async (
   return apiFetch<ActivityDetail>(`/my-activities/${id}`);
 };
 
-export const deleteActivity = async (id: number) => {
+export async function deleteMyActivity(id: number) {
   const body = { status: 'canceled' };
 
-  return apiFetch(`/my-activities/${id}`, {
-    method: 'DELETE',
-    body: JSON.stringify(body),
-  });
-};
+  try {
+    await apiFetch(`/my-activities/${id}`, {
+      method: 'DELETE',
+      body: JSON.stringify(body),
+    });
+
+    return { ok: true as const };
+  } catch (error) {
+    if (error instanceof ApiError) {
+      return { ok: false as const, status: error.status };
+    }
+
+    return { ok: false as const, status: 500 };
+  }
+}
 
 /**
  * Activity 생성, 수정 API

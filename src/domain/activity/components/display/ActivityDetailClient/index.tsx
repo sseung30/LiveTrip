@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import ReservationCard from '@/domain/activity/components/display/ReservationCard';
+import ReservationCard from '@/domain/activity/components/display/ActivityDetailClient/ReservationCard';
 import type { ActivityDetail } from '@/domain/activity/types';
 
 interface ActivityDetailProps {

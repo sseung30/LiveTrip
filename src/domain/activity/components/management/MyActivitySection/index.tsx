@@ -7,9 +7,9 @@ import {
   useDialog,
 } from '@/components/dialog';
 import { toast } from '@/components/toast';
-import { deleteActivityAction } from '@/domain/myactivities/actions/delete-activity.action';
-import ActivitiyCard from '@/domain/myactivities/components/ActivityCard';
-import { useMyActivities } from '@/domain/myactivities/hooks/useMyActivities';
+import { deleteActivityAction } from '@/domain/activity/actions/delete-activity.action';
+import ActivityCard from '@/domain/activity/components/management/MyActivitySection/ActivityCard';
+import { useMyActivities } from '@/domain/activity/hooks/useMyActivities';
 import type { Activity } from '@/domain/myactivities/type';
 import useIntersectionObserver from '@/hooks/useIntersectionObserver';
 
@@ -117,7 +117,7 @@ export default function MyActivitySection() {
           activities.map((a: Activity) => {
             return (
               <div key={a.id}>
-                <ActivitiyCard
+                <ActivityCard
                   id={a.id}
                   title={a.title}
                   rating={a.rating}

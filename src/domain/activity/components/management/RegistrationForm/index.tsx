@@ -12,15 +12,15 @@ import { useQueryClient } from '@tanstack/react-query';
 import { ApiError } from '@/api/api';
 import { toast } from '@/components/toast';
 import { createActivity, updateActivity } from '@/domain/activity/api';
-import InnerRegistrationForm from '@/domain/activity/components/management/InnerRegistrationForm';
-import type { FormValues } from '@/domain/activity/components/management/types';
-import { buildRegistrationPayload } from '@/domain/activity/components/management/utils/buildRegistrationPayload';
-import { buildUpdatePayload } from '@/domain/activity/components/management/utils/buildUpdatePayload';
+import InnerRegistrationForm from '@/domain/activity/components/management/RegistrationForm/InnerRegistrationForm';
+import { buildRegistrationPayload } from '@/domain/activity/components/management/RegistrationForm/utils/buildRegistrationPayload';
+import { buildUpdatePayload } from '@/domain/activity/components/management/RegistrationForm/utils/buildUpdatePayload';
 import {
   createEmptyTimeSlot,
   type TimeSlot,
-} from '@/domain/activity/components/management/utils/createEmptyTimeSlot';
-import { normalizeSubImages } from '@/domain/activity/components/management/utils/normalizeSubImages';
+} from '@/domain/activity/components/management/RegistrationForm/utils/createEmptyTimeSlot';
+import { normalizeSubImages } from '@/domain/activity/components/management/RegistrationForm/utils/normalizeSubImages';
+import type { FormValues } from '@/domain/activity/components/management/types';
 import type { ActivityDetail, MyActivityDetail } from '@/domain/activity/types';
 
 type Mode = 'create' | 'edit';

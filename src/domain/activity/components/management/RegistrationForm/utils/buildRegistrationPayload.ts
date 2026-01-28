@@ -1,4 +1,4 @@
-import type { TimeSlot } from '@/domain/activity/components/management/utils/createEmptyTimeSlot';
+import type { TimeSlot } from '@/domain/activity/components/management/RegistrationForm/utils/createEmptyTimeSlot';
 
 interface PayloadInput {
   formData: {

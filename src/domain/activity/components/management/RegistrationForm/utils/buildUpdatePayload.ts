@@ -1,8 +1,8 @@
+import type { TimeSlot as LocalTimeSlot } from '@/domain/activity/components/management/RegistrationForm/utils/createEmptyTimeSlot';
 import type {
   FormValues,
   UpdateActivityPayload,
 } from '@/domain/activity/components/management/types';
-import type { TimeSlot as LocalTimeSlot } from '@/domain/activity/components/management/utils/createEmptyTimeSlot';
 import type { MyActivityDetail } from '@/domain/activity/types';
 
 function normalizeKey(date: string, startTime: string, endTime: string) {

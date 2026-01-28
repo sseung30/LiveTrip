@@ -1,13 +1,13 @@
 import { useFormContext } from 'react-hook-form';
 import Button from '@/components/button/Button';
 import { ModalContainer } from '@/components/dialog/Modal/ModalContainer';
-import { BasicInfoFields } from '@/domain/activity/components/management/BasicInfoFields';
-import ClientConfirmModal from '@/domain/activity/components/management/ClientConfirmModal';
-import { useBannerImageUpload } from '@/domain/activity/components/management/hooks/useBannerImageUpload';
-import { useIntroImageUpload } from '@/domain/activity/components/management/hooks/useIntroImageUpload';
-import { useLeaveGuard } from '@/domain/activity/components/management/hooks/useLeaveGuard';
-import { ImageUploader } from '@/domain/activity/components/management/ImageUploader';
-import { TimeSlotsField } from '@/domain/activity/components/management/TimeSlotsField';
+import { BasicInfoFields } from '@/domain/activity/components/management/RegistrationForm/BasicInfoFields';
+import ClientConfirmModal from '@/domain/activity/components/management/RegistrationForm/ClientConfirmModal';
+import { useBannerImageUpload } from '@/domain/activity/components/management/RegistrationForm/hooks/useBannerImageUpload';
+import { useIntroImageUpload } from '@/domain/activity/components/management/RegistrationForm/hooks/useIntroImageUpload';
+import { useLeaveGuard } from '@/domain/activity/components/management/RegistrationForm/hooks/useLeaveGuard';
+import { ImageUploader } from '@/domain/activity/components/management/RegistrationForm/ImageUploader';
+import { TimeSlotsField } from '@/domain/activity/components/management/RegistrationForm/TimeSlotsField';
 
 const CATEGORY_OPTIONS = [
   { label: '문화 · 예술', value: '문화 · 예술' },
