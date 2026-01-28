@@ -1,4 +1,4 @@
-import type { Activity, MyActivities } from '@/domain/myactivities/type';
+import type { Activity, MyActivities } from '@/domain/activity/types';
 import { useInfiniteByCursor } from '@/hooks/useInfiniteScroll';
 
 export function useMyActivities() {

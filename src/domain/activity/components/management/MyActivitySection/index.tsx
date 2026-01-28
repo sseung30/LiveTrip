@@ -10,7 +10,7 @@ import { toast } from '@/components/toast';
 import { deleteActivityAction } from '@/domain/activity/actions/delete-activity.action';
 import ActivityCard from '@/domain/activity/components/management/MyActivitySection/ActivityCard';
 import { useMyActivities } from '@/domain/activity/hooks/useMyActivities';
-import type { Activity } from '@/domain/myactivities/type';
+import type { Activity } from '@/domain/activity/types';
 import useIntersectionObserver from '@/hooks/useIntersectionObserver';
 
 export default function MyActivitySection() {
