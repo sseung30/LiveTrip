@@ -1,14 +1,14 @@
 import {
   getActivityDetailWithCache,
-  getReviewsWithCache,
-} from '@/domain/activities/api';
-import ActivityDetailClient from '@/domain/activities/components/activity/ActivityDetailClient';
-import ExperienceInfo from '@/domain/activities/components/activity/ActivityInfo';
-import ExperienceReviews from '@/domain/activities/components/activity/ActivityReviews';
-import ImageGallery from '@/domain/activities/components/activity/ImageGallery';
-import KakaoMapScript from '@/domain/activities/components/activity/KakaoMapScript';
-import MobileActivityHeader from '@/domain/activities/components/activity/MobileActivityHeader';
-import type { ActivityDetail, ReviewResponse } from '@/domain/activities/type';
+  getActivityReviewsWithCache,
+} from '@/domain/activity/api';
+import ActivityDetailClient from '@/domain/activity/components/display/ActivityDetailClient';
+import ExperienceInfo from '@/domain/activity/components/display/ActivityInfo';
+import ExperienceReviews from '@/domain/activity/components/display/ActivityReviews';
+import ImageGallery from '@/domain/activity/components/display/ImageGallery';
+import KakaoMapScript from '@/domain/activity/components/display/KakaoMapScript';
+import MobileActivityHeader from '@/domain/activity/components/display/MobileActivityHeader';
+import type { ActivityDetail, ReviewResponse } from '@/domain/activity/types';
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -35,7 +35,7 @@ export default async function ActivityDetailPage({ params }: PageProps) {
 
   const [activity, reviews] = await Promise.all([
     getActivityDetailWithCache(activityId),
-    getReviewsWithCache(activityId, 1, 10),
+    getActivityReviewsWithCache(activityId, 1, 10),
   ]);
 
   const imageArray = createImageArray(activity);

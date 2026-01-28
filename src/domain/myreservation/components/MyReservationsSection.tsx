@@ -8,9 +8,9 @@ import {
   ModalContainer,
   useDialog,
 } from '@/components/dialog';
+import CategoryIcon from '@/components/icons/CategoryIcon';
 import { toast } from '@/components/toast';
 import EmptyResult from '@/components/ui/EmptyResult';
-import { CategoryIcon } from '@/domain/home/components/svg';
 import { cancelReservation } from '@/domain/myreservation/api';
 import CardList from '@/domain/myreservation/components/CardList';
 import { ReviewModalContents } from '@/domain/myreservation/components/ReviewModalContents';

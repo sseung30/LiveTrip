@@ -1,12 +1,12 @@
 import { Suspense } from 'react';
-import AllActivityPrefetch from '@/domain/home/components/all-activity-section/AllActivityPrefetch';
-import AllActivitySection from '@/domain/home/components/all-activity-section/AllActivitySection';
-import GridCardListSkeleton from '@/domain/home/components/GridCardListSkeleton';
-import IntroSection from '@/domain/home/components/IntroSection';
-import PopularActivitySection from '@/domain/home/components/popular-activity-section/PopularActivitySection';
-import PopularActivitySectionSkeleton from '@/domain/home/components/popular-activity-section/PopularActivitySectionSkeleton';
-import ToastLayer from '@/domain/home/components/ToastLayer';
-import type { homeSearchParams } from '@/domain/home/type';
+import AllActivitySection from '@/domain/activity/components/display/AllActivitySection';
+import AllActivityPrefetch from '@/domain/activity/components/display/AllActivitySection/AllActivityPrefetch';
+import GridCardListSkeleton from '@/domain/activity/components/display/GridCardListSkeleton';
+import IntroSection from '@/domain/activity/components/display/IntroSection';
+import PopularActivitySection from '@/domain/activity/components/display/PopularActivitySection';
+import PopularActivitySectionSkeleton from '@/domain/activity/components/display/PopularActivitySection/PopularActivitySectionSkeleton';
+import ToastLayer from '@/domain/activity/components/display/ToastLayer';
+import type { homeSearchParams } from '@/domain/activity/types';
 
 export default async function Home({
   searchParams,
