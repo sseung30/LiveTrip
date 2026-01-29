@@ -7,22 +7,23 @@ import Button from '@/components/button/Button';
 import { toast } from '@/components/toast';
 import Input from '@/components/ui/Input/Input';
 import Spinner from '@/components/ui/Spinner';
-import type { SigninInputs } from '@/domain/auth/type';
-import { SignInFormRegisterKey } from '@/form/auth/register-key';
+import { SignUpFormRegisterKey } from '@/domain/user/constants/register-key';
+import type { SignupInputs } from '@/domain/user/types';
 
-export default function SignInForm() {
+export default function SignUpForm() {
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<SigninInputs>();
+    watch,
+  } = useForm<SignupInputs>();
 
   const [, startTransition] = useTransition();
   const router = useRouter();
-  const onSubmit: SubmitHandler<SigninInputs> = async (signinInputs) => {
+  const onSubmit: SubmitHandler<SignupInputs> = async (signupInputs) => {
     const res = await signIn('credentials', {
-      ...signinInputs,
-      type: 'signin',
+      ...signupInputs,
+      type: 'signup',
       redirect: false,
     });
 
@@ -31,7 +32,7 @@ export default function SignInForm() {
     } else {
       startTransition(() => {
         router.push('/');
-        toast({ message: '로그인에 성공했습니다', eventType: 'success' });
+        toast({ message: '회원가입이 완료 되었습니다', eventType: 'success' });
       });
     }
   };
@@ -47,7 +48,14 @@ export default function SignInForm() {
           placeholder='이메일을 입력해 주세요'
           className='w-full xl:w-[40rem]'
           error={errors.email?.message}
-          {...register('email', SignInFormRegisterKey.email())}
+          {...register('email', SignUpFormRegisterKey.email())}
+        />
+        <Input
+          label='닉네임'
+          placeholder='닉네임을 입력해 주세요'
+          className='w-full xl:w-[40rem]'
+          error={errors.nickname?.message}
+          {...register('nickname', SignUpFormRegisterKey.nickname())}
         />
         <Input
           label='비밀번호'
@@ -55,11 +63,22 @@ export default function SignInForm() {
           type='password'
           className='w-full xl:w-[40rem]'
           error={errors.password?.message}
-          {...register('password', SignInFormRegisterKey.password())}
+          {...register('password', SignUpFormRegisterKey.password())}
+        />
+        <Input
+          label='비밀번호 확인'
+          placeholder='비밀번호를 한 번 더 입력해 주세요'
+          type='password'
+          className='w-full xl:w-[40rem]'
+          error={errors.confirmPassword?.message}
+          {...register(
+            'confirmPassword',
+            SignUpFormRegisterKey.confirmPassword(watch('password'))
+          )}
         />
       </div>
       <Button variant='primary'>
-        {isSubmitting ? <Spinner size='sm' /> : '로그인'}
+        {isSubmitting ? <Spinner size='sm' /> : '회원가입'}
       </Button>
     </form>
   );

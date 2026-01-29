@@ -1,9 +1,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import Button from '@/components/button/Button';
-import kakaoIcon from '@/domain/auth/assets/icon_kakao.svg';
-import type { KaKaoAuthButtonProps } from '@/domain/auth/type';
-import { getKaKaoAuthroizeURL } from '@/domain/auth/util';
+import kakaoIcon from '@/domain/user/assets/icon_kakao.svg';
+import type { KaKaoAuthButtonProps } from '@/domain/user/types';
+import { getKaKaoAuthroizeURL } from '@/domain/user/utils/auth';
 
 export default function KaKaoAuthButton({
   text,

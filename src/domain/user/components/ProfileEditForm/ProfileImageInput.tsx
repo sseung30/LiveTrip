@@ -3,11 +3,11 @@ import Image from 'next/image';
 import { type ChangeEvent, useEffect, useRef, useState } from 'react';
 import type { UseFormRegister } from 'react-hook-form';
 import Spinner from '@/components/ui/Spinner';
-import type { ProfileEditFormInputs } from '@/domain/profile/type';
+import type { ProfileEditFormInputs } from '@/domain/user/types';
 import {
   validateFileSizeAndToast,
   validateFileTypeAndToast,
-} from '@/form/utils/validateImageFileAndToast';
+} from '@/domain/user/utils/validateImageFileAndToast';
 
 export default function ProfileImageInput({
   register,

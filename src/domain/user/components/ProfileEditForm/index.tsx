@@ -5,12 +5,12 @@ import { ApiError } from '@/api/api';
 import Button from '@/components/button/Button';
 import { toast } from '@/components/toast';
 import Input from '@/components/ui/Input/Input';
-import { useProfileEditMutate } from '@/domain/auth/queries/useProfileEditMutate';
-import { useProfileImageCreateMutate } from '@/domain/auth/queries/useProfileImageCreateMutate';
-import { queryKeys } from '@/domain/auth/queryOptions';
-import ProfileImageInput from '@/domain/profile/components/ProfileImageInput';
-import type { ProfileEditFormInputs } from '@/domain/profile/type';
-import { SignUpFormRegisterKey as profileFormRegisterKey } from '@/form/auth/register-key';
+import ProfileImageInput from '@/domain/user/components/ProfileEditForm/ProfileImageInput';
+import { SignUpFormRegisterKey as profileFormRegisterKey } from '@/domain/user/constants/register-key';
+import { useProfileEditMutate } from '@/domain/user/queries/useProfileEditMutate';
+import { useProfileImageCreateMutate } from '@/domain/user/queries/useProfileImageCreateMutate';
+import { userQueryKeys as queryKeys } from '@/domain/user/queryOptions';
+import type { ProfileEditFormInputs } from '@/domain/user/types';
 
 interface ProfileEditFormProps {
   nickname: string;

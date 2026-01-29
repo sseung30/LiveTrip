@@ -1,5 +1,5 @@
 export const KAKAO_LOGOUT_URI = 'https://kauth.kakao.com/oauth/logout';
-export const endpoint = {
+export const authEndpoint = {
   SIGNIN: '/auth/login',
   USER_INFO: '/users/me',
   SIGNUP: '/users',

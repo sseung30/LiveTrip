@@ -18,8 +18,8 @@ import {
   mutateKaKaoSignUp,
   mutateSignin,
   mutateSignup,
-} from '@/domain/auth/api';
-import { signinInputSchema, signupInputSchema } from '@/domain/auth/type';
+} from '@/domain/user/api';
+import { signinInputSchema, signupInputSchema } from '@/domain/user/types';
 
 class InvalidLoginError extends CredentialsSignin {
   code = 'Invalid identifier or password';

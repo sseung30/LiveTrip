@@ -6,7 +6,7 @@ import type { SessionType } from 'next-auth';
 import { signOut as nextAuthSignOut } from 'next-auth/react';
 import { useTransition } from 'react';
 import { toast } from '@/components/toast';
-import { getKaKaoLogoutURL } from '@/domain/auth/util';
+import { getKaKaoLogoutURL } from '@/domain/user/utils/auth';
 
 export default function LogoutForm({
   sessionType,
