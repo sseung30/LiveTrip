@@ -1,6 +1,5 @@
-import RegistrationFormSkeleton from '@/domain/registration/_components/RegistrationFormSkeleton';
+import RegistrationFormSkeleton from '@/domain/activity/components/management/RegistrationFormSkeleton';
 
 export default function Loading() {
   return <RegistrationFormSkeleton />;
 }
-

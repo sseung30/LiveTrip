@@ -1,6 +1,6 @@
 import ToastOnMount from '@/components/ToastOnMount';
-import MyActivitySection from '@/domain/myactivities/components/MyActivitySection';
-import RegisterActivity from '@/domain/myactivities/components/RegitsterActivity';
+import MyActivitySection from '@/domain/activity/components/management/MyActivitySection';
+import RegisterActivity from '@/domain/activity/components/management/RegitsterActivity';
 
 export default async function Page({
   searchParams,

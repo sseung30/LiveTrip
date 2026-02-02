@@ -1,13 +1,13 @@
 import Link from 'next/link';
-import KaKaoAuthButton from '@/domain/auth/components/KaKaoAuthButton';
-import Logo from '@/domain/auth/components/Logo';
-import SignInForm from '@/domain/auth/components/SignInForm';
+import KaKaoAuthButton from '@/domain/user/components/KaKaoAuthButton';
+import SignFormLogo from '@/domain/user/components/SignFormLogo';
+import SignInForm from '@/domain/user/components/SignInForm';
 
 export default function SignInPage() {
   return (
     <div className='flex-center flex-col'>
       <div className='flex w-full flex-col gap-7 md:gap-10 xl:w-fit xl:gap-16'>
-        <Logo />
+        <SignFormLogo />
         <div className='flex flex-col gap-5 md:gap-8'>
           <SignInForm />
           <div className='flex basis-full items-center gap-3 font-medium text-gray-400'>

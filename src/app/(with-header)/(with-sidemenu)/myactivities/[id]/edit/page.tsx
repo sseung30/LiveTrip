@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
-import { getActivity } from '@/domain/activities/api';
-import RegistrationForm from '@/domain/registration/_components/RegistrationForm';
+import { getMyActivityDetail } from '@/domain/activity/api';
+import RegistrationForm from '@/domain/activity/components/management/RegistrationForm';
 import { getAuth } from '@/utils/getAuth';
 
 export const dynamic = 'force-dynamic';
@@ -12,7 +12,10 @@ interface Props {
 
 export default async function EditActivityPage({ params }: Props) {
   const { id } = await params;
-  const [session, activity] = await Promise.all([getAuth(), getActivity(id)]);
+  const [session, activity] = await Promise.all([
+    getAuth(),
+    getMyActivityDetail(id),
+  ]);
 
   // Only the owner can edit the activity
   if (activity.userId !== session?.user.id) {

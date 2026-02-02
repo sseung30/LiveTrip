@@ -10,7 +10,7 @@ import LogoutButton from '@/components/header/LogoutButton';
 import SessionNavSkeleton from '@/components/header/SessionNavSkeleton';
 import Notification from '@/components/notification/Notification';
 import type { Notifications } from '@/components/notification/type';
-import { useUserInfo } from '@/domain/auth/queries/useUserInfo';
+import { useUserInfo } from '@/domain/user/queries/useUserInfo';
 
 export default function SessionNav() {
   const { data, isPending, error } = useUserInfo();

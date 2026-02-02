@@ -3,7 +3,7 @@ import {
   KakaoAlreadySignupError,
   signIn,
 } from '@/app/api/auth/[...nextauth]/route';
-import { getKaKaoAuthroizeURL } from '@/domain/auth/util';
+import { getKaKaoAuthroizeURL } from '@/domain/user/utils/auth';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);

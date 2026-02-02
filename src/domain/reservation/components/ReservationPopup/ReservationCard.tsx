@@ -1,0 +1,120 @@
+'use client';
+
+import { useRouter } from 'next/navigation';
+import { useActionState, useEffect } from 'react';
+import { toast } from '@/components/toast';
+import { approveReservationAction } from '@/domain/reservation/actions/approve-reservation.action';
+import { rejectReservationAction } from '@/domain/reservation/actions/reject-reservation.action';
+import type { ReservationStatusType } from '@/domain/reservation/components/ReservationPopup/type';
+import StateBadge from '@/domain/reservation/components/StateBadge';
+
+interface ReservationCardProps {
+  reservation: {
+    id: number;
+    nickname: string;
+    headCount: number;
+  };
+  activeTab: ReservationStatusType;
+  activityId: number;
+  onActionSuccess?: () => void;
+}
+
+export default function ReservationCard({
+  reservation,
+  activeTab,
+  activityId,
+  onActionSuccess,
+}: ReservationCardProps) {
+  const router = useRouter();
+  const [approveState, approveFormAction, isApprovePending] = useActionState(
+    approveReservationAction,
+    { status: 'idle' as const }
+  );
+
+  const [rejectState, rejectFormAction, isRejectPending] = useActionState(
+    rejectReservationAction,
+    { status: 'idle' as const }
+  );
+
+  useEffect(() => {
+    if (approveState.status === 'success') {
+      toast({ message: approveState.message || '', eventType: 'success' });
+      router.refresh();
+      // eslint-disable-next-line react-you-might-not-need-an-effect/you-might-not-need-an-effect
+      onActionSuccess?.();
+    } else if (approveState.status === 'error') {
+      toast({ message: approveState.message || '', eventType: 'error' });
+    }
+  }, [approveState, router, onActionSuccess]);
+
+  useEffect(() => {
+    if (rejectState.status === 'success') {
+      toast({ message: rejectState.message || '', eventType: 'success' });
+      router.refresh();
+      // eslint-disable-next-line react-you-might-not-need-an-effect/you-might-not-need-an-effect
+      onActionSuccess?.();
+    } else if (rejectState.status === 'error') {
+      toast({ message: rejectState.message || '', eventType: 'error' });
+    }
+  }, [rejectState, router, onActionSuccess]);
+
+  return (
+    <div className='rounded-2xl border border-gray-100 bg-white p-4'>
+      <div className='flex items-center justify-between'>
+        <div className='flex flex-col gap-1'>
+          <span className='text-base font-bold text-gray-500'>
+            닉네임{' '}
+            <span className='text-base font-medium text-gray-900'>
+              {reservation.nickname}
+            </span>
+          </span>
+          <span className='text-base font-bold text-gray-500'>
+            인원{' '}
+            <span className='text-base font-medium text-gray-900'>
+              {reservation.headCount}명
+            </span>
+          </span>
+        </div>
+
+        {activeTab === 'pending' && (
+          <div className='flex flex-col gap-1.5'>
+            <form action={approveFormAction}>
+              <input type='hidden' name='activityId' value={activityId} />
+              <input
+                type='hidden'
+                name='reservationId'
+                value={reservation.id}
+              />
+              <button
+                type='submit'
+                disabled={isApprovePending || isRejectPending}
+                className='w-full rounded-md border border-gray-50 px-3 py-1 text-xs font-medium text-gray-600 disabled:cursor-not-allowed disabled:opacity-50'
+              >
+                {isApprovePending ? '처리 중...' : '승인하기'}
+              </button>
+            </form>
+            <form action={rejectFormAction}>
+              <input type='hidden' name='activityId' value={activityId} />
+              <input
+                type='hidden'
+                name='reservationId'
+                value={reservation.id}
+              />
+              <button
+                type='submit'
+                disabled={isApprovePending || isRejectPending}
+                className='w-full rounded-md border border-gray-50 bg-gray-50 px-3 py-1 text-xs font-medium text-gray-600 disabled:cursor-not-allowed disabled:opacity-50'
+              >
+                {isRejectPending ? '처리 중...' : '거절하기'}
+              </button>
+            </form>
+          </div>
+        )}
+
+        {activeTab === 'confirmed' && <StateBadge state='confirmed' />}
+
+        {activeTab === 'declined' && <StateBadge state='declined' />}
+      </div>
+    </div>
+  );
+}
