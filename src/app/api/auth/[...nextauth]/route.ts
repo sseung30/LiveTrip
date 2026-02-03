@@ -19,7 +19,10 @@ import {
   mutateSignin,
   mutateSignup,
 } from '@/domain/user/api';
-import { signinInputSchema, signupInputSchema } from '@/domain/user/types';
+import {
+  signInCredentialSchema,
+  signUpCredentialSchema,
+} from '@/domain/user/schema';
 
 class InvalidLoginError extends CredentialsSignin {
   code = 'Invalid identifier or password';
@@ -186,8 +189,8 @@ const _sign = async (credentials: Partial<Record<string, unknown>>) => {
 
         return res;
       } catch (error) {
+        // 이미 등록된 사용자 에러 처리
         if (error instanceof ApiError && error.status === 400) {
-          // 이미 등록된 사용자
           throw new KakaoAlreadySignupError();
         }
       }
@@ -198,22 +201,22 @@ const _sign = async (credentials: Partial<Record<string, unknown>>) => {
 
         return res;
       } catch (error) {
+        // 카카오 로그인 시 회원가입 필요 에러 처리
         if (error instanceof ApiError && error.status === 403) {
-          // 카카오 로그인 시 회원가입 필요
           throw new KakaoSigninRequiredError();
         }
       }
     }
     case 'signup': {
       const signupRes = await mutateSignup(
-        signupInputSchema.parse({ ...credentials })
+        signUpCredentialSchema.parse({ ...credentials })
       );
 
       return signupRes;
     }
     default: {
       const signinRes = await mutateSignin(
-        signinInputSchema.parse({ ...credentials })
+        signInCredentialSchema.parse({ ...credentials })
       );
 
       return signinRes;
@@ -234,7 +237,7 @@ async function refreshAccessToken(nextAuthJWTCookie: JWT): Promise<JWT> {
     const { exp: newAccessTokenExp }: DecodedJWT = jwtDecode(newAccessToken);
     const { exp: newRefreshTokenExp }: DecodedJWT = jwtDecode(newRefreshToken);
 
-    // Update the token and validity in the next-auth cookie
+    // next-auth 쿠키에서 validity, token 업데이트
     nextAuthJWTCookie.data.validity.validUntil = newAccessTokenExp;
     nextAuthJWTCookie.data.validity.refreshUntil = newRefreshTokenExp;
     nextAuthJWTCookie.data.tokens.access = newAccessToken;

@@ -3,12 +3,14 @@ import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import { useTransition } from 'react';
 import { type SubmitHandler, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import Button from '@/components/button/Button';
 import { toast } from '@/components/toast';
 import Input from '@/components/ui/Input/Input';
 import Spinner from '@/components/ui/Spinner';
 import { SignUpFormRegisterKey } from '@/domain/user/constants/register-key';
-import type { SignupInputs } from '@/domain/user/types';
+import { signUpSchema } from '@/domain/user/schema';
+import type { SignUpFormData } from '@/domain/user/types';
 
 export default function SignUpForm() {
   const {
@@ -16,13 +18,13 @@ export default function SignUpForm() {
     handleSubmit,
     formState: { errors, isSubmitting },
     watch,
-  } = useForm<SignupInputs>();
+  } = useForm<SignUpFormData>({ resolver: zodResolver(signUpSchema) });
 
   const [, startTransition] = useTransition();
   const router = useRouter();
-  const onSubmit: SubmitHandler<SignupInputs> = async (signupInputs) => {
+  const onSubmit: SubmitHandler<SignUpFormData> = async (signUpInputs) => {
     const res = await signIn('credentials', {
-      ...signupInputs,
+      ...signUpInputs,
       type: 'signup',
       redirect: false,
     });

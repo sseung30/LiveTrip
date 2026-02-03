@@ -1,20 +1,20 @@
 import { ApiError, apiFetch } from '@/api/api';
 import {
-  type NewTokenResponse,
   newTokenResponseSchema,
-  type ProfileEditRequest,
-  type ProfileEditResponse,
-  type ProfileImageCreateResponse,
-  type SigninInputs,
-  type SignInResponse,
-  signinResponseSchema,
-  type SignupInputs,
-  type SignUpResponse,
-  type UserInfo,
+  signInResponseSchema,
+} from '@/domain/user/schema';
+import type {
+  NewTokenResponse,
+  ProfileEditRequest,
+  ProfileEditResponse,
+  ProfileImageCreateResponse,
+  SignInCredential,
+  SignInResponse,
+  SignUpCredential,
+  SignUpResponse,
+  UserInfo,
 } from '@/domain/user/types';
-import {
-  authEndpoint,
-} from '@/domain/user/utils/auth';
+import { authEndpoint } from '@/domain/user/utils/auth';
 
 export const logout = async (): Promise<void> => {
   // TODO: Implement logout functionality
@@ -50,7 +50,7 @@ export const getNewToken = async (
 // ====================================
 
 export const mutateSignin = async (
-  signinInputs: SigninInputs
+  signinInputs: SignInCredential
 ): Promise<SignInResponse> => {
   const res = await apiFetch<SignInResponse>(authEndpoint.SIGNIN, {
     method: 'POST',
@@ -59,11 +59,11 @@ export const mutateSignin = async (
     }),
   });
 
-  return signinResponseSchema.parse(res);
+  return signInResponseSchema.parse(res);
 };
 
 export const mutateSignup = async (
-  signupInputs: SignupInputs
+  signupInputs: SignUpCredential
 ): Promise<SignInResponse> => {
   await apiFetch<SignUpResponse>(authEndpoint.SIGNUP, {
     method: 'POST',
