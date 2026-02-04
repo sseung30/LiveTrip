@@ -8,7 +8,7 @@ import Button from '@/components/button/Button';
 import { toast } from '@/components/toast';
 import Input from '@/components/ui/Input/Input';
 import Spinner from '@/components/ui/Spinner';
-import { signInSchema } from '@/domain/user/schema';
+import { signInFormSchema } from '@/domain/user/schema';
 import type { SignInFormData } from '@/domain/user/types';
 
 export default function SignInForm() {
@@ -17,7 +17,7 @@ export default function SignInForm() {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<SignInFormData>({
-    resolver: zodResolver(signInSchema),
+    resolver: zodResolver(signInFormSchema),
   });
 
   const [, startTransition] = useTransition();

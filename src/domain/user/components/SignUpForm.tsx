@@ -9,7 +9,7 @@ import { toast } from '@/components/toast';
 import Input from '@/components/ui/Input/Input';
 import Spinner from '@/components/ui/Spinner';
 import { SignUpFormRegisterKey } from '@/domain/user/constants/register-key';
-import { signUpSchema } from '@/domain/user/schema';
+import { signUpFormSchema } from '@/domain/user/schema';
 import type { SignUpFormData } from '@/domain/user/types';
 
 export default function SignUpForm() {
@@ -18,7 +18,7 @@ export default function SignUpForm() {
     handleSubmit,
     formState: { errors, isSubmitting },
     watch,
-  } = useForm<SignUpFormData>({ resolver: zodResolver(signUpSchema) });
+  } = useForm<SignUpFormData>({ resolver: zodResolver(signUpFormSchema) });
 
   const [, startTransition] = useTransition();
   const router = useRouter();

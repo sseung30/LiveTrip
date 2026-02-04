@@ -27,19 +27,41 @@ const passwordSchema = z
   .max(20, '20자 이하로 입력하세요')
   .regex(passwordRegex, '영문, 숫자, 특수문자를 포함해야 합니다');
 
+export const profileImageSchema = z
+  .custom<FileList>()
+  .refine(
+    (file) =>
+      ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'].includes(
+        file[0].type
+      ),
+    { message: 'png, jpeg, jpg, webp 형식의 이미지만 가능합니다' }
+  );
+
+export const profileEditFormSchema = z
+  .object({
+    profileImageFile: z.union([profileImageSchema, z.null()]),
+    email: emailSchema,
+    nickname: nicknameSchema,
+    password: passwordSchema,
+    confirmPassword: passwordSchema,
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: '비밀번호가 일치하지 않습니다',
+    path: ['confirmPassword'],
+  });
 // SignInForm 스키마
-export const signInSchema = z.object({
+export const signInFormSchema = z.object({
   email: emailSchema,
   password: passwordSchema,
 });
 
 // SignUpForm 스키마
-export const signUpSchema = z
+export const signUpFormSchema = z
   .object({
     email: emailSchema,
     nickname: nicknameSchema,
     password: passwordSchema,
-    confirmPassword: z.string().trim().min(1, '비밀번호 확인을 입력하세요'),
+    confirmPassword: passwordSchema,
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: '비밀번호가 일치하지 않습니다',
@@ -48,11 +70,11 @@ export const signUpSchema = z
 
 // auth credential을 위한 SignIn, SignUp 스키마
 export const signInCredentialSchema = z.object({
-  ...signInSchema.shape,
+  ...signInFormSchema.shape,
   type: z.string().optional(),
 });
 export const signUpCredentialSchema = z.object({
-  ...signUpSchema.shape,
+  ...signUpFormSchema.shape,
   type: z.string(),
 });
 

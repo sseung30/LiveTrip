@@ -1,19 +1,20 @@
 import type z from 'zod';
 import type {
   newTokenResponseSchema,
+  profileEditFormSchema,
   signInCredentialSchema,
+  signInFormSchema,
   signInResponseSchema,
-  signInSchema,
   signUpCredentialSchema,
-  signUpSchema,
+  signUpFormSchema,
 } from '@/domain/user/schema';
 
 // ====================================
 // Authentication Types
 // ====================================
 
-export type SignInFormData = z.infer<typeof signInSchema>;
-export type SignUpFormData = z.infer<typeof signUpSchema>;
+export type SignInFormData = z.infer<typeof signInFormSchema>;
+export type SignUpFormData = z.infer<typeof signUpFormSchema>;
 
 export type SignInCredential = z.infer<typeof signInCredentialSchema>;
 export type SignUpCredential = z.infer<typeof signUpCredentialSchema>;
@@ -48,14 +49,7 @@ export interface ProfileEditRequest {
 
 export interface ProfileEditResponse extends UserInfo {}
 
-export interface ProfileEditFormInputs {
-  profileImageFile: FileList | null;
-  email: string;
-  nickname: string;
-  password: string;
-  confirmPassword: string;
-}
-
+export type ProfileEditFormInputs = z.infer<typeof profileEditFormSchema>;
 export interface ProfileImageCreateResponse {
   profileImageUrl: string;
 }

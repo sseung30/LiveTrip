@@ -1,7 +1,12 @@
 'use client';
 import Image from 'next/image';
 import { type ChangeEvent, useEffect, useRef, useState } from 'react';
-import type { UseFormRegister } from 'react-hook-form';
+import type {
+  FieldError,
+  FieldErrorsImpl,
+  Merge,
+  UseFormRegister,
+} from 'react-hook-form';
 import Spinner from '@/components/ui/Spinner';
 import type { ProfileEditFormInputs } from '@/domain/user/types';
 import {
@@ -9,15 +14,22 @@ import {
   validateFileTypeAndToast,
 } from '@/domain/user/utils/validateImageFileAndToast';
 
+interface ProfileImageInputProps {
+  register: UseFormRegister<ProfileEditFormInputs>;
+  profileImageUrl: string | null;
+  isPending: boolean;
+  error?:
+    | string
+    | FieldError
+    | Merge<FieldError, FieldErrorsImpl<any>>
+    | undefined;
+}
 export default function ProfileImageInput({
   register,
   profileImageUrl,
   isPending,
-}: {
-  register: UseFormRegister<ProfileEditFormInputs>;
-  profileImageUrl: string | null;
-  isPending: boolean;
-}) {
+  error,
+}: ProfileImageInputProps) {
   const defaultImage = '/images/default_profile.png';
   const [previewImage, setPreviewImage] = useState(
     profileImageUrl || defaultImage
@@ -62,7 +74,7 @@ export default function ProfileImageInput({
       <input
         type='file'
         id='profile-image'
-        accept='image/jpg, image/jpeg, image/png, image/gif, image/webp'
+        accept='image/jpg, image/jpeg, image/png, image/webp'
         className='hidden'
         ref={(e) => {
           ref(e);
@@ -100,6 +112,7 @@ export default function ProfileImageInput({
           />
         </button>
       </div>
+      <span>{error?.toString()}</span>
     </div>
   );
 }
