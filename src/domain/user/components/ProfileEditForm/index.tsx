@@ -9,9 +9,9 @@ import Input from '@/components/ui/Input/Input';
 import ProfileImageInput from '@/domain/user/components/ProfileEditForm/ProfileImageInput';
 import { useProfileEditMutate } from '@/domain/user/queries/useProfileEditMutate';
 import { useProfileImageCreateMutate } from '@/domain/user/queries/useProfileImageCreateMutate';
-import { userQueryKeys as queryKeys } from '@/domain/user/queryOptions';
 import { profileEditFormSchema } from '@/domain/user/schema';
 import type { ProfileEditFormInputs } from '@/domain/user/types';
+import { userQueryKeys } from '@/domain/user/utils/queryOptions';
 
 interface ProfileEditFormProps {
   nickname: string;
@@ -75,7 +75,7 @@ export default function ProfileEditForm({
         message: '프로필 정보가 변경 되었습니다',
         eventType: 'success',
       });
-      queryClient.invalidateQueries({ queryKey: queryKeys.me() });
+      queryClient.invalidateQueries({ queryKey: userQueryKeys.me() });
     } catch (error) {
       if (error instanceof ApiError) {
         if (error.status === 400) {
