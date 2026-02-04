@@ -1,24 +1,21 @@
 import { ApiError, apiFetch } from '@/api/api';
 import {
+  type NewTokenResponse,
   newTokenResponseSchema,
+  type SignInCredential,
+  type SignInResponse,
   signInResponseSchema,
+  type SignUpCredential,
 } from '@/domain/user/schema';
 import type {
-  NewTokenResponse,
   ProfileEditRequest,
   ProfileEditResponse,
   ProfileImageCreateResponse,
-  SignInCredential,
-  SignInResponse,
-  SignUpCredential,
   SignUpResponse,
   UserInfo,
 } from '@/domain/user/types';
 import { authEndpoint } from '@/domain/user/utils/auth';
 
-export const logout = async (): Promise<void> => {
-  // TODO: Implement logout functionality
-};
 export async function getUserInfo(): Promise<UserInfo> {
   return await apiFetch(authEndpoint.USER_INFO);
 }

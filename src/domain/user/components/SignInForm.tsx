@@ -8,8 +8,7 @@ import Button from '@/components/button/Button';
 import { toast } from '@/components/toast';
 import Input from '@/components/ui/Input/Input';
 import Spinner from '@/components/ui/Spinner';
-import { signInFormSchema } from '@/domain/user/schema';
-import type { SignInFormData } from '@/domain/user/types';
+import { type SignInFormData, signInFormSchema } from '@/domain/user/schema';
 
 export default function SignInForm() {
   const {

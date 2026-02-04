@@ -9,8 +9,10 @@ import Input from '@/components/ui/Input/Input';
 import ProfileImageInput from '@/domain/user/components/ProfileEditForm/ProfileImageInput';
 import { useProfileEditMutate } from '@/domain/user/queries/useProfileEditMutate';
 import { useProfileImageCreateMutate } from '@/domain/user/queries/useProfileImageCreateMutate';
-import { profileEditFormSchema } from '@/domain/user/schema';
-import type { ProfileEditFormInputs } from '@/domain/user/types';
+import {
+  type ProfileEditFormData,
+  profileEditFormSchema,
+} from '@/domain/user/schema';
 import { userQueryKeys } from '@/domain/user/utils/queryOptions';
 
 interface ProfileEditFormProps {
@@ -29,7 +31,7 @@ export default function ProfileEditForm({
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<ProfileEditFormInputs>({
+  } = useForm<ProfileEditFormData>({
     defaultValues: {
       nickname,
       email,
@@ -59,7 +61,7 @@ export default function ProfileEditForm({
     return profileImageUrl;
   };
 
-  const onSubmit: SubmitHandler<ProfileEditFormInputs> = async (
+  const onSubmit: SubmitHandler<ProfileEditFormData> = async (
     profileEditInputs
   ) => {
     try {

@@ -8,16 +8,13 @@ import Button from '@/components/button/Button';
 import { toast } from '@/components/toast';
 import Input from '@/components/ui/Input/Input';
 import Spinner from '@/components/ui/Spinner';
-import { SignUpFormRegisterKey } from '@/domain/user/constants/register-key';
-import { signUpFormSchema } from '@/domain/user/schema';
-import type { SignUpFormData } from '@/domain/user/types';
+import { type SignUpFormData, signUpFormSchema } from '@/domain/user/schema';
 
 export default function SignUpForm() {
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    watch,
   } = useForm<SignUpFormData>({ resolver: zodResolver(signUpFormSchema) });
 
   const [, startTransition] = useTransition();
@@ -50,14 +47,14 @@ export default function SignUpForm() {
           placeholder='이메일을 입력해 주세요'
           className='w-full xl:w-[40rem]'
           error={errors.email?.message}
-          {...register('email', SignUpFormRegisterKey.email())}
+          {...register('email')}
         />
         <Input
           label='닉네임'
           placeholder='닉네임을 입력해 주세요'
           className='w-full xl:w-[40rem]'
           error={errors.nickname?.message}
-          {...register('nickname', SignUpFormRegisterKey.nickname())}
+          {...register('nickname')}
         />
         <Input
           label='비밀번호'
@@ -65,7 +62,7 @@ export default function SignUpForm() {
           type='password'
           className='w-full xl:w-[40rem]'
           error={errors.password?.message}
-          {...register('password', SignUpFormRegisterKey.password())}
+          {...register('password')}
         />
         <Input
           label='비밀번호 확인'
@@ -73,10 +70,7 @@ export default function SignUpForm() {
           type='password'
           className='w-full xl:w-[40rem]'
           error={errors.confirmPassword?.message}
-          {...register(
-            'confirmPassword',
-            SignUpFormRegisterKey.confirmPassword(watch('password'))
-          )}
+          {...register('confirmPassword')}
         />
       </div>
       <Button variant='primary'>

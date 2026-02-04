@@ -95,3 +95,13 @@ export const newTokenResponseSchema = z.object({
   accessToken: z.string(),
   refreshToken: z.string(),
 });
+
+export type ProfileEditFormData = z.infer<typeof profileEditFormSchema>;
+export type SignInFormData = z.infer<typeof signInFormSchema>;
+export type SignUpFormData = z.infer<typeof signUpFormSchema>;
+
+export type SignInCredential = z.infer<typeof signInCredentialSchema>;
+export type SignUpCredential = z.infer<typeof signUpCredentialSchema>;
+
+export type SignInResponse = z.infer<typeof signInResponseSchema>;
+export type NewTokenResponse = z.infer<typeof newTokenResponseSchema>;

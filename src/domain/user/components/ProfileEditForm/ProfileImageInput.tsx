@@ -8,14 +8,14 @@ import type {
   UseFormRegister,
 } from 'react-hook-form';
 import Spinner from '@/components/ui/Spinner';
-import type { ProfileEditFormInputs } from '@/domain/user/types';
+import type { ProfileEditFormData } from '@/domain/user/schema';
 import {
   validateFileSizeAndToast,
   validateFileTypeAndToast,
 } from '@/domain/user/utils/validateImageFileAndToast';
 
 interface ProfileImageInputProps {
-  register: UseFormRegister<ProfileEditFormInputs>;
+  register: UseFormRegister<ProfileEditFormData>;
   profileImageUrl: string | null;
   isPending: boolean;
   error?:
