@@ -1,16 +1,19 @@
 'use client';
 import { type SubmitHandler, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueryClient } from '@tanstack/react-query';
 import { ApiError } from '@/api/api';
 import Button from '@/components/button/Button';
 import { toast } from '@/components/toast';
 import Input from '@/components/ui/Input/Input';
 import ProfileImageInput from '@/domain/user/components/ProfileEditForm/ProfileImageInput';
-import { SignUpFormRegisterKey as profileFormRegisterKey } from '@/domain/user/constants/register-key';
 import { useProfileEditMutate } from '@/domain/user/queries/useProfileEditMutate';
 import { useProfileImageCreateMutate } from '@/domain/user/queries/useProfileImageCreateMutate';
-import { userQueryKeys as queryKeys } from '@/domain/user/queryOptions';
-import type { ProfileEditFormInputs } from '@/domain/user/types';
+import {
+  type ProfileEditFormData,
+  profileEditFormSchema,
+} from '@/domain/user/schema';
+import { userQueryKeys } from '@/domain/user/utils/queryOptions';
 
 interface ProfileEditFormProps {
   nickname: string;
@@ -28,12 +31,12 @@ export default function ProfileEditForm({
     register,
     handleSubmit,
     formState: { errors },
-    watch,
-  } = useForm<ProfileEditFormInputs>({
+  } = useForm<ProfileEditFormData>({
     defaultValues: {
       nickname,
       email,
     },
+    resolver: zodResolver(profileEditFormSchema),
   });
   const {
     mutateAsync: profileEditMutateAsync,
@@ -58,7 +61,7 @@ export default function ProfileEditForm({
     return profileImageUrl;
   };
 
-  const onSubmit: SubmitHandler<ProfileEditFormInputs> = async (
+  const onSubmit: SubmitHandler<ProfileEditFormData> = async (
     profileEditInputs
   ) => {
     try {
@@ -74,7 +77,7 @@ export default function ProfileEditForm({
         message: '프로필 정보가 변경 되었습니다',
         eventType: 'success',
       });
-      queryClient.invalidateQueries({ queryKey: queryKeys.me() });
+      queryClient.invalidateQueries({ queryKey: userQueryKeys.me() });
     } catch (error) {
       if (error instanceof ApiError) {
         if (error.status === 400) {
@@ -95,20 +98,21 @@ export default function ProfileEditForm({
         isPending={isImagePending || isProfileEditPending}
         register={register}
         profileImageUrl={profileImageUrl || ''}
+        error={errors.profileImageFile?.message}
       />
       <Input
         label='닉네임'
         placeholder={'닉네임을 입력해 주세요'}
         className='w-full'
         error={errors.nickname?.message}
-        {...register('nickname', profileFormRegisterKey.nickname())}
+        {...register('nickname')}
       />
       <Input
         disabled
         label='이메일'
         className='w-full'
         error={errors.email?.message}
-        {...register('email', profileFormRegisterKey.email())}
+        {...register('email')}
       />
       <Input
         label='비밀번호'
@@ -117,7 +121,7 @@ export default function ProfileEditForm({
         className='w-full'
         error={errors.password?.message}
         autoComplete='new-password'
-        {...register('password', profileFormRegisterKey.password())}
+        {...register('password')}
       />
       <Input
         label='비밀번호 확인'
@@ -126,10 +130,7 @@ export default function ProfileEditForm({
         className='w-full'
         error={errors.confirmPassword?.message}
         autoComplete='new-password'
-        {...register(
-          'confirmPassword',
-          profileFormRegisterKey.confirmPassword(watch('password'))
-        )}
+        {...register('confirmPassword')}
       />
 
       <Button variant='primary' classNames='w-[7.5rem] self-center'>
