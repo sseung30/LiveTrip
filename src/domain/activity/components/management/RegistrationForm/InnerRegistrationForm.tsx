@@ -11,6 +11,7 @@ import type {
   TimeSlot,
 } from '@/domain/activity/components/management/RegistrationForm/schemas/registrationSchema';
 import { TimeSlotsField } from '@/domain/activity/components/management/RegistrationForm/TimeSlotsField';
+import type { RegisterFormMode } from '@/domain/activity/types';
 
 // TODO: 공통화
 const CATEGORY_OPTIONS = [
@@ -32,7 +33,7 @@ interface InnerRegistrationFormProps {
     onInvalid?: () => void
   ) => (e?: React.BaseSyntheticEvent) => void;
   onSubmit: (data: RegistrationFormValues) => void;
-  mode: 'create' | 'edit';
+  mode: RegisterFormMode;
   timeSlots: TimeSlot[];
   onAddTimeSlot: () => void;
   onRemoveTimeSlot: (id: string) => void;
@@ -121,6 +122,9 @@ export default function InnerRegistrationForm({
           removeBanner();
         }}
       />
+      <span className='mt-1 ml-2 text-xs text-red-500'>
+        {errors.bannerImage?.message?.toString()}
+      </span>
       {/* ✅ 소개 이미지 */}
       <ImageUploader
         required
@@ -132,6 +136,9 @@ export default function InnerRegistrationForm({
         onUpload={handleUploadIntro}
         onRemove={removeIntro}
       />
+      <span className='mt-1 ml-2 text-xs text-red-500'>
+        {errors.subImageUrls?.message?.toString()}
+      </span>
       <div className='mt-8 flex justify-center'>
         <Button
           type='submit'

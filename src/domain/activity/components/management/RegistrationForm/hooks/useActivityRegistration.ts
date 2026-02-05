@@ -6,14 +6,10 @@ import type {
   TimeSlot,
 } from '@/domain/activity/components/management/RegistrationForm/schemas/registrationSchema';
 import { createActivityService } from '@/domain/activity/components/management/RegistrationForm/services/activityService';
-import type { ActivityDetail } from '@/domain/activity/types';
+import type { ActivityDetail, RegisterFormMode } from '@/domain/activity/types';
 
-/**
- * Hook for activity registration and update operations
- * Encapsulates all business logic for form submission
- */
 export function useActivityRegistration(
-  mode: 'create' | 'edit',
+  mode: RegisterFormMode,
   initialData?: ActivityDetail
 ) {
   const router = useRouter();
@@ -54,7 +50,6 @@ export function useActivityRegistration(
     onSuccess: () => {
       // Invalidate and refetch activities list
       queryClient.invalidateQueries({ queryKey: ['myActivities'] });
-      // Navigate to my activities page
       router.replace('/myactivities');
     },
   });

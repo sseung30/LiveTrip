@@ -121,6 +121,10 @@ export interface ReservationResponse {
   createdAt: string;
   updatedAt: string;
 }
+
+// Activity 등록 type
+
+export type RegisterFormMode = 'create' | 'edit';
 export interface UploadedImage {
   id: string;
   src: string;
@@ -140,7 +144,7 @@ export interface UpdateActivityPayloadType {
 
 export type UpdateActivityPayload = Partial<UpdateActivityPayloadType>;
 
-// Search/Home types (from home/type.ts)
+// Home page
 export interface homeSearchParams {
   sort?: sortType;
   category?: activityCategory;

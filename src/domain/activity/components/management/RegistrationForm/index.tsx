@@ -5,11 +5,10 @@ import { useActivityForm } from '@/domain/activity/components/management/Registr
 import { useActivityRegistration } from '@/domain/activity/components/management/RegistrationForm/hooks/useActivityRegistration';
 import { useTimeSlot } from '@/domain/activity/components/management/RegistrationForm/hooks/useTimeSlot';
 import InnerRegistrationForm from '@/domain/activity/components/management/RegistrationForm/InnerRegistrationForm';
-import type { ActivityDetail } from '@/domain/activity/types';
+import type { ActivityDetail, RegisterFormMode } from '@/domain/activity/types';
 
-type Mode = 'create' | 'edit';
 interface RegistrationFormProps {
-  mode: Mode;
+  mode: RegisterFormMode;
   initialData?: ActivityDetail;
   isSubmitting?: boolean;
 }

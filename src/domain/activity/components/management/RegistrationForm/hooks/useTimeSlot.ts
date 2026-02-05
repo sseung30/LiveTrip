@@ -2,7 +2,9 @@ import { useState } from 'react';
 import type { TimeSlot } from '@/domain/activity/components/management/RegistrationForm/schemas/registrationSchema';
 import { createEmptyTimeSlot } from '@/domain/activity/components/management/RegistrationForm/utils/createEmptyTimeSlot';
 import type { Schedule } from '@/domain/activity/types';
-
+/**
+ *TODO: Timeslots을 RHF 로직에 포함시키기
+ */
 export function useTimeSlot(schedules: Schedule[]) {
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>((): TimeSlot[] => {
     if (schedules.length > 0) {
@@ -20,7 +22,6 @@ export function useTimeSlot(schedules: Schedule[]) {
     return [createEmptyTimeSlot()];
   });
 
-  console.log(timeSlots);
   const handleAddTimeSlot = () => {
     setTimeSlots((prev) => [...prev, createEmptyTimeSlot()]);
   };

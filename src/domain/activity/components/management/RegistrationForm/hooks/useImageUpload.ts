@@ -39,7 +39,7 @@ export function useImageUpload(config: ImageUploadConfig) {
     } else {
       setImages(formFieldValue.map((url) => ({ id: url, src: url })));
     }
-  }, []);
+  }, [formFieldValue]);
 
   // Sync form field with local images state
   useEffect(() => {

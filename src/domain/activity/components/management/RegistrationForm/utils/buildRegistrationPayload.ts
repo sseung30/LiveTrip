@@ -27,12 +27,6 @@ export function buildRegistrationPayload({
     address: formData.address.trim(),
     bannerImageUrl,
     subImageUrls: introImages.map((img) => img.src),
-    schedules: timeSlots.map((slot) => {
-      return {
-        date: slot.date,
-        startTime: slot.startTime,
-        endTime: slot.endTime,
-      };
-    }),
+    schedules: timeSlots,
   };
 }

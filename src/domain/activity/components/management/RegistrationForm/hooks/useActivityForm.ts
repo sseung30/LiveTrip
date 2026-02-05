@@ -8,10 +8,6 @@ import { createEmptyTimeSlot } from '@/domain/activity/components/management/Reg
 import { normalizeSubImages } from '@/domain/activity/components/management/RegistrationForm/utils/normalizeSubImages';
 import type { ActivityDetail } from '@/domain/activity/types';
 
-/**
- * Hook for unified form state management
- * Combines React Hook Form with custom time slots state
- */
 export function useActivityForm(initialData?: ActivityDetail) {
   const defaults: RegistrationFormValues = {
     title: initialData?.title ?? '',
