@@ -9,7 +9,7 @@
 
 | Category | Tech |
 |-----------|------|
-| **Frontend** | Next.js (App Router), React, TypeScript |
+| **Frontend** | Next.js 15.5.9, React 19.1.0, TypeScript |
 | **State / Data** | TanStack React Query |
 | **Form Management** | React Hook Form |
 | **Authentication** | NextAuth (Credential + Kakao OAuth) |
@@ -20,27 +20,47 @@
 ---
 
 ## 📁 폴더 구조 (Project Structure)
-
+**도메인 주도 폴더 설계(Domain-driven structure)**  
 ```bash
 src/
- ├── app/                     # Next.js App Router pages
- │   ├── auth/                # 로그인/회원가입
- │   ├── profile/             # 프로필 페이지
- │   └── registration/        # 체험 등록 / 수정
- │
- ├── domain/
- │   ├── auth/                # 인증 관련 로직 (NextAuth)
- │   ├── profile/             # 프로필 폼 & 훅
- │   ├── registration/        # 체험 등록 폼, 이미지 업로드, leave guard 등
- │   └── common/              # 재사용 UI 컴포넌트
- │
- ├── hooks/                   # 커스텀 훅 (useLeaveGuard 등)
- ├── components/              # 전역 UI (Button, Input 등)
- └── lib/                     # 유틸 함수, fetch API 등
+├── api/                # 전역 API 설정 (Fetch 인터셉터, 공통 쿼리 스트링 생성 등)
+├── app/                # Next.js App Router (Routing, Layout, Route Handlers)
+│   ├── (with-header)/  # 헤더 레이아웃이 포함된 페이지 그룹
+│   │   ├── (home)/     # 홈 및 검색 결과 페이지
+│   │   ├── (with-sidemenu)/ # 사이드메뉴가 포함된 대시보드 페이지 그룹
+│   │   └── registration/ # 체험 등록 페이지
+│   ├── api/            # Route Handlers (Auth, Kakao, Upload 등)
+│   ├── auth/           # 로그인/회원가입 레이아웃 및 페이지
+│   └── globals.css     # 전역 스타일 설정
+├── components/         # 공통 UI 컴포넌트 (Domain-agnostic)
+│   ├── button/         # 공통 버튼 (Arrow, Default)
+│   ├── dialog/         # 모달, 바텀시트 시스템
+│   ├── dropdown/       # 선택창 컴포넌트
+│   ├── header/         # 공통 헤더 및 네비게이션
+│   ├── toast/          # 전역 알림(Toast) 시스템
+│   └── ui/             # 기타 원자 단위 UI 컴포넌트 (Input, Spinner, Star 등)
+├── domain/             # 비즈니스 도메인별 핵심 로직 (핵심 계층)
+│   ├── activity/       # 체험(Activity) 관련 도메인
+│   │   ├── actions/    # Server Actions (등록, 삭제 등)
+│   │   ├── api.ts      # 도메인 전용 API 호출 함수
+│   │   ├── components/ # 체험 도메인 전용 컴포넌트 (List, Card, Form 등)
+│   │   ├── hooks/      # 체험 관련 커스텀 훅 (Service, Data Fetching)
+│   │   └── utils/      # 도메인 전용 유틸 (Query Options 등)
+│   ├── reservation/    # 예약(Reservation) 관련 도메인
+│   │   ├── actions/    # 승인, 거절 등 서버 액션
+│   │   ├── components/ # 예약 현황 캘린더, 상태 배지 등
+│   │   └── hooks/      # 예약 데이터 처리 훅
+│   └── user/           # 사용자(User) 및 인증 도메인
+│       ├── components/ # 로그인/회원가입 폼, 프로필 수정 폼
+│       ├── queries/    # 사용자 정보 및 프로필 수정 Mutate 훅
+│       └── utils/      # 인증 관련 유틸 (Auth Helper)
+├── hooks/              # 전역 공통 커스텀 훅 (Infinite Scroll, Observer 등)
+├── types/              # 전역 타입 정의 (외부 SDK 등)
+├── utils/              # 전역 유틸리티 함수
+│   └── react-query/    # React Query 설정 및 Provider (Dehydration)
+├── middleware.ts       # 인증 및 접근 제한 미들웨어
+└── next.d.ts           # Next.js 타입 확장
 ```
-
-> 💡 **도메인 단위 구조(Domain-driven structure)**  
-> 기능별로 폴더를 분리하여 유지보수성과 협업 효율을 높였습니다.
 
 ---
 
@@ -78,7 +98,6 @@ src/
 | 이미지 업로드 | `POST` | `/upload` | S3 업로드 및 URL 반환 |
 
 > ⚙️ API 연동은 **React Query + custom fetch wrapper**로 구성되어 있으며,  
-> 모든 요청은 **Bearer Token 기반 인증**을 사용합니다.
 
 ---
 
