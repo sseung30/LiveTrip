@@ -138,12 +138,6 @@ export const getMyActivities = async (
   return apiFetch<MyActivities>(`/my-activities${queryString}`);
 };
 
-export const getMyActivityDetail = async (
-  id: number | string
-): Promise<ActivityDetail> => {
-  return apiFetch<ActivityDetail>(`/my-activities/${id}`);
-};
-
 export async function deleteMyActivity(id: number) {
   const body = { status: 'canceled' };
 

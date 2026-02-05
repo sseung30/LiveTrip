@@ -11,7 +11,12 @@ export function BasicInfoFields({
 }: {
   categoryOptions: { label: string; value: string }[];
 }) {
-  const { control, register, setValue } = useFormContext();
+  const {
+    control,
+    register,
+    setValue,
+    formState: { errors },
+  } = useFormContext();
   const openPostcode = useDaumPostcodePopup();
   const [isPostcodeOpen, setIsPostcodeOpen] = useState(false);
   const addressInputRef = useRef<HTMLInputElement>(null);
@@ -48,8 +53,7 @@ export function BasicInfoFields({
       <Controller
         name='title'
         control={control}
-        rules={{ required: '제목은 필수입니다.' }}
-        render={({ field }) => {
+        render={({ field, fieldState: { error } }) => {
           return (
             <Input
               required
@@ -57,6 +61,7 @@ export function BasicInfoFields({
               placeholder='제목을 입력해 주세요'
               className='w-full'
               value={field.value}
+              error={error?.message}
               onChange={field.onChange}
             />
           );
@@ -67,8 +72,7 @@ export function BasicInfoFields({
       <Controller
         name='category'
         control={control}
-        rules={{ required: '카테고리는 필수입니다.' }}
-        render={({ field }) => {
+        render={({ field, fieldState: { error } }) => {
           return (
             <SelectDropdown
               required
@@ -76,6 +80,8 @@ export function BasicInfoFields({
               options={categoryOptions}
               placeholder='카테고리를 선택해 주세요'
               defaultValue={field.value || undefined}
+              // TODO: SelectDropdown을 래핑하여 error 메시지를 붙여 input 컴포넌트로 만들기
+              // error={error?.message}
               onSelect={field.onChange}
             />
           );
@@ -93,21 +99,20 @@ export function BasicInfoFields({
         <textarea
           className='focus:border-primary-500 focus:ring-primary-100 min-h-[180px] w-full rounded-2xl border border-gray-100 bg-white px-5 py-4 text-base text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:outline-none'
           placeholder='체험에 대한 설명을 입력해 주세요'
-          {...register('description', { required: '설명은 필수입니다.' })}
+          {...register('description')}
         />
+        {errors.description && (
+          <p className='text-sm text-red-500'>
+            {errors.description.message?.toString()}
+          </p>
+        )}
       </div>
 
       {/* 가격 */}
       <Controller
         name='price'
         control={control}
-        rules={{
-          required: '가격은 필수입니다.',
-          validate: (v) =>
-            (!Number.isNaN(Number(v)) && Number(v) > 0) ||
-            '가격은 0보다 큰 숫자여야 합니다.',
-        }}
-        render={({ field }) => {
+        render={({ field, fieldState: { error } }) => {
           return (
             <Input
               required
@@ -116,6 +121,7 @@ export function BasicInfoFields({
               type='number'
               className='w-full'
               value={field.value}
+              error={error?.message}
               onChange={field.onChange}
             />
           );
@@ -126,8 +132,7 @@ export function BasicInfoFields({
       <Controller
         name='address'
         control={control}
-        rules={{ required: '주소는 필수입니다.' }}
-        render={({ field }) => {
+        render={({ field, fieldState: { error } }) => {
           return (
             <label className='flex w-full flex-col text-sm font-medium text-gray-900'>
               <span className='inline-flex items-center'>
@@ -156,6 +161,9 @@ export function BasicInfoFields({
                   주소 검색
                 </button>
               </div>
+              {error && (
+                <p className='mt-1 text-sm text-red-500'>{error.message}</p>
+              )}
             </label>
           );
         }}

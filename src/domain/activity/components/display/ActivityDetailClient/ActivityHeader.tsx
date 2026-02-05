@@ -25,7 +25,7 @@ export default function ActivityHeader({ activity }: ActivityHeaderProps) {
         <div className='mb-6'>
           <LocationInfo address={activity.address} />
         </div>
-        <p className='text-sm text-gray-700'>{activity.shortDescription}</p>
+        <p className='text-sm text-gray-700'>{activity.description}</p>
       </div>
     </div>
   );

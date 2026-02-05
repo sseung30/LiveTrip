@@ -4,7 +4,6 @@ import {
   getAllActivitiesWithCache,
   getAvailableSchedules,
   getMyActivities,
-  getMyActivityDetail,
 } from '@/domain/activity/api';
 import type {
   activityCategory,
@@ -34,8 +33,6 @@ export const activityQueryKeys = {
    * 내 활동 관리
    */
   my: (params?: useInfiniteActivitiesParams) => ['my-activities', params],
-  myDetail: (id: number) => ['my-activities', id],
-
   /**
    * 검색 관련
    */
@@ -71,9 +68,5 @@ export const activityQueryOptions = {
   my: (params?: useInfiniteActivitiesParams) => ({
     queryKey: activityQueryKeys.my(params),
     queryFn: () => getMyActivities(params),
-  }),
-  myDetail: (id: number) => ({
-    queryKey: activityQueryKeys.myDetail(id),
-    queryFn: getMyActivityDetail(id),
   }),
 };

@@ -1,9 +1,4 @@
-export interface TimeSlot {
-  id: string;
-  date: string;
-  startTime: string;
-  endTime: string;
-}
+import type { TimeSlot } from '@/domain/activity/components/management/RegistrationForm/schemas/registrationSchema';
 
 export function createEmptyTimeSlot(): TimeSlot {
   return {
