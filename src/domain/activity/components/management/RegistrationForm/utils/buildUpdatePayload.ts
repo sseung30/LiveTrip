@@ -1,18 +1,20 @@
-import type { TimeSlot as LocalTimeSlot } from '@/domain/activity/components/management/RegistrationForm/utils/createEmptyTimeSlot';
 import type {
-  FormValues,
+  RegistrationFormValues,
+  TimeSlot,
+} from '@/domain/activity/components/management/RegistrationForm/schemas/registrationSchema';
+import type {
+  ActivityDetail,
   UpdateActivityPayload,
-} from '@/domain/activity/components/management/types';
-import type { MyActivityDetail } from '@/domain/activity/types';
+} from '@/domain/activity/types';
 
 function normalizeKey(date: string, startTime: string, endTime: string) {
   return `${date}|${startTime}|${endTime}`;
 }
 
 export function buildUpdatePayload(
-  initial: MyActivityDetail,
-  formValues: FormValues,
-  timeSlots: LocalTimeSlot[]
+  initial: ActivityDetail,
+  formValues: RegistrationFormValues,
+  timeSlots: TimeSlot[]
 ): UpdateActivityPayload {
   const payload: UpdateActivityPayload = {
     title: formValues.title.trim(),

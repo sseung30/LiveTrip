@@ -3,12 +3,17 @@ import Button from '@/components/button/Button';
 import { ModalContainer } from '@/components/dialog/Modal/ModalContainer';
 import { BasicInfoFields } from '@/domain/activity/components/management/RegistrationForm/BasicInfoFields';
 import ClientConfirmModal from '@/domain/activity/components/management/RegistrationForm/ClientConfirmModal';
-import { useBannerImageUpload } from '@/domain/activity/components/management/RegistrationForm/hooks/useBannerImageUpload';
-import { useIntroImageUpload } from '@/domain/activity/components/management/RegistrationForm/hooks/useIntroImageUpload';
+import { useImageUpload } from '@/domain/activity/components/management/RegistrationForm/hooks/useImageUpload';
 import { useLeaveGuard } from '@/domain/activity/components/management/RegistrationForm/hooks/useLeaveGuard';
 import { ImageUploader } from '@/domain/activity/components/management/RegistrationForm/ImageUploader';
+import type {
+  RegistrationFormValues,
+  TimeSlot,
+} from '@/domain/activity/components/management/RegistrationForm/schemas/registrationSchema';
 import { TimeSlotsField } from '@/domain/activity/components/management/RegistrationForm/TimeSlotsField';
+import type { RegisterFormMode } from '@/domain/activity/types';
 
+// TODO: 공통화
 const CATEGORY_OPTIONS = [
   { label: '문화 · 예술', value: '문화 · 예술' },
   { label: '식음료', value: '식음료' },
@@ -21,38 +26,59 @@ const CATEGORY_OPTIONS = [
 const MAX_IMAGE_COUNT_BANNER = 1;
 const MAX_IMAGE_COUNT_INTRO = 4;
 
+interface InnerRegistrationFormProps {
+  isSubmitting?: boolean;
+  handleSubmit: (
+    onValid: (data: RegistrationFormValues) => void,
+    onInvalid?: () => void
+  ) => (e?: React.BaseSyntheticEvent) => void;
+  onSubmit: (data: RegistrationFormValues) => void;
+  mode: RegisterFormMode;
+  timeSlots: TimeSlot[];
+  onAddTimeSlot: () => void;
+  onRemoveTimeSlot: (id: string) => void;
+  onChangeTimeSlot: (
+    id: string,
+    field: keyof Omit<TimeSlot, 'id'>,
+    value: string
+  ) => void;
+}
+
 export default function InnerRegistrationForm({
   isSubmitting,
-  formRef,
   handleSubmit,
   onSubmit,
-  onInvalid,
   mode,
   timeSlots,
   onAddTimeSlot,
   onRemoveTimeSlot,
   onChangeTimeSlot,
-}: any) {
-  // ✅ 배너 이미지 훅
+}: InnerRegistrationFormProps) {
+  // ✅ 통합 이미지 업로드 훅
   const {
-    image: bannerImage,
-    handleUploadBanner,
+    images: bannerImage,
+    handleUpload: handleUploadBanner,
     removeImage: removeBanner,
     isUploading: isBannerUploading,
-  } = useBannerImageUpload();
+  } = useImageUpload({ field: 'bannerImage', mode: 'single' });
 
-  // ✅ 소개 이미지 훅
   const {
     images: introImages,
     handleUpload: handleUploadIntro,
     removeImage: removeIntro,
     isUploading: isIntroUploading,
-  } = useIntroImageUpload(MAX_IMAGE_COUNT_INTRO);
+  } = useImageUpload({
+    field: 'subImageUrls',
+    mode: 'multiple',
+    maxCount: MAX_IMAGE_COUNT_INTRO,
+  });
 
   const isUploadingAny = isBannerUploading || isIntroUploading;
 
-  //모달 훅
-  const { formState } = useFormContext();
+  const {
+    formState,
+    formState: { errors },
+  } = useFormContext();
   const { dialogRef, onConfirm, onCancel } = useLeaveGuard(formState.isDirty);
 
   const getSubmitButtonMessage = () => {
@@ -68,11 +94,7 @@ export default function InnerRegistrationForm({
   };
 
   return (
-    <form
-      ref={formRef}
-      className='flex flex-col gap-8'
-      onSubmit={handleSubmit(onSubmit, onInvalid)} // ✅ react-hook-form submit 연결
-    >
+    <form className='flex flex-col gap-8' onSubmit={handleSubmit(onSubmit)}>
       <BasicInfoFields categoryOptions={CATEGORY_OPTIONS} />
 
       <TimeSlotsField
@@ -92,7 +114,7 @@ export default function InnerRegistrationForm({
         required
         title='배너 이미지 등록'
         description='최대 1장까지 등록할 수 있어요.'
-        images={bannerImage ? [bannerImage] : []}
+        images={bannerImage}
         maxCount={MAX_IMAGE_COUNT_BANNER}
         inputId='banner-image-upload'
         onUpload={handleUploadBanner}
@@ -100,7 +122,9 @@ export default function InnerRegistrationForm({
           removeBanner();
         }}
       />
-
+      <span className='mt-1 ml-2 text-xs text-red-500'>
+        {errors.bannerImage?.message?.toString()}
+      </span>
       {/* ✅ 소개 이미지 */}
       <ImageUploader
         required
@@ -112,7 +136,9 @@ export default function InnerRegistrationForm({
         onUpload={handleUploadIntro}
         onRemove={removeIntro}
       />
-
+      <span className='mt-1 ml-2 text-xs text-red-500'>
+        {errors.subImageUrls?.message?.toString()}
+      </span>
       <div className='mt-8 flex justify-center'>
         <Button
           type='submit'

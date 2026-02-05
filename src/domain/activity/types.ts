@@ -28,10 +28,8 @@ export interface Activity {
 }
 
 export interface ActivityDetail extends Activity {
-  subImageUrls: string[];
   subImages: SubImage[];
   schedules: Schedule[];
-  shortDescription: string;
 }
 
 export interface Schedule {
@@ -44,16 +42,6 @@ export interface Schedule {
 export interface SubImage {
   id: number;
   imageUrl: string;
-}
-
-export interface MyActivityDetail extends Activity {
-  subImages: { id: number; imageUrl: string }[];
-  schedules: {
-    id: number;
-    date: string;
-    startTime: string;
-    endTime: string;
-  }[];
 }
 
 // Activity listing and pagination
@@ -134,35 +122,13 @@ export interface ReservationResponse {
   updatedAt: string;
 }
 
-// Registration/Management types (from registration/types.ts)
-export interface FormValues {
-  title: string;
-  category: string;
-  description: string;
-  address: string;
-  price: string;
-  bannerImage: string;
-  subImageUrls: string[];
-  timeSlots: {
-    date: string;
-    startTime: string;
-    endTime: string;
-  }[];
-}
+// Activity 등록 type
 
-export interface TimeSlot {
-  id: string;
-  date: string;
-  startTime: string;
-  endTime: string;
-  isAvailable: boolean;
-}
-
+export type RegisterFormMode = 'create' | 'edit';
 export interface UploadedImage {
   id: string;
   src: string;
 }
-
 export interface UpdateActivityPayloadType {
   title?: string;
   description?: string;
@@ -170,9 +136,6 @@ export interface UpdateActivityPayloadType {
   price?: number;
   address?: string;
   bannerImageUrl?: string;
-  /**
-   * For edit endpoint contract
-   */
   subImageIdsToRemove?: number[];
   subImageUrlsToAdd?: string[];
   scheduleIdsToRemove?: number[];
@@ -181,17 +144,13 @@ export interface UpdateActivityPayloadType {
 
 export type UpdateActivityPayload = Partial<UpdateActivityPayloadType>;
 
-// Search/Home types (from home/type.ts)
+// Home page
 export interface homeSearchParams {
   sort?: sortType;
   category?: activityCategory;
 }
 
-export interface AllActivitySectionProps {
-  sort?: sortType;
-  category?: activityCategory;
-}
-
+export type AllActivitySectionProps = homeSearchParams;
 export type AllActivityDataWrapperProps = AllActivitySectionProps;
 
 export interface useInfiniteActivitiesParams extends AllActivitySectionProps {

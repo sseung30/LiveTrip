@@ -1,10 +1,11 @@
+import Image from 'next/image';
 import { type ChangeEvent, useId } from 'react';
-import type { UploadedImage } from '@/domain/activity/components/management/types';
+import type { UploadedImage } from '@/domain/activity/types';
 
 interface ImageUploaderProps {
   title: string;
   description: string;
-  images: UploadedImage[];
+  images: UploadedImage[] | null;
   onUpload: (event: ChangeEvent<HTMLInputElement>) => void | Promise<void>;
   onRemove: (id: string) => void;
   maxCount: number;
@@ -42,17 +43,19 @@ export function ImageUploader({
         >
           <UploadIcon />
           <span>
-            {images.length}/{maxCount}
+            {images?.length}/{maxCount}
           </span>
         </label>
 
-        {images.map((image) => {
+        {images?.map((image) => {
           return (
             <figure
               key={image.id}
               className='relative h-28 w-28 overflow-hidden rounded-2xl bg-gray-100'
             >
-              <img
+              <Image
+                width={112}
+                height={112}
                 src={image.src}
                 alt='업로드된 이미지'
                 className='h-full w-full object-cover'

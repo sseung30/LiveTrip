@@ -1,8 +1,9 @@
 'use client';
+import { useFormContext } from 'react-hook-form';
 import DatePickerField from '@/domain/activity/components/management/RegistrationForm/DatePickerField';
 import { RoundIconButton } from '@/domain/activity/components/management/RegistrationForm/RoundIconButton';
+import type { TimeSlot } from '@/domain/activity/components/management/RegistrationForm/schemas/registrationSchema';
 import { TimeSelectDropdown } from '@/domain/activity/components/management/RegistrationForm/TimeSelectDropdown';
-import type { TimeSlot } from '@/domain/activity/components/management/RegistrationForm/utils/createEmptyTimeSlot';
 
 interface TimeSlotsFieldProps {
   timeSlots: TimeSlot[];
@@ -23,6 +24,10 @@ export function TimeSlotsField({
   onChange,
   timeOptions,
 }: TimeSlotsFieldProps) {
+  // const {
+  //   formState: { errors },
+  // } = useFormContext();
+
   return (
     <div className='flex flex-col gap-5'>
       <div className='flex flex-col gap-2'>
@@ -104,6 +109,9 @@ export function TimeSlotsField({
           );
         })}
       </div>
+      {/* <span className='mt-1 ml-2 text-xs text-red-500'>
+        {errors.timeSlots?.message?.toString()}
+      </span> */}
     </div>
   );
 }
