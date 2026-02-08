@@ -24,45 +24,46 @@
 ```bash
 src/
 ├── api/                # 전역 API 설정 (Fetch 인터셉터, 공통 쿼리 스트링 생성 등)
-├── app/                # Next.js App Router (Routing, Layout, Route Handlers)
-│   ├── (with-header)/  # 헤더 레이아웃이 포함된 페이지 그룹
-│   │   ├── (home)/     # 홈 및 검색 결과 페이지
-│   │   ├── (with-sidemenu)/ # 사이드메뉴가 포함된 대시보드 페이지 그룹
-│   │   └── registration/ # 체험 등록 페이지
-│   ├── api/            # Route Handlers (Auth, Kakao, Upload 등)
-│   ├── auth/           # 로그인/회원가입 레이아웃 및 페이지
-│   └── globals.css     # 전역 스타일 설정
+├── app/                
+│   ├── (with-header)/
+│   │   ├── (home)/
+│   │   ├── (with-sidemenu)/
+│   │   └── registration/
+│   ├── api/
+│   ├── auth/
+│   └── globals.css
 ├── components/         # 공통 UI 컴포넌트 (Domain-agnostic)
-│   ├── button/         # 공통 버튼 (Arrow, Default)
-│   ├── dialog/         # 모달, 바텀시트 시스템
-│   ├── dropdown/       # 선택창 컴포넌트
-│   ├── header/         # 공통 헤더 및 네비게이션
-│   ├── toast/          # 전역 알림(Toast) 시스템
-│   └── ui/             # 기타 원자 단위 UI 컴포넌트 (Input, Spinner, Star 등)
+│   ├── button/
+│   ├── dialog/
+│   ├── dropdown/
+│   ├── header/
+│   ├── toast/
+│   └── ui/ 
 ├── domain/             # 비즈니스 도메인별 핵심 로직 (핵심 계층)
 │   ├── activity/       # 체험(Activity) 관련 도메인
-│   │   ├── actions/    # Server Actions (등록, 삭제 등)
-│   │   ├── api.ts      # 도메인 전용 API 호출 함수
-│   │   ├── components/ # 체험 도메인 전용 컴포넌트 (List, Card, Form 등)
-│   │   ├── hooks/      # 체험 관련 커스텀 훅 (Service, Data Fetching)
-│   │   └── utils/      # 도메인 전용 유틸 (Query Options 등)
+│   │   ├── actions/
+│   │   ├── api.ts
+│   │   ├── components/
+│   │   ├── hooks/
+│   │   └── utils/
 │   ├── reservation/    # 예약(Reservation) 관련 도메인
-│   │   ├── actions/    # 승인, 거절 등 서버 액션
-│   │   ├── components/ # 예약 현황 캘린더, 상태 배지 등
-│   │   └── hooks/      # 예약 데이터 처리 훅
+│   │   ├── actions/
+│   │   ├── components/
+│   │   └── hooks/
 │   └── user/           # 사용자(User) 및 인증 도메인
-│       ├── components/ # 로그인/회원가입 폼, 프로필 수정 폼
-│       ├── queries/    # 사용자 정보 및 프로필 수정 Mutate 훅
-│       └── utils/      # 인증 관련 유틸 (Auth Helper)
+│       ├── components/
+│       ├── queries/
+│       └── utils/
 ├── hooks/              # 전역 공통 커스텀 훅 (Infinite Scroll, Observer 등)
 ├── types/              # 전역 타입 정의 (외부 SDK 등)
 ├── utils/              # 전역 유틸리티 함수
 │   └── react-query/    # React Query 설정 및 Provider (Dehydration)
-├── middleware.ts       # 인증 및 접근 제한 미들웨어
-└── next.d.ts           # Next.js 타입 확장
+├── middleware.ts
+└── next.d.ts
 ```
 
 ---
+<img width="1680" height="1344" alt="유저 플로우" src="https://github.com/user-attachments/assets/248edf5c-5638-4737-acf0-62891df5e4cc" />
 
 ## ✨ 주요 기능 (Features)
 
